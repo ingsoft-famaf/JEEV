@@ -134,6 +134,9 @@ AUTHENTICATION_BACKENDS = (
     "allauth.account.auth_backends.AuthenticationBackend"
 )
 
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_USERNAME_REQUIRED = True
+
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 SOCIALACCOUNT_QUERY_EMAIL = True
