@@ -1,5 +1,10 @@
 from django.http import HttpResponse
 
 
-def index(request):
-    return HttpResponse("Hello, world. You're at the polls index.")
+class login_view():
+
+class logout_view():
+
+class register_view():
+
+class profile_view():
