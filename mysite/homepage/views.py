@@ -1,5 +1,9 @@
 from django.http import HttpResponse
+from django.shortcuts import render
 
 
-def index(request):
-    return HttpResponse("Hello, world. You're at the polls index.")
+def homepage(request):
+    return render(request, 'homepage/profile.html', {})
+
+def profile_view(request):
+    return render(request, 'users/profile.html', {})
