@@ -6,7 +6,7 @@ from allauth.utils import get_user_model
 from django.contrib.auth.models import User
 
 
-class SignupTest(TestCase):
+class AccountTest(TestCase):
 
     def test_signup_password_twice_form_error(self):
         response = self.client.post(
@@ -63,4 +63,7 @@ class SignupTest(TestCase):
                     'email': 'pedro@test.com',
                     'password1': 'pepito12',
                     'password2': 'pepito12'})
-        self.assertContains(response,'A user is already registered with this e-mail address.')	
+        self.assertContains(response,'A user is already registered with this e-mail address.')
+
+#    def test_signup_redirect_profile(self):
+# is_staff
