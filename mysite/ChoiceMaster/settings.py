@@ -150,6 +150,7 @@ AUTHENTICATION_BACKENDS = (
     "django.contrib.auth.backends.ModelBackend",
     # `allauth` specific authentication methods, such as login by e-mail
     "allauth.account.auth_backends.AuthenticationBackend"
+    "social_auth.backends.google.GoogleOAuth2Backend",
 )
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
