@@ -18,14 +18,9 @@ from django.contrib import admin
 
 
 urlpatterns = [
-<<<<<<< HEAD
 
     url(r'^accounts/', include('allauth.urls')),
-    #url(r'^homepag/', include('homepage.urls')),
-=======
-    url(r'^accounts/', include('allauth.urls')),
     url(r'^homepage/', include('homepage.urls')),
->>>>>>> 575101d26b82737f78411a7265728a4f2e228985
     url(r'^admin/', admin.site.urls),
     url(r'^', include('homepage.urls')),
 

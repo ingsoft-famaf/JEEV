@@ -40,10 +40,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-<<<<<<< HEAD
-=======
-    'django.contrib.sites',
->>>>>>> 575101d26b82737f78411a7265728a4f2e228985
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
@@ -53,7 +49,7 @@ INSTALLED_APPS = [
 
 SITE_ID = 1
 
-<<<<<<< HEAD
+
 
 ACCOUNT_LOGOUT_REDIRECT_URL ="/accounts/login"
 ACCOUNT_EMAIL_REQUIRED = True
@@ -61,8 +57,6 @@ ACCOUNT_USERNAME_REQUIRED = True
 #ACCOUNT_LOGOUT_REDIRECT_URL ="/"
 ACCOUNT_LOGIN_REDIRECT_URL ="/"
 
-=======
->>>>>>> 575101d26b82737f78411a7265728a4f2e228985
 SOCIALACCOUNT_QUERY_EMAIL = True
 SOCIALACCOUNT_PROVIDERS = \
     { 'google':
@@ -94,13 +88,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                #'django.core.context_processors.request',
-<<<<<<< HEAD
-=======
-                #'django.contrib.auth.context_processors.auth',
-                #'allauth.account.context.processors.account',
-                #'allauth.socialaccount.context_processors.socialaccount',
->>>>>>> 575101d26b82737f78411a7265728a4f2e228985
+
             ],
         },
     },
