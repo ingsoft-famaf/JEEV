@@ -8,6 +8,8 @@ from . import views
 urlpatterns = [
     url(r'^logout/', LogoutView, name='account_logout'),
     url(r'^signup/', SignupView, name='account_signup'),
+#    url(r'superuser/', views.superuser_view, name='superuser'),
+    url(r'^superuser/', views.superuser_view, name='superuser'),
 ]
 
 

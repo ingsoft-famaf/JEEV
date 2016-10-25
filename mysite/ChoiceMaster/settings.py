@@ -50,7 +50,7 @@ INSTALLED_APPS = [
 
 SITE_ID = 1
 
-ADMIN_LOGOUT_REDIRECT_URL ="/accounts/login"
+#ADMIN_LOGOUT_REDIRECT_URL ="/accounts/login"
 ACCOUNT_LOGOUT_REDIRECT_URL ="/accounts/login"
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_USERNAME_REQUIRED = True
@@ -80,7 +80,7 @@ ROOT_URLCONF = 'ChoiceMaster.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'users/templates'),],
+        'DIRS': [os.path.join(BASE_DIR, 'templates'),],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

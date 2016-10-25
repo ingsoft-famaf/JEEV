@@ -21,6 +21,5 @@ urlpatterns = [
     url(r'^accounts/', include('allauth.urls')),
 #    url(r'^question/', include('questions.urls')),
     url(r'^homepage/', include('homepage.urls')),
-    url(r'^admin/', admin.site.urls),
     url(r'^', include('homepage.urls')),
 ]
