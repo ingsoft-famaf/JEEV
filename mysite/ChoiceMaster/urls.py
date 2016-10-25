@@ -15,13 +15,14 @@ Including another URLconf
 """
 from django.conf.urls import include, url
 from django.contrib import admin
-
+from django.core.urlresolvers import reverse_lazy
 
 urlpatterns = [
 
     url(r'^accounts/', include('allauth.urls')),
     #url(r'^homepag/', include('homepage.urls')),
+    url(r'^accounts/', include('allauth.urls')),
+    url(r'^homepage/', include('homepage.urls')),
     url(r'^admin/', admin.site.urls),
     url(r'^', include('homepage.urls')),
-
 ]

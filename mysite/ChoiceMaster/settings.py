@@ -44,11 +44,14 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'questions',
+    'allauth.socialaccount.providers.google',
+    'allauth.socialaccount.providers.github',
+
 ]
 
 SITE_ID = 1
 
-
+ADMIN_LOGOUT_REDIRECT_URL ="/accounts/login"
 ACCOUNT_LOGOUT_REDIRECT_URL ="/accounts/login"
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_USERNAME_REQUIRED = True
@@ -68,6 +71,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
@@ -77,9 +81,7 @@ ROOT_URLCONF = 'ChoiceMaster.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [
-             os.path.join(BASE_DIR, 'users/templates'),
-        ],
+        'DIRS': [os.path.join(BASE_DIR, 'users/templates'),],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -87,9 +89,18 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                #'django.core.context_processors.request',
+                #'django.contrib.auth.context_processors.auth',
+                #'allauth.account.context.processors.account',
+                #'allauth.socialaccount.context_processors.socialaccount',
             ],
         },
     },
+]
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
 ]
 
 WSGI_APPLICATION = 'ChoiceMaster.wsgi.application'
@@ -149,6 +160,7 @@ AUTHENTICATION_BACKENDS = (
     "django.contrib.auth.backends.ModelBackend",
     # `allauth` specific authentication methods, such as login by e-mail
     "allauth.account.auth_backends.AuthenticationBackend"
+#    "social_auth.backends.google.GoogleOAuth2Backend",
 )
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
