@@ -11,6 +11,9 @@ def profile_view(request):
 def superuser_view(request):
     return render(request, 'homepage/superuser.html', {})
 
+def indexadmin_view(request):
+    return render(request, 'homepage/indexadmin.html', {})
+
 
 
 

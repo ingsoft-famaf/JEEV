@@ -3,7 +3,7 @@ from django.shortcuts import render
 
 
 def homepage(request):
-    return render(request, 'homepage/profile.html', {})
+    return render(request, 'homepage/homepage.html', {})
 
 def profile_view(request):
     return render(request, 'users/profile.html', {})
@@ -11,8 +11,8 @@ def profile_view(request):
 def superuser_view(request):
     return render(request, 'homepage/superuser.html', {})
 
-def index_view(request):
-    return render(request, 'homepage/index.html', {})
+def indexadmin_view(request):
+    return render(request, 'homepage/indexadmin.html', {})
 
 
 
