@@ -34,52 +34,58 @@ class question_view():
         # print type(tema)
         # print materia
         # print tema
-        # q = Question(NombreTema=tema,NombreMateria = materia,TextPreg=texto)
-        # q.save()
         query = Question.objects.filter(
-            nombre_tema=tema).filter(nombre_materia=materia)
+            NombreTema=tema).filter(NombreMateria=materia)
         count = query.count()
         print('el conteo de preguntas con mismo tema y materia: %s' % count)
         if count == 0:
-            q = Question(nombre_tema=tema,
-                         nombre_materia=materia, text_preg=texto)
-            q.save()
+            q = Question(NombreTema=tema,
+                        NombreMateria=materia, TextPreg=texto)
+            #q.save()
             for respuesta in pregunta.iter("respuesta"):
-                print etree.tostring(respuesta)
+                #print etree.tostring(respuesta)
                 text_resp = respuesta.text
                 attrib = respuesta.get("estado")
+                print attrib
                 if attrib is not None:
-                    pass
-                    #a = Answer(respuesta=q,text_resp=text_resp, True)
+                    a = Answer(respuesta=q,text_resp=text_resp, es_corecta=True)
+                    a.save()
                 else:
-                    pass
-                    #a = Answer(respuesta=q, text_resp=text_resp, False)
+                    a = Answer(respuesta=q, text_resp=text_resp, es_correcta=False)
+                    a.save()
                 #print resp_text
                 #print attrib
             print('La pregunta "%s" fue creada' % texto)
         else:
             for i in range(count):
-                print('la i en el bucle es %s' % i)
+                #print('la i en el bucle es %s' % i)
+                repetida = False
                 firstObj = query[i]
-                print firstObj.text_preg
-                # print texto
+                print("Pregunta ya cargada es %s" % firstObj.TextPreg)
+                print ("Pregunta que quiero cargar %s" % texto)
                 print('la distancia es %s' %
-                      get_distancia(firstObj.text_preg, texto))
-                if get_distancia(firstObj.text_preg, texto) == 0:
-                    print('pregunta "%s" esta repetida' % texto)
-                else:
-                    q = Question(nombre_tema=tema,
-                                 nombre_materia=materia, text_preg=texto)
-                    q.save()
-                    for respuesta in pregunta.iter("respuesta"):
-                        resp_text = respuesta.text
-                        attrib = respuesta.get("estado")
-                        if attrib is not None:
-                            pass
-                            #a = Answer(q, resp_text, True)
-                        else:
-                            pass
-                            #a = Answer(q, resp_text, False)
-                    print('pregunta "%s" fue creada 2' % texto)
+                      get_distancia(firstObj.TextPreg, texto))
+                if get_distancia(firstObj.TextPreg, texto) == 0:
+                    repetida = True
+                    break
+            print(" La respuesta esta repetida? %r" % repetida)
+            if (repetida == False):
+                q = Question(NombreTema=tema,
+                            NombreMateria=materia, TextPreg=texto)
+                q.save()
+                print repetida
+                for respuesta in pregunta.iter("respuesta"):
+                    resp_text = respuesta.text
+                    attrib = respuesta.get("estado")
+                    if attrib is not None:
+                        a = Answer(respuesta=q, text_resp=resp_text, es_correcta=True)
+                        a.save()
+                    else:
+                        a = Answer(respuesta=q, text_resp=resp_text, es_correcta=False)
+                        a.save()
+                print('pregunta "%s" fue creada 2' % texto)
+            else:
+                print('pregunta "%s" esta repetida' % texto)
     #all_objects = Question.objects.all().delete()
     print('feo')
+                

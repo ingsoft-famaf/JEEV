@@ -6,9 +6,9 @@ from django.db import models
 
 
 class Question(models.Model):
-    nombre_tema = models.CharField(max_length=100)
-    nombre_materia = models.CharField(max_length=100)
-    text_preg = models.CharField(max_length=200)
+    NombreTema = models.CharField(max_length=100)
+    NombreMateria = models.CharField(max_length=100)
+    TextPreg = models.CharField(max_length=200)
 
 
 class Answer(models.Model):
