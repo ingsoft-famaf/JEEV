@@ -96,10 +96,6 @@ TEMPLATES = [
     },
 ]
 
-AUTHENTICATION_BACKENDS = [
-    'django.contrib.auth.backends.ModelBackend',
-    'allauth.account.auth_backends.AuthenticationBackend',
-]
 
 WSGI_APPLICATION = 'ChoiceMaster.wsgi.application'
 
@@ -157,8 +153,8 @@ AUTHENTICATION_BACKENDS = (
     # Needed to login by username in Django admin, regardless of `allauth`
     "django.contrib.auth.backends.ModelBackend",
     # `allauth` specific authentication methods, such as login by e-mail
-    "allauth.account.auth_backends.AuthenticationBackend"
-    "social_auth.backends.google.GoogleOAuth2Backend",
+    "allauth.account.auth_backends.AuthenticationBackend",
+    #"social_auth.backends.google.GoogleOAuth2Backend",
 )
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
