@@ -6,10 +6,12 @@ from django.db import models
 
 
 class Question(models.Model):
-    NombreTema = models.CharField(max_length=100)
-    NombreMateria = models.CharField(max_length=100)
-    TextPreg = models.CharField(max_length=200)
-
+    nombre_tema = models.CharField(max_length=100)
+    nombre_materia = models.CharField(max_length=100)
+    text_preg = models.CharField(max_length=200)
+    
+    def __str__(self):
+        return self.text_preg
 
 class Answer(models.Model):
 	respuesta = models.ForeignKey('Question', on_delete=models.CASCADE)
