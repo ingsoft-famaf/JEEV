@@ -46,12 +46,12 @@ INSTALLED_APPS = [
     'questions',
     'allauth.socialaccount.providers.google',
     'allauth.socialaccount.providers.github',
-
+#    'questions',
 ]
 
 SITE_ID = 1
 
-
+#ADMIN_LOGOUT_REDIRECT_URL ="/accounts/login"
 ACCOUNT_LOGOUT_REDIRECT_URL ="/accounts/login"
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_USERNAME_REQUIRED = True
@@ -81,7 +81,7 @@ ROOT_URLCONF = 'ChoiceMaster.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'users/templates'),],
+        'DIRS': [os.path.join(BASE_DIR, 'templates'),],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -96,6 +96,11 @@ TEMPLATES = [
 
 
 WSGI_APPLICATION = 'ChoiceMaster.wsgi.application'
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
 
 
 # Database
@@ -147,6 +152,10 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "static"),
+]
+
 AUTHENTICATION_BACKENDS = (
     # Needed to login by username in Django admin, regardless of `allauth`
     "django.contrib.auth.backends.ModelBackend",
@@ -156,4 +165,3 @@ AUTHENTICATION_BACKENDS = (
 )
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-

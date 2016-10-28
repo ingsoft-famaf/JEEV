@@ -2,6 +2,7 @@
 {% load i18n static %}
 
 {% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% static "admin/css/dashboard.css" %}" />{% endblock %}
+<!--
 
 {% block coltype %}colMS{% endblock %}
 
@@ -45,10 +46,10 @@
     {% endfor %}
 {% else %}
     <p>{% trans "You don't have permission to edit anything." %}</p>
+        <a href="/accounts/logout/" class="pull-right">Logout</a>
 {% endif %}
 </div>
 {% endblock %}
-
 {% block sidebar %}
 <div id="content-related">
     <div class="module" id="recent-actions-module">
@@ -79,4 +80,4 @@
             {% endif %}
     </div>
 </div>
-{% endblock %}
+{% endblock %}-->
