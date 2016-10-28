@@ -97,13 +97,14 @@ TEMPLATES = [
     },
 ]
 
+
+
+WSGI_APPLICATION = 'ChoiceMaster.wsgi.application'
+
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
     'allauth.account.auth_backends.AuthenticationBackend',
 ]
-
-WSGI_APPLICATION = 'ChoiceMaster.wsgi.application'
-
 
 # Database
 # https://docs.djangoproject.com/en/1.10/ref/settings/#databases
@@ -167,4 +168,3 @@ AUTHENTICATION_BACKENDS = (
 )
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-

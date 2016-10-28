@@ -19,8 +19,9 @@
     {% endif %}
     {% if request.user.profile.account_verified %} (verified) {% else %} (unverified) {% endif %}
     {% if user.is_staff %}
-        <h2>Hola administrador</h2>
-        <a href="/homepage/superuser/" class="pull-right">Admin</a>
+        <h2>Bienvenido Admin</h2>
+        <a href="/homepage/superuser/" class="pull-right">SuperUser</a>
+        <a href="/admin/" class="pull-right">Admin</a>
     {% endif %}
 {% else %}
     <h3>No esta logueado, debe loguearse primero</h3>
