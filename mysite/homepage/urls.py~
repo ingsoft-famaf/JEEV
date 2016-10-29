@@ -12,5 +12,5 @@ urlpatterns = [
 
 
     #url(r'^$', views.index, name='index'),
-#    url(r'^$', views.index, name='index'),
+    url(r'^$', views.index, name='index'),
 #    url(r'^$', views.DetailView.as_view(), name='detail'),
