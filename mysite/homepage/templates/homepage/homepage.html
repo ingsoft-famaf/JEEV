@@ -1,29 +1,41 @@
 {% extends 'homepage/base.html' %}
+{% load static %}
 {% block content %}
-<body class="{% if request.user.is_authenticated %}logged-in{% else %}logged-out{% endif %}">
 
+<body class="{% if request.user.is_authenticated %}logged-in{% else %}logged-out{% endif %}">
     {% if request.user.is_authenticated %}
-        {%load static%}
         {% if request.user.first_name or request.user.last_name %}
             {{ request.user.first_name }} {{ request.user.last_name }}
         {% else %}
             {% if user.is_staff %}
-                <h2>Bienvenido Admin</h2>
-                <ul>
-                  <li><h4><a href="/superuser/">SuperUser</a></h4></li>
-                  <li><h4><a href="/admin/">Admin</a></h4></li>
-                  <p><a href="/accounts/logout/" class="pull-right">Logout</a>
-                <ul>
-                <p>    {{ request.user.username }} has loged in </p>
+
+                <nav>
+                    <ul>
+                      <li><h4><a href="/superuser/">SuperUser</a></h4></li>
+                      <li><h4><a href="/admin/">Admin</a></h4></li>
+                    <ul>
+                </nav>
+                <article >
+                    <h2>Bienvenido Admin</h2>
+                    <p><a href="/accounts/logout/" class="pull-right">Logout</a>
+                </article>
+
             {% else %}
-                <h2>hola!</h2>
-                <a href="/accounts/logout/" class="pull-right">Logout</a>
-                <p>    {{ request.user.username }} has loged in </p>
+                <nav>
+                  <ul>
+                    <li><h4><a href="#">Realizar Examen</a></h4></li>
+                    <li><h4><a href="#">Ver Estadisticas</a></h4></li>
+                  </ul>
+                </nav>
+                <article >
+                    <h3><p class="text-primary">{{ request.user.username }} has loged in </p></h3>
+                    <a href="/accounts/logout/" class="pull-right">Logout</a>
+                </article>
             {% endif %}
         {% endif %}
     {% else %}
-        <h3>No esta logueado, debe loguearse primero</h3>
-        <a href="/accounts/login/" class="pull-right">Login</a>
+    <meta http-equiv="refresh" content="2;url=/accounts/login/" />
+    <h3>No esta logueado, debe loguearse primero</h3>
     {% endif %}
 </body>
 {% endblock content %}

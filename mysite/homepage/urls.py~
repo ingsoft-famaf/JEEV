@@ -7,10 +7,13 @@ from . import views
 urlpatterns = [
     url(r'superuser', views.superuser_view, name='superuser'),
     url(r'indexadmin', views.indexadmin_view, name='indexadmin'),
-    url(r'$', views.homepage, name='homepage'),
+    url(r'^', views.homepage, name='homepage'),
 ]
+<<<<<<< HEAD
 
 
     #url(r'^$', views.index, name='index'),
-    url(r'^$', views.index, name='index'),
+#    url(r'^$', views.index, name='index'),
 #    url(r'^$', views.DetailView.as_view(), name='detail'),
+=======
+>>>>>>> dd2ec05db7d8c3b7b5218c7936f1e78984466f9f

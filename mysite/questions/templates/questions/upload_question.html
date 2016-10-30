@@ -1,0 +1,8 @@
+<h4>Ingrese la url en donde se encuentra su archivo .xml</h4>
+<ul>
+<form action="{% url 'upload_question' %}" method="post">
+    {% csrf_token %}
+    <input type="text" name="new_archivo" value="ej:home/usuario/Escritorio/preguntas.xml">
+    <input type="submit" value="Subir preguntas">
+</form>
+</ul>

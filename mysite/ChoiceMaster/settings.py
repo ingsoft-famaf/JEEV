@@ -46,7 +46,6 @@ INSTALLED_APPS = [
     'questions',
     'allauth.socialaccount.providers.google',
     'allauth.socialaccount.providers.github',
-#    'questions',
 ]
 
 SITE_ID = 1

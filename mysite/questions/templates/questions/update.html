@@ -1,0 +1,15 @@
+<h2>Detalles de la pregunta</h2>
+<h3>{{question.text_preg}}</h3>
+
+<h4>La respuesta a modificar es: </h4> 
+    <ul>{{answer.text_resp}}</ul>
+<h4>Ingrese la nueva respuesta</h4>
+
+<form action="{% url 'save' question.id answer.id %}" method="post">
+    {% csrf_token %}
+    <input type="text" name="new_answer" size="30">
+    <input type="submit" value="Guardar">
+</form>
+
+</br></br>
+<a href="{% url 'detail' question.id %}">Volver</a>

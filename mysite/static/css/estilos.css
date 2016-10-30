@@ -30,6 +30,7 @@ footer{
 }
 
 nav {
+    border-right: 1px solid gray;
     float: left;
     max-width: 200px;
     margin: 0;
@@ -47,7 +48,6 @@ nav {
 
 article {
     margin-left: 170px;
-    border-left: 1px solid gray;
     padding: 1em;
     overflow: hidden;
 }
@@ -61,6 +61,3 @@ branding {
 }
 user-tools{
 }
-
-
-
