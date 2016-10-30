@@ -12,6 +12,7 @@ class QuestionAdmin(admin.ModelAdmin):
         (None, {'fields': ['nombre_materia']}),
         (None, {'fields': ['nombre_tema']}),
         (None, {'fields': ['text_preg']}),
+        (None, {'fields': ['reportada']}),
     ]
     inlines = [AnswerInline]
 

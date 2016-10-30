@@ -1,0 +1,8 @@
+{% load static %}
+
+<h1>Lista de preguntas reportadas</h1>
+<ul>
+    {% for question in questions %}
+        <li><a href="{% url 'detail' question.id %}">{{ question.text_preg }}</a></li>
+    {% endfor %}
+</ul>

@@ -1,0 +1,15 @@
+<h2>Detalles de la pregunta</h2>
+<h3>{{question.text_preg}}</h3>
+<ol>
+    {% for answer in answers %}
+        <li>{{ answer.text_resp }}
+        {% if answer.es_correcta %}
+            <a href="{% url 'update' question.id answer.id%}" role="button">Modificar</a>
+            <la style="color:green">Es la correcta </la></li>
+        {% else %}
+            <a href="{% url 'update' question.id answer.id%}">Modificar</a>
+        {% endif %}
+        </br></br>
+    {% endfor %}
+    <a href="{% url 'delete' question.id %}" role="button">Eliminar</a>
+</ol>

@@ -1,23 +1,21 @@
 # -*- coding: utf-8 -*-
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from lxml import etree
 from StringIO import StringIO
 from lxml.builder import ElementMaker
 from models import Question, Answer
 from Levenshtein import *
 from django.http import HttpResponse
-# Create your views here.
-
-#@login_required
-#@permission_required('is_superuser')
+from django.template import RequestContext
 
 
 def question_view(request):
     """
-    Esta clase se utiliza para realizar la creacion de preguntas con sus respectivas respuestas
-    parsea un archivo xml, utilizando la libreria LXML. Una vez parseado, se comparan las 
-    preguntas existentes utilizando el algoritmo de Levenshtein en la base de datos con las que 
-    se quieren crear, si ya existe se da aviso al usuario, si no existen se crean.
+    Esta función se utiliza para realizar la creacion de preguntas con sus
+    respectivas respuestas parsea un archivo xml, utilizando la libreria LXML.
+    Una vez parseado, se comparan las preguntas existentes utilizando el
+    algoritmo de Levenshtein en la base de datos con las que se quieren crear,
+    si ya existe se da aviso al usuario, si no existen se crean.
     """
     URL_TO_PARSE = '/home/papafrita/Escritorio/XML/preg.xml'
     tree = etree.parse(URL_TO_PARSE)
@@ -31,57 +29,114 @@ def question_view(request):
         query = Question.objects.filter(
             nombre_tema=tema).filter(nombre_materia=materia)
         count = query.count()
-        #print('el conteo de preguntas con mismo tema y materia: %s' % count)
         if count == 0:
             q = Question(nombre_tema=tema,
-                        nombre_materia=materia, text_preg=texto)
+                         nombre_materia=materia, text_preg=texto,
+                         reportada=False)
             q.save()
             for respuesta in pregunta.iter("respuesta"):
-                # print etree.tostring(respuesta)
                 text_resp = respuesta.text
                 attrib = respuesta.get("estado")
                 print attrib
                 if attrib is not None:
-                    a = Answer(respuesta=q,text_resp=text_resp, es_correcta=True)
+                    a = Answer(respuesta=q, text_resp=text_resp,
+                               es_correcta=True)
                     a.save()
                 else:
-                    a = Answer(respuesta=q, text_resp=text_resp, es_correcta=False)
+                    a = Answer(respuesta=q, text_resp=text_resp,
+                               es_correcta=False)
                     a.save()
-                # print resp_text
-                # print attrib
-            #print('La pregunta "%s" fue creada' % texto)
         else:
             for i in range(count):
-                # print('la i en el bucle es %s' % i)
                 repetida = False
                 firstObj = query[i]
-                #print("Pregunta ya cargada es %s" % firstObj.text_preg)
-                #print ("Pregunta que quiero cargar %s" % texto)
-                #print(type(firstObj.text_preg))
-                #print(type(texto))
-                #print('la distancia es %s' %
-                #      distance(str(firstObj.text_preg), texto))
                 if distance(str(firstObj.text_preg), texto) == 0:
                     repetida = True
                     break
-            #print(" La respuesta esta repetida? %r" % repetida)
-            if (repetida == False):
+            if repetida is False:
                 q = Question(nombre_tema=tema,
-                            nombre_materia=materia, text_preg=texto)
+                             nombre_materia=materia, text_preg=texto,
+                             reportada=False)
                 q.save()
-                #print repetida
                 for respuesta in pregunta.iter("respuesta"):
                     resp_text = respuesta.text
                     attrib = respuesta.get("estado")
                     if attrib is not None:
-                        a = Answer(respuesta=q, text_resp=resp_text, es_correcta=True)
+                        a = Answer(respuesta=q, text_resp=resp_text,
+                                   es_correcta=True)
                         a.save()
                     else:
-                        a = Answer(respuesta=q, text_resp=resp_text, es_correcta=False)
+                        a = Answer(respuesta=q, text_resp=resp_text,
+                                   es_correcta=False)
                         a.save()
-                #print('pregunta "%s" fue creada 2' % texto)
             else:
                 print('pregunta "%s" esta repetida' % texto)
-    # all_objects = Question.objects.all().delete()
-    #print('feo')
-    return HttpResponse('se cargo con exito!!')
+    return HttpResponse('Las preguntas se cargaron con exito!!')
+
+
+def reported_view(request):
+    """
+    Esta función redirecciona la vista a un html pasandole sólo las preguntas
+    que estén reportadas, el html motrará una lista de esas preguntas.
+    """
+    return render(request, 'questions/reported.html',
+                  {'questions': Question.objects.filter(reportada=True)})
+
+
+def detail_view(request, question_id):
+    """
+    Esta función toma el id de la pregunta y la busca en la base de datos,
+    sino se encuentra devuelve un error 404. Redirecciona la vista a un html
+    con todos respuestas de la pregunta seleccionada cada una con un botón
+    para modificarla y un botón general para eliminar la pregunta con sus
+    respectivas respuestas completa.
+    """
+    question = get_object_or_404(Question, pk=question_id)
+    return render(request, 'questions/detail.html',
+                  {'answers': Answer.objects.filter(respuesta=question),
+                   'question': question})
+
+
+def delete_view(request, question_id):
+    """
+    Esta función toma el id de la pregunta y la busca en la base de datos,
+    sino se encuentra devuelve un error 404, elimana esa pregunta y
+    redirecciona la vista a un html que le informa al usuario que se eliminó
+    correctamenta.
+    """
+    question = get_object_or_404(Question, pk=question_id)
+    question.delete()
+    return render(request, 'questions/delete.html', {})
+
+
+def update_view(request, question_id, answer_id):
+    """
+    Esta función toma el id de la pregunta y el id de una respuesta y las busca
+    en la base de datos, sino se encuentran devuelve un error 404. Redirecciona
+    la vista a un html en donde este muestra la respuesta que se seleccionó
+    para modificar y le inidca al usuario que ingrese la nueva respuesta.
+    """
+    question = get_object_or_404(Question, pk=question_id)
+    answer = get_object_or_404(Answer, pk=answer_id)
+    return render(request, 'questions/update.html',
+                  {'answer': answer,
+                   'question': question})
+
+
+def save_view(request, question_id, answer_id):
+    """
+    Esta función toma el id de la pregunta y el id de una respuesta y las busca
+    en la base de datos, sino se encuentran devuelve un error 404. Toma la
+    nueva respuesta que ingresó el usuario, la coloca en el campo text_resp de
+    la respuesta y lo guarda. Redirecciona la vista al html en donde esta la
+    pregunta con sus respectivas respuestas pero esta vez con la respuesta que
+    se modificó actualizada.
+    """
+    question = get_object_or_404(Question, pk=question_id)
+    answer = get_object_or_404(Answer, pk=answer_id)
+    resp_nueva = request.POST['new_answer']
+    answer.text_resp = resp_nueva
+    answer.save()
+    return render(request, 'questions/detail.html',
+                  {'answers': Answer.objects.filter(respuesta=question),
+                   'question': question})
