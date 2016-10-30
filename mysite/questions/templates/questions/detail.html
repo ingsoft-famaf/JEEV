@@ -11,5 +11,6 @@
         {% endif %}
         </br></br>
     {% endfor %}
-    <a href="{% url 'delete' question.id %}" role="button">Eliminar</a>
+    <a href="{% url 'sacar' question.id %}" role="button">Sacar pregunta de la lista de reportadas</a>
+    &emsp;<a href="{% url 'delete' question.id %}" role="button">Eliminar</a>
 </ol>

@@ -13,4 +13,6 @@ urlpatterns = [
         views.update_view, name='update'),
     url(r'^(?P<question_id>[0-9]+)/(?P<answer_id>[0-9]+)/save',
         views.save_view, name='save'),
+    url(r'^(?P<question_id>[0-9]+)/sacar', views.sacardereported,
+        name='sacar'),
 ]

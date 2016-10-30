@@ -140,3 +140,17 @@ def save_view(request, question_id, answer_id):
     return render(request, 'questions/detail.html',
                   {'answers': Answer.objects.filter(respuesta=question),
                    'question': question})
+
+
+def sacardereported(request, question_id):
+    """
+    Esta función toma el id de la pregunta y la busca en la base de datos,
+    sino se encuentra devuelve un error 404. CAmbia el estado de reportada
+    a falso, sacándola así de la lista de las preguntas reportadas.
+    Redirecciona la vista a la lista de las preguntas reportadas.
+    """
+    question = get_object_or_404(Question, pk=question_id)
+    question.reportada = False
+    question.save()
+    return render(request, 'questions/reported.html',
+                  {'questions': Question.objects.filter(reportada=True)})
