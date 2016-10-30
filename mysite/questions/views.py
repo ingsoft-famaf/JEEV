@@ -17,7 +17,7 @@ def question_view(request):
     algoritmo de Levenshtein en la base de datos con las que se quieren crear,
     si ya existe se da aviso al usuario, si no existen se crean.
     """
-    URL_TO_PARSE = '/home/papafrita/Escritorio/XML/preg.xml'
+    URL_TO_PARSE = request.POST['new_archivo']
     tree = etree.parse(URL_TO_PARSE)
     root = tree.getroot()
     for pregunta in root:
