@@ -9,17 +9,18 @@
         {% else %}
             {% if user.is_staff %}
 
-                <h2>Bienvenido Admin</h2>
                 <nav>
                     <ul>
                       <li><h4><a href="/superuser/">SuperUser</a></h4></li>
                       <li><h4><a href="/admin/">Admin</a></h4></li>
                     <ul>
                 </nav>
-                <p><a href="/accounts/logout/" class="pull-right">Logout</a>
-                
+                <article >
+                    <h2>Bienvenido Admin</h2>
+                    <p><a href="/accounts/logout/" class="pull-right">Logout</a>
+                </article>
+
             {% else %}
-                <a href="/accounts/logout/" class="pull-right">Logout</a>
                 <nav>
                   <ul>
                     <li><h4><a href="#">Realizar Examen</a></h4></li>
@@ -28,6 +29,7 @@
                 </nav>
                 <article >
                     <h3><p class="text-primary">{{ request.user.username }} has loged in </p></h3>
+                    <a href="/accounts/logout/" class="pull-right">Logout</a>
                 </article>
             {% endif %}
         {% endif %}
