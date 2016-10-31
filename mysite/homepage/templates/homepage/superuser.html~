@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+{%load static%}
+<html>
+    <head>
+<lnk rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+<link rel="stylesheet" href="{% static 'css/estilos.css' %}">
+<header>
+    <h1>ADMIN</h1>
+</header>
+</head>
+<body>
+    <div id="header2">
+            <li><h3><a href="/accounts/logout/">Logout</a></h3></li>
+            <li><h3><a href="/accounts/profile/">Volver a perfil de examen</a></h3></li>
+
+    </div>
+    <div id="branding">
+        <h3><a href="/questions/questions/reported">Revisión de preguntas reportadas</a>
+        <h3><a href="#">Cargar preguntas</a>
+        <h3><a href="#">Cargar temas</a>
+        <h3><a href="#">Cargar materias</a>
+    </div>
+<div id="user-tools">
+    {% if cant_reportadas != 0 %}
+        <div class="alert alert-info">
+        <strong>Notificación!</strong> Hay {{cant_reportadas}} preguntas reportadas.
+        <button onClick=''>ver!</button>
+        </div>
+    {% endif %}
+        </div>
+</body>
+</html>
