@@ -1,5 +1,12 @@
-<ul>
-{% for question in questions %}
-    <li>{{ question.text_preg }}</li>
-{% endfor %}
-</ul>
+<!DOCTYPE html>
+{% load static %}
+
+<html>
+    <body>
+        <ul>
+        {% for question in questions %}
+            <li>{{ question.text_preg }}</li>
+        {% endfor %}
+        </ul>
+    </body>
+</html>
