@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     'users.apps.UsersConfig',
     'homepage.apps.HomepageConfig',
     'examenes',
+    'questions',
     'django.contrib.sites',
     'django.contrib.admin',
     'django.contrib.auth',
