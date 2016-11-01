@@ -1,15 +1,33 @@
 # -*- coding: utf-8 -*-
 from django.shortcuts import render, get_object_or_404
 from lxml import etree
+import xml.etree.ElementTree as ET
 from StringIO import StringIO
 from lxml.builder import ElementMaker
 from models import Question, Answer
 #from Levenshtein import *
 from django.http import HttpResponse
-from django.template import RequestContext
+from .forms import UploadFileForm
 
 
-def question_view(request):
+def upload_file(request):
+    """
+    
+    """
+    if request.method == 'POST':
+        form = UploadFileForm(request.POST, request.FILES)
+        if form.is_valid():
+            f = request.FILES['file']
+            for chunk in f.chunks():
+                url = str() + chunk
+            print url
+            return question_view(url)
+    else:
+        form = UploadFileForm()
+    return render(request, 'questions/upload_question.html', {'form': form})
+
+
+def question_view(url):
     """
     Esta función se utiliza para realizar la creacion de preguntas con sus
     respectivas respuestas parsea un archivo xml, utilizando la libreria LXML.
@@ -17,10 +35,7 @@ def question_view(request):
     algoritmo de Levenshtein en la base de datos con las que se quieren crear,
     si ya existe se da aviso al usuario, si no existen se crean.
     """
-    #URL_TO_PARSE = request.POST['new_archivo']
-#    URL_TO_PARSE = "/home/papafrita/Escritorio/XML/preg.xml"
-    tree = etree.parse(URL_TO_PARSE)
-    root = tree.getroot()
+    root = ET.fromstring(url)
     for pregunta in root:
         materia = pregunta.find('materia').text
         tema = pregunta.find('tema').text
@@ -75,7 +90,7 @@ def question_view(request):
     return HttpResponse('Las preguntas se cargaron con exito!!')
 
 
-def reported_view(request):
+def reported(request):
     """
     Esta función redirecciona la vista a un html pasandole sólo las preguntas
     que estén reportadas, el html motrará una lista de esas preguntas.
