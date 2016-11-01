@@ -25,7 +25,6 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('nombre_tema', models.CharField(max_length=30)),
-                ('materias', models.ManyToManyField(to='materias.Materia')),
             ],
         ),
     ]

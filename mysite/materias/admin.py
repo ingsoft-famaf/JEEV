@@ -1,5 +1,14 @@
 from django.contrib import admin
 from models import Materia, Tema
 
-admin.site.register(Materia)
-admin.site.register(Tema)
+class TemaInline(admin.TabularInline):
+    model = Tema
+    extra = 1 
+
+class MateriaAdmin(admin.ModelAdmin):
+    fieldsets = [
+        (None, {'fields': ['nombre_materia']}),
+    ]
+    inlines = [TemaInline]
+
+admin.site.register(Materia, MateriaAdmin)

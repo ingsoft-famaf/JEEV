@@ -12,7 +12,7 @@ class Materia(models.Model):
 
 
 class Tema(models.Model):
-    temas = models.ForeignKey('Materias', on_delete=models.CASCADE)
+    temas = models.ForeignKey('Materia', on_delete=models.CASCADE)
     nombre_tema = models.CharField(max_length=30)
    # materias = models.ManyToManyField(Materia)
 

@@ -52,6 +52,15 @@ article {
     overflow: hidden;
 }
 
+center{
+    border-right: 1px solid gray;
+    margin-right: 170px;
+    border-left: 1px solid gray;
+    margin-left: 170px;
+    padding: 1em;
+    overflow: hidden;
+}
+
 h1 a {
     color: #FCA205;
 }
