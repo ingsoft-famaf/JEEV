@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+{%load static%}
+<html>
+    <head>
+<lnk rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+<link rel="stylesheet" href="{% static 'css/estilos.css' %}">
+<header>
+    <h1>ADMIN</h1>
+</header>
+</head>
+<body>
+    <h4>Ingrese el nombre del nuevo tema</h4>
+
+    <form action="/materias/cargartema/" method="post">
+        {% csrf_token %}
+        <input type="text" name="nuevo_tema" size="30">
+        <input type="submit" value="Cargar">
+    </form>
+</body>
+</html>

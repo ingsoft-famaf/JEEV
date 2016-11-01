@@ -1,3 +1,15 @@
+<!DOCTYPE html>
+{%load static%}
+<html>
+<head>
+<lnk rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+<link rel="stylesheet" href="{% static 'css/estilos.css' %}">
+<header>
+    <h1>ADMIN</h1>
+</header>
+</head>
+<body>
 <h2>Detalles de la pregunta</h2>
 <h3>{{question.text_preg}}</h3>
 
@@ -13,3 +25,5 @@
 
 </br></br>
 <a href="{% url 'detail' question.id %}">Volver</a>
+</body>
+</html>
