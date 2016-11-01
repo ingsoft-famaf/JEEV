@@ -1,0 +1,7 @@
+<h4>Ingrese la nueva materia</h4>
+
+<form action="{% url 'cargarmateria' %}" method="post">
+    {% csrf_token %}
+    <input type="text" name="nueva_materia" size="30">
+    <input type="submit" value="Cargar">
+</form>
