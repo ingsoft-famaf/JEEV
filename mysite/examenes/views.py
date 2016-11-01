@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404
 #from forms import GetMaterias
-from questions.models import Question
+from questions.models import Question, Answer
 from .models import Exam
 import questions.models #import Answer
 import random
@@ -60,7 +60,21 @@ def resppreg(request, examen_id):
     randomm = random.sample(query, 1)
     #materia = Exam.objects.filter(id=)
     pregunta = randomm[0]
-    print pregunta
+    print examen.pregunta_actual
+    print examen.cantidad_preg
+    if examen.pregunta_actual == examen.cantidad_preg:
+        print "hola"
     return render(request,'examenes/resppreg.html',
-                    {'pregunta': pregunta,'timepo':tiempo})
+                    {'pregunta': pregunta,'examen':examen})
 
+def respuesta(request, examen_id):
+    if request.method == 'POST':
+        respuesta_id = request.POST['respuesta']
+        examen = get_object_or_404(Exam, pk=examen_id)
+        examen.pregunta_actual +=1
+        examen.save()
+        respuesta = get_object_or_404(Answer, pk=respuesta_id)
+        return render(request, 'examenes/respuesta.html',{'respuesta':respuesta, 'examen':examen})
+
+    print respuesta
+    return render(request, 'examenes/respuesta.html')
