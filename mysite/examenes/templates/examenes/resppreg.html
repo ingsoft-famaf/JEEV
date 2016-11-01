@@ -9,14 +9,17 @@
 
         <link rel="stylesheet" href="{% static 'css/estilos.css' %}">
 
-        <title>{{responder}}</title>
+        <title></title>
     </head>
     <body>
         <header>
             <h4>Responda</h4>
         </header>
         <center>
-
+            {{pregunta}}
+            {% for respuesta in pregunta.answer_set.all %}
+                <br><input type="radio" name="gender" value="{{respuesta.id}}">{{respuesta.text_resp}}
+            {% endfor %}
         </center>
         <footer>JEEV</footer>
     </body>
