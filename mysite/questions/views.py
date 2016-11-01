@@ -75,7 +75,7 @@ def question_view(request):
     return HttpResponse('Las preguntas se cargaron con exito!!')
 
 
-def reported_view(request):
+def reported(request):
     """
     Esta función redirecciona la vista a un html pasandole sólo las preguntas
     que estén reportadas, el html motrará una lista de esas preguntas.

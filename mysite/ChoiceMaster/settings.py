@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     'users.apps.UsersConfig',
     'homepage.apps.HomepageConfig',
     'examenes',
+    'questions',
     'django.contrib.sites',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -44,7 +45,6 @@ INSTALLED_APPS = [
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
-    'questions',
     'allauth.socialaccount.providers.google',
     'allauth.socialaccount.providers.github',
 ]
