@@ -10,7 +10,7 @@ from django.http import HttpResponse
 from .forms import UploadFileForm
 
 
-def upload_file(request):
+def uploadquestion(request):
     """
     
     """
@@ -24,7 +24,7 @@ def upload_file(request):
             return question_view(url)
     else:
         form = UploadFileForm()
-    return render(request, 'questions/upload_question.html', {'form': form})
+    return render(request, 'questions/uploadquestion.html', {'form': form})
 
 
 def question_view(url):
