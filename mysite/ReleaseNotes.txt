@@ -1,0 +1,24 @@
+
+V 1.0.0:
+    Cosas sin implementar en el proyecto:
+
+    1) Countdown entre preguntas.
+    2) Aviso de preguntas repetidas al cargar el XML.
+    3) Aviso de preguntas similares al cargar XML.
+    4) Solo user tiene test.
+    5) No termina examen.
+    6) Oauth, google no se prodice una correcta redireccion.
+    7) No guardan las temas con ForeingKey.
+    8) Faltan PEP8 en varios archivos.
+    9) Usuario no puede reportar una pregunta.
+    
+    Cosas implementadas:
+
+    1) Login, logout, register.
+    2) Oauth github.
+    3) Interfaz Superuser con los permisos de cargar preguntas, cargar tema, cargar materia.
+    4) Se puede utilizar el admin de django.
+    5) Se puede cargar preguntas desde un xml.
+    6) Se puede cargar materias, y temas.
+    7) Se puede configurar el examen.
+    8) Se puede realizar la pregunta e indica si la respuesta es correcta o no.
