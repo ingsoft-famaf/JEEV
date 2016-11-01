@@ -1,6 +1,7 @@
 from django.shortcuts import render
 #from forms import GetMaterias
 from questions.models import Question
+import questions.models #import Answer
 import random
 from django.http import HttpResponse
 
@@ -17,32 +18,25 @@ def examenencurso_view(request):
     materia = request.POST['materias']
     tema = request.POST['temas']
     cantidad = request.POST['cantidad']
+    tiempo = request.POST['tiempo']
     randomint = []
     query = Question.objects.filter(
         nombre_tema=tema).filter(
             nombre_materia=materia).values_list('id', flat=True)
     count = query.count()
     population = query
-    print query
+    #print query
     if cantidad <= count:
         randomint = random.sample(population, int(cantidad))
         print randomint
         preguntas = Question.objects.filter(
             nombre_tema=tema).filter(nombre_materia=materia).filter(
-            pk__in=randomint).values_list('text_preg', flat=True)
-        print preguntas
+            pk__in=randomint)
         return render(request,'examenes/examenencurso.html',
-                        {'preguntas': preguntas})
+                        {'preguntas': preguntas}, {'tiempo': tiempo})
     else:
         preguntas = Question.objects.filter(
             nombre_tema=tema).filter(
-                nombre_materia=materia).all().values_list('text_preg', flat=True)
-        print preguntas
+                nombre_materia=materia).all()
         return render(request, 'examenes/examenencurso.html' ,
-                        {'preguntas': preguntas})
-
-def responder_view(request, question_id):
-    question = get_object_or_404(Question, pk=question_id)
-    return render(request, 'examenes/responder.html',
-                  {'answers': Answer.objects.filter(respuesta=question),
-                   'question': question})
+                        {'preguntas': preguntas, 'tiempo': tiempo})

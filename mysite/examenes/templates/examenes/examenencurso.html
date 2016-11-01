@@ -16,9 +16,14 @@
             <h4>Examen</h4>
         </header>
         <center>
+            <p>{{ tiempo }}hola</p>
+            {{ preguntas.delete.first }}
             {% for pregunta in preguntas %}
-               <p>{{pregunta}}</p>
-               {{pregunta.answer.text_resp}}
+                <h4>{{pregunta}}</h4>
+                {% for respuesta in pregunta.answer_set.all %}
+                    <input type="radio" name="gender" value="{{respuesta.text_resp}}" checked> {{respuesta.text_resp}}<br>
+                {% endfor %}
+                <!--<form action="#" name="cd" id="cd"><input id="txt"  type="text" value={{tiempo}} name="disp"></form>-->
             {% endfor %}
         </center>
         <footer>JEEV</footer>

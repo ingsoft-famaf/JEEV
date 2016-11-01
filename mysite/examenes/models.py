@@ -1,6 +1,7 @@
 from __future__ import unicode_literals
 from django.db import models
 from django.utils.encoding import python_2_unicode_compatible
+from questions.models import Question
 
 class Exam(models.Model):
     """
@@ -12,4 +13,4 @@ class Exam(models.Model):
     nombre_materia = models.CharField(max_length=100)
     tiempo_preg = models.IntegerField(default=0)
     cantidad_preg = models.IntegerField(default=0)
-    #preg_list = models.questions()
+    preguntas = models.ManyToManyField('questions.Question')
