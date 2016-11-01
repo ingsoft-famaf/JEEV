@@ -5,7 +5,7 @@ import xml.etree.ElementTree as ET
 from StringIO import StringIO
 from lxml.builder import ElementMaker
 from models import Question, Answer
-#from Levenshtein import *
+from Levenshtein import *
 from django.http import HttpResponse
 from .forms import UploadFileForm
 
