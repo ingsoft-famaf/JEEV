@@ -5,7 +5,7 @@ from . import views
 urlpatterns = [
     url(r'^$', views.question_view, name='upload_question'),
 
-    url(r'reported/', views.reported_view, name='reported'),
+    url(r'reported/', views.reported, name='reported'),
 
     url(r'^(?P<question_id>[0-9]+)/detail', views.detail_view,
         name='detail'),

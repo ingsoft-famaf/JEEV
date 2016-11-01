@@ -3,7 +3,7 @@ from django.contrib import admin
 from . import views
 
 urlpatterns = [
-    url(r'^$', views.question_view, name='upload_question'),
+    url(r'^$', views.question_view, name='uploadquestion'),
 
     url(r'reported/', views.reported, name='reported'),
 
