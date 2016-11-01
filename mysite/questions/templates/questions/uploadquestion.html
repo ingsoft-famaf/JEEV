@@ -1,8 +1,8 @@
-<h4>Ingrese la url en donde se encuentra su archivo .xml</h4>
+<h4>Ingrese el archivo .xml en donde contenga las preguntas que desea cargar</h4>
 <ul>
-<form action="{% url 'upload_question' %}" method="post">
+<form action="" enctype="multipart/form-data" method="post">
     {% csrf_token %}
-    <input type="text" name="new_archivo" value="ej:home/usuario/Escritorio/preguntas.xml">
+    {{ form }}
     <input type="submit" value="Subir preguntas">
 </form>
 </ul>

@@ -102,7 +102,8 @@ AUTHENTICATION_BACKENDS = [
     'allauth.account.auth_backends.AuthenticationBackend',
 ]
 
-
+FILE_UPLOAD_HANDLERS = ["django.core.files.uploadhandler.MemoryFileUploadHandler",
+         "django.core.files.uploadhandler.TemporaryFileUploadHandler"]
 # Database
 # https://docs.djangoproject.com/en/1.10/ref/settings/#databases
 
