@@ -7,8 +7,8 @@ import random
 from django.http import HttpResponse
 
 def examen_view(request):
-    print(Question.objects.values_list('nombre_materia', flat=True).distinct())
-    print(Question.objects.values_list('nombre_tema', flat=True).distinct())
+#    print(Question.objects.values_list('nombre_materia', flat=True).distinct())
+#    print(Question.objects.values_list('nombre_tema', flat=True).distinct())
 
     return render(request, 'examenes/examen.html',
                   {'list_materias': Question.objects.values_list(
@@ -22,16 +22,16 @@ def examenencurso_view(request):
     tema = request.POST['temas']
     cantidad = request.POST['cantidad']
     tiempo = request.POST['tiempo']
-    print 'ifff'
-    print materia
-    print tema
-    print cantidad
-    print tiempo
+#    print 'ifff'
+#    print materia
+#    print tema
+#    print cantidad
+#    print tiempo
     #preguntas_respondidas = []
     examen = Exam(nombre_materia = materia,nombre_tema = tema,
                     cantidad_preg = cantidad, tiempo_preg = tiempo)
     examen.save()
-    print examen.nombre_materia
+#    print examen.nombre_materia
 
     """materia = request.POST['materias']
     tema = request.POST['temas']
@@ -60,8 +60,8 @@ def resppreg(request, examen_id):
     randomm = random.sample(query, 1)
     #materia = Exam.objects.filter(id=)
     pregunta = randomm[0]
-    print examen.pregunta_actual
-    print examen.cantidad_preg
+#    print examen.pregunta_actual
+#    print examen.cantidad_preg
     if examen.pregunta_actual == examen.cantidad_preg:
         print "hola"
     return render(request,'examenes/resppreg.html',
@@ -76,5 +76,5 @@ def respuesta(request, examen_id):
         respuesta = get_object_or_404(Answer, pk=respuesta_id)
         return render(request, 'examenes/respuesta.html',{'respuesta':respuesta, 'examen':examen})
 
-    print respuesta
+#    print respuesta
     return render(request, 'examenes/respuesta.html')
