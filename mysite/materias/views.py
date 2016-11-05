@@ -15,8 +15,22 @@ def cargarm(request):
 
 def cargart(request):
     if request.method == "POST":
+        materia = request.POST['materias']
         nuevotema = request.POST['nuevo_tema']
-        m = Tema(nombre_tema=nuevotema)
+        mt = Materia.objects.filter(nombre_materia = materia)
+        print mt
+        m = Tema(temas= Materia.objects.filter(nombre_materia = materia), nombre_tema=nuevotema)
+        print m
         m.save()
         return render(request, 'materias/secargo.html')
-    return render(request, 'materias/cargartema.html')
+    return render(request, 'materias/cargartema.html',{'list_materias': Materia.objects.values_list(
+                        'nombre_materia', flat=True).distinct()})
+
+def obtener_tema_materia(request):
+    print "hola"
+    print (Materia.objects.values_list(
+                            'nombre_materia', flat=True))
+    return render(request, 'materias/cargartema.html',
+              {'list_materias': Materia.objects.values_list(
+                        'nombre_materia', flat=True).distinct()})
+

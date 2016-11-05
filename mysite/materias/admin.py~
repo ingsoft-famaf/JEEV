@@ -11,4 +11,4 @@ class MateriaAdmin(admin.ModelAdmin):
     ]
     inlines = [TemaInline]
 
-admin.site.register(Materia, MateriaAdmin)
+admin.site.register(Materi, MateriaAdmin)
