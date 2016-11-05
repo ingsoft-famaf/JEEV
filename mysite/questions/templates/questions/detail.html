@@ -16,16 +16,16 @@
     {% for answer in answers %}
         <li>{{ answer.text_resp }}
         {% if answer.es_correcta %}
-            <a href="{% url 'update' question.id answer.id%}" role="button">Modificar</a>
+            <a href="{% url 'update' question.id answer.id%}" >Modificar</a>
             <la style="color:green">Es la correcta </la></li>
         {% else %}
             <a href="{% url 'update' question.id answer.id%}">Modificar</a>
         {% endif %}
         </br></br>
     {% endfor %}
-    <a href="{% url 'sacar' question.id %}" role="button">Sacar pregunta de la lista de reportadas</a>
-    &emsp;<a href="{% url 'delete' question.id %}" role="button">Eliminar</a>
-    &emsp;<a href="/hompage/superuser/" role="button">Volver</a>
+    <a href="{% url 'sacar' question.id %}">Sacar pregunta de la lista de reportadas</a>
+    &emsp;<a href="{% url 'delete' question.id %}" >Eliminar</a>
+    &emsp;<a href="/hompage/superuser/" >Volver</a>
 </ol>
 </body>
 </html>
