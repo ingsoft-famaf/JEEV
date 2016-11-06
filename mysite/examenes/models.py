@@ -15,7 +15,8 @@ class Exam(models.Model):
     tiempo_preg = models.IntegerField(default=0)
     cantidad_preg = models.IntegerField(default=0)
     pregunta_actual = models.IntegerField(default=0)
-    #preguntas_respondidas = ListField()
+    preguntas_correctas = models.IntegerField(default=0)
+    preguntas_incorrectas = models.IntegerField(default=0)
 
 class PregResp(models.Model):
     examen = models.ForeignKey('Exam', on_delete=models.CASCADE)
