@@ -14,6 +14,8 @@ from Levenshtein import *
 def cargarm(request):
     if request.method == "POST":
         nuevamat = request.POST['nueva_materia']
+        if type(nuevamat) == unicode:
+            return render(request, 'materias/repetida.html')
         query = Materia.objects.filter(nombre_materia=nuevamat)
         count = query.count()       
         if count == 0:
@@ -28,7 +30,6 @@ def cargarm(request):
                 if distance(str(firstObj.nombre_materia), str(nuevamat)) == 0:
                     repetida = True
                     return render(request, 'materias/repetida.html')
-                 #   break
             if repetida is False:
                 q = Materia(nombre_materia=nuevamat)
                 q.save()
@@ -54,7 +55,6 @@ def cargart(request):
                     if distance(str(firstObj.nombre_tema), str(nuevotema)) == 0:
                         repetida = True
                         return render(request, 'materias/temarepetido.html')
-                     #   break
                 if repetida is False:
                     m = Tema(temas= mt[0], nombre_tema=nuevotema)
                     m.save()
