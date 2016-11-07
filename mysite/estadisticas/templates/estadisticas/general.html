@@ -1,0 +1,16 @@
+{% extends 'examenes/base.html' %}
+{% load static %}
+{% block content %}
+<body>
+    <center>
+        <h4>Estadisticas generales de {{materia}}: </h4>
+        <h5>Promedio: {{promedio.preguntas_correctas__avg}}</h5>
+        <h5>Cantidad de examenes respondidos: {{lista_examenes.count}}</h5>
+        <h5>Cantidad de preguntas responidas: {{cant_preguntas.cantidad_preg__sum}}</h5>
+        <h5>Cantidad de preguntas correctas: {{preg_correctas.preguntas_correctas__sum}}</h5>
+        <h5>Cantidad de preguntas incorrectas: {{preg_incorrectas.preguntas_incorrectas__sum}}</h5>
+        <h5>Grafico </h5>
+        <h4>Listado de exámenes realizados: </h4>
+    </center>
+</body>
+{% endblock content%}

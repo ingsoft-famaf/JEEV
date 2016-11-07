@@ -14,19 +14,27 @@
                         <li><h4><a href="/superuser/">SuperUser</a></h4></li>
                         <li><h4><a href="/admin/">Admin</a></h4></li>
                         <li><h4><a href="/examenes/examenperfil/">Realizar Examen</a></h4></li>
-                        <li><h4><a href="#">Ver Estadisticas</a></h4></li>
+                        <li><h4><a href="/estadisticas/">Ver Estadisticas</a></h4></li>
                     <ul>
                 </nav>
                 <article >
                     <h2>Bienvenido Admin</h2>
+                    <div id="user-tools">
+                    {% if list_reported %}
+                        <div class="alert alert-info">
+                        <strong>Notificación!</strong> Hay {{list_reported.count}} preguntas reportadas.
+                        <a href="/questions/reported/" role="button">ver!</a>
+                        </div>
+                    {% endif %}
+                    </div>
                     <p><a href="/accounts/logout/" class="pull-right">Logout</a>
-                </article>
+                </article>      
 
             {% else %}
                 <nav>
                   <ul>
                     <li><h4><a href="/examenes/examenperfil/">Realizar Examen</a></h4></li>
-                    <li><h4><a href="#">Ver Estadisticas</a></h4></li>
+                    <li><h4><a href="/estadisticas/">Ver Estadisticas</a></h4></li>
                   </ul>
                 </nav>
                 <article >

@@ -22,19 +22,22 @@ header{
     text-align: center;
 }
 footer{
-    padding: 1em;
+    width: 100%;
+    height: 49px;
     color: white;
     background-color: rgb(103, 129, 255);
     clear: left;
     text-align: center;
+    position: absolute;
+    bottom: 0;
 }
 
 nav {
-    border-right: 1px solid gray;
+    border-right: 2px solid gray;
     float: left;
     max-width: 200px;
     margin: 0;
-    padding: 1em;
+    width: 100%;
 }
 
 .nav-ul {
@@ -50,6 +53,11 @@ article {
     margin-left: 170px;
     padding: 1em;
     overflow: hidden;
+}
+
+*[role = "button"]{
+    color: gray;
+    border-radius: 4px;
 }
 
 center{
@@ -68,5 +76,6 @@ h1 a {
 branding {
 
 }
+
 user-tools{
 }

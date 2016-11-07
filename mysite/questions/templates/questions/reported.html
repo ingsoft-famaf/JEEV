@@ -6,5 +6,6 @@
     {% for question in questions %}
         <li><a href="{% url 'detail' question.id %}">{{ question.text_preg }}</a></li>
     {% endfor %}
+    <a href="/accounts/profile/">Volver</a>
 </ul>
 {%endblock content%}
