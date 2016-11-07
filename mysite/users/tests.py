@@ -17,7 +17,7 @@ class AccountTest(TestCase):
                     'password1': 'pepito12',
                     'password2': 'pepoti12'})
         self.assertContains(response, 'You must type the same password each time.')
-	
+
     def test_signup_password_too_short(self):
         response = self.client.post(
                 reverse('account_signup'),
