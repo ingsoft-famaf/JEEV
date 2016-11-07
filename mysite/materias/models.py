@@ -4,7 +4,7 @@ from django.db import models
 
 
 class Materia(models.Model):
-    nombre_materia = models.CharField(max_length=30)
+    nombre_materia = models.CharField(max_length=100)
 
 
     def __str__(self):
@@ -13,8 +13,7 @@ class Materia(models.Model):
 
 class Tema(models.Model):
     temas = models.ForeignKey('Materia', on_delete=models.CASCADE)
-    nombre_tema = models.CharField(max_length=30)
-   # materias = models.ManyToManyField(Materia)
+    nombre_tema  = models.CharField(max_length=100)
 
 
     def __str__(self):

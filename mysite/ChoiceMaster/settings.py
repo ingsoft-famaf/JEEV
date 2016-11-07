@@ -31,6 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'examenes',
     'users.apps.UsersConfig',
     'homepage.apps.HomepageConfig',
     'estadisticas',
@@ -53,11 +54,9 @@ INSTALLED_APPS = [
 
 SITE_ID = 1
 
-#ADMIN_LOGOUT_REDIRECT_URL ="/accounts/login"
 ACCOUNT_LOGOUT_REDIRECT_URL ="/accounts/login"
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_USERNAME_REQUIRED = True
-#ACCOUNT_LOGOUT_REDIRECT_URL ="/"
 ACCOUNT_LOGIN_REDIRECT_URL ="/"
 
 

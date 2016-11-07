@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """ChoiceMaster URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
@@ -17,6 +18,8 @@ from django.conf.urls import include, url
 from django.contrib import admin
 import django.contrib.auth.views
 from django.core.urlresolvers import reverse_lazy
+
+"""Se agregan urls para as distintas apps del proyecto"""
 
 urlpatterns = [
     url(r'^accounts/logout/$', django.contrib.auth.views.logout,

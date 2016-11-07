@@ -1,23 +1,28 @@
+# -*- coding: utf-8 -*-
 from django.shortcuts import render, get_object_or_404
 #from forms import GetMaterias
-from questions.models import Question, Answer
+from questions.models import Question
 from .models import Exam
 import questions.models #import Answer
 import random
 from django.http import HttpResponse
 
-def examen_view(request):
+
+def materia_tema_exist(tema, materia):
 #    print(Question.objects.values_list('nombre_materia', flat=True).distinct())
 #    print(Question.objects.values_list('nombre_tema', flat=True).distinct())
-
     return render(request, 'examenes/examen.html',
                   {'list_materias': Question.objects.values_list(
                             'nombre_materia', flat=True).distinct(),
                    'list_temas': Question.objects.values_list(
                             'nombre_tema', flat=True).distinct()})
 
-def examenencurso_view(request):
 
+#   La función examenencurso_view de esta view toman HttpRequest como su primer 
+#   parámetro y devuelve una instancia de HttpResponse utilizando el atajo render.
+#   Los parámetros de render son request y template_name.
+
+def examenencurso_view(request):
     materia = request.POST['materias']
     tema = request.POST['temas']
     cantidad = request.POST['cantidad']
@@ -31,7 +36,7 @@ def examenencurso_view(request):
     examen = Exam(nombre_materia = materia,nombre_tema = tema,
                     cantidad_preg = cantidad, tiempo_preg = tiempo)
     examen.save()
-#    print examen.nombre_materia
+    print examen.nombre_materia
 
     """materia = request.POST['materias']
     tema = request.POST['temas']
@@ -96,4 +101,4 @@ def reportar(request, examen_id, pregunta_id):
     pregunta.reportada = True
     pregunta.save()
     return render(request, 'examenes/respuesta.html',
-                  {'pregunta': pregunta, 'examen': examen})
+{'pregunta': pregunta, 'examen': examen})
