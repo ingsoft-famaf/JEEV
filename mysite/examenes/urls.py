@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.conf.urls import url
-
 from . import views
+
 
 urlpatterns = [
     url(r'^(?P<examen_id>[0-9]+)/(?P<pregunta_id>[0-9]+)/reportar', views.reportar, name='reportar'),

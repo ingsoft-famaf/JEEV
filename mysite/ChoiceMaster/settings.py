@@ -33,6 +33,7 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     'users.apps.UsersConfig',
     'homepage.apps.HomepageConfig',
+    'estadisticas',
     'examenes',
     'questions',
     'materias',

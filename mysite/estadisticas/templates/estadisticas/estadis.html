@@ -1,0 +1,16 @@
+{% extends 'examenes/base.html' %}
+{% load static %}
+{% block content %}
+<body>
+    <center>
+    <h3>Lista de materias de examenes realizados: </h3>
+    <form action="" method="post">
+    {% for nombre_materia in materias %}
+        {% csrf_token %}
+        <br><input type="submit" name="materia" value="{{nombre_materia}}" style="background-color:green">
+    {% endfor %}
+    <h5>*Referencias: verde OK, amarillo "deberia estudiar más", rojo "no deberia presentarse".</h5>
+    </form>
+    </center>
+</body>
+{% endblock content%}
