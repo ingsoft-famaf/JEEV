@@ -1,21 +1,20 @@
+# -*- coding: utf-8 -*-
 from django.test import TestCase
+from django.core.urlresolvers import reverse
+from django.test.client import Client
 
 from .models import Materia, Tema
 
 class MateriaMethodTests(TestCase):
-    """
-    Este test debería devolver true si la materia se cargó
-    correctamente.
-    NO se cargó materia en blanco.
-    No se cargó matería que ya existe.
-    """
-	def test_se_cargo_materia_correctamente(self):
-	     self.assertIs(future_question.was_published_recently(), False)
+
+    def test_se_cargo_materia_correctamente(self):
+        response = self.client.post(
+                reverse('cargarm'),
+                data={
+                    'nueva_materia': 'biologia'})
+        self.assertRedirects(response, '/materias/secargo/', fetch_redirect_response=False)
 
 class TemaMethodTests(TestCase):
-	"""
-	Si se cargó correctamente el tema.
-	Si no se cargó repetido el tema
-	Si no se cargó tema en blanco
-	"""
-	def test_se_cargo_tema_correctamente(self):
+
+    def test_se_cargo_tema_correctamente(self):
+        pass
