@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.shortcuts import render, get_object_or_404
-#from forms import GetMaterias
+
 from questions.models import Question, Answer
 from .models import Exam
 import questions.models #import Answer
@@ -8,9 +8,11 @@ import random
 from django.http import HttpResponse
 
 def examen_view(request):
-#    print(Question.objects.values_list('nombre_materia', flat=True).distinct())
-#    print(Question.objects.values_list('nombre_tema', flat=True).distinct())
-
+    """
+    Input: HttpRequest
+    Output: redirige a un html pasándole dos query
+    Esta función muestra las opciones para la configuración del examen.
+    """
     return render(request, 'examenes/examen.html',
                   {'list_materias': Question.objects.values_list(
                             'nombre_materia', flat=True).distinct(),
@@ -18,21 +20,19 @@ def examen_view(request):
                             'nombre_tema', flat=True).distinct()})
 
 def examenencurso_view(request):
-
+    """
+    Input: HttpRequest
+    Output: redirige a un html pasándole una query
+    Esta función recoge la configuración del usuario y le indica al usuario
+    que la configuración se realizó correctamente.
+    """
     materia = request.POST['materias']
     tema = request.POST['temas']
     cantidad = request.POST['cantidad']
     tiempo = request.POST['tiempo']
-#    print 'ifff'
-#    print materia
-#    print tema
-#    print cantidad
-    print tiempo
-    #preguntas_respondidas = []
     examen = Exam(nombre_materia = materia,nombre_tema = tema,
                     cantidad_preg = cantidad, tiempo_preg = tiempo)
     examen.save()
-#    print examen.nombre_materia
 
     """materia = request.POST['materias']
     tema = request.POST['temas']
@@ -50,6 +50,12 @@ def examenencurso_view(request):
                     {'examen':examen})
 
 def resppreg(request, examen_id):
+    """
+    Input: HttpRequest y id del examen
+    Output: redirige a un html pasándole dos query
+    Esta función muestra una pregunta con sus respuestas para que el usuario
+    haga la elección de un de ellas.
+    """
     examen = get_object_or_404(Exam, pk=examen_id)
     tema = examen.nombre_tema
     materia = examen.nombre_materia
@@ -71,7 +77,13 @@ def resppreg(request, examen_id):
                   {'pregunta': pregunta,'examen':examen})
 
 def respuesta(request, examen_id):
-
+    """
+    Input: HttpRequest y id del examen
+    Output: redirige a un html pasándole una query
+    Esta función recoge la respuesta seleccionada y le indica al usuario si 
+    es correcta o no. Si no responde en el tiempo predeterminado le indica que
+    la respuesta es incorrecta.
+    """
     if request.method == 'POST':
         respuesta_id = request.POST['respuesta']
         examen = get_object_or_404(Exam, pk=examen_id)
@@ -92,9 +104,14 @@ def respuesta(request, examen_id):
     return render(request, 'examenes/respuesta.html', {'examen':examen})
 
 def reportar(request, examen_id, pregunta_id):
+    """
+    Input: HttpRequest, id del examen y id de la pregunta
+    Output: redirige a un html pasándole dos query
+    Esta función le indica al usuario que la pregunta fue reportada.
+    """
     examen = get_object_or_404(Exam, pk=examen_id)
     pregunta = get_object_or_404(Question, pk=pregunta_id)
     pregunta.reportada = True
     pregunta.save()
     return render(request, 'examenes/respuesta.html',
-{'pregunta': pregunta, 'examen': examen})
+                  {'pregunta': pregunta, 'examen': examen})
