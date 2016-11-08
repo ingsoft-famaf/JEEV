@@ -14,7 +14,7 @@ from Levenshtein import *
 def cargarm(request):
     if request.method == "POST":
         nuevamat = request.POST['nueva_materia']
-        if type(nuevamat) == unicode:
+        if type(nuevamat) != unicode:
             return render(request, 'materias/repetida.html')
         query = Materia.objects.filter(nombre_materia=nuevamat)
         count = query.count()       
