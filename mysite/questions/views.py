@@ -8,11 +8,12 @@ from models import Question, Answer
 from Levenshtein import *
 from django.http import HttpResponse
 from .forms import UploadFileForm
+from materias.models import Materia, Tema
 
 
 def uploadquestion(request):
     """
-    
+
     """
     if request.method == 'POST':
         form = UploadFileForm(request.POST, request.FILES)
@@ -20,7 +21,7 @@ def uploadquestion(request):
             f = request.FILES['file']
             for chunk in f.chunks():
                 url = str() + chunk
-            print url
+            #print url
             return question_view(url)
     else:
         form = UploadFileForm()
@@ -40,6 +41,21 @@ def question_view(url):
         materia = pregunta.find('materia').text
         tema = pregunta.find('tema').text
         texto = pregunta.find('texto').text
+        materia_exists = Materia.objects.filter(nombre_materia=materia).exists()
+        if not materia_exists:
+           return HttpResponse('La materia %s no existe,'
+                        ' creela antes de ingresar las preguntas' % materia)
+        materias_con_tema = Materia.objects.filter(tema__nombre_tema = tema)
+        count_materias = materias_con_tema.count()
+        tema_exist = False
+        for i in range(count_materias):
+            bd_materia = str(materias_con_tema[i])
+            if bd_materia == materia:
+                tema_exist = True
+                break
+        if not tema_exist:
+            return HttpResponse('El tema %s no existe,'
+                        ' creela antes de ingresar las preguntas' % tema)
         if type(texto) == unicode:
             return HttpResponse("La pregunta %s esta mal formada" % texto)
         query = Question.objects.filter(
@@ -66,7 +82,7 @@ def question_view(url):
             for i in range(count):
                 repetida = False
                 firstObj = query[i]
-                if distance(str(firstObj.text_preg), texto) == 0:
+                if distance(str(firstObj.text_preg), texto) <= 0:
                     repetida = True
                     break
             if repetida is False:
@@ -86,7 +102,12 @@ def question_view(url):
                                    es_correcta=False)
                         a.save()
             else:
-                print('pregunta "%s" esta repetida' % texto)
+                return HttpResponse('La pregunta: "%s"'
+                                    ' esta repetida o es similar'
+                                    ' a otra ingresada. Borre o modifiquela'
+                                    ' y vuelva a ingresar el archivo'
+                                    ' a partir de esa pregunta' % texto)
+
     return HttpResponse('Las preguntas se cargaron con exito!!')
 
 
@@ -170,4 +191,3 @@ def sacardereported(request, question_id):
     question.save()
     return render(request, 'questions/reported.html',
                   {'questions': Question.objects.filter(reportada=True)})
-
