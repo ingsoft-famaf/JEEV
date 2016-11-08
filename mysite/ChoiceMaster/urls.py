@@ -23,7 +23,7 @@ from django.core.urlresolvers import reverse_lazy
 
 urlpatterns = [
     url(r'^accounts/logout/$', django.contrib.auth.views.logout,
-    {'next_page': '/'}),
+        {'next_page': '/'}),
     url(r'^estadisticas/', include('estadisticas.urls')),
     url(r'^examenes/', include('examenes.urls')),
     url(r'^questions/', include('questions.urls')),
@@ -31,5 +31,4 @@ urlpatterns = [
     url(r'^accounts/', include('allauth.urls')),
     url(r'^admin/', admin.site.urls),
     url(r'^', include('homepage.urls')),
-    
 ]
