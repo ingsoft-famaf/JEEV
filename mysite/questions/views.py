@@ -21,7 +21,7 @@ def uploadquestion(request):
             f = request.FILES['file']
             for chunk in f.chunks():
                 url = str() + chunk
-            #print url
+            # print url
             return question_view(url)
     else:
         form = UploadFileForm()
@@ -37,15 +37,19 @@ def question_view(url):
     si ya existe se da aviso al usuario, si no existen se crean.
     """
     root = ET.fromstring(url)
-    for pregunta in root:
+    root_validado = validarxml(root)
+    index = 0
+    preguntas_repetidas = []
+    for pregunta in root_validado:
         materia = pregunta.find('materia').text
         tema = pregunta.find('tema').text
         texto = pregunta.find('texto').text
-        materia_exists = Materia.objects.filter(nombre_materia=materia).exists()
+        materia_exists = Materia.objects.filter(
+            nombre_materia=materia).exists()
         if not materia_exists:
-           return HttpResponse('La materia %s no existe,'
-                        ' creela antes de ingresar las preguntas' % materia)
-        materias_con_tema = Materia.objects.filter(tema__nombre_tema = tema)
+            return HttpResponse('La materia %s no existe,'
+                                ' creela antes de ingresar las preguntas' % materia)
+        materias_con_tema = Materia.objects.filter(tema__nombre_tema=tema)
         count_materias = materias_con_tema.count()
         tema_exist = False
         for i in range(count_materias):
@@ -55,7 +59,7 @@ def question_view(url):
                 break
         if not tema_exist:
             return HttpResponse('El tema %s no existe,'
-                        ' creela antes de ingresar las preguntas' % tema)
+                                ' creela antes de ingresar las preguntas' % tema)
         if type(texto) == unicode:
             return HttpResponse("La pregunta %s esta mal formada" % texto)
         query = Question.objects.filter(
@@ -102,13 +106,11 @@ def question_view(url):
                                    es_correcta=False)
                         a.save()
             else:
-                return HttpResponse('La pregunta: "%s"'
-                                    ' esta repetida o es similar'
-                                    ' a otra ingresada. Borre o modifiquela'
-                                    ' y vuelva a ingresar el archivo'
-                                    ' a partir de esa pregunta' % texto)
-
-    return HttpResponse('Las preguntas se cargaron con exito!!')
+                preguntas_repetidas.insert(index,texto)
+                index +=  1
+    return HttpResponse("Las preguntas no repetidas fueron cargadas con exito."
+                        ' Las preguntas que no se cargaron por' 
+                            ' estar repetidas son: %s' % preguntas_repetidas)
 
 
 def reported(request):
@@ -191,3 +193,14 @@ def sacardereported(request, question_id):
     question.save()
     return render(request, 'questions/reported.html',
                   {'questions': Question.objects.filter(reportada=True)})
+
+
+def validarxml(root):
+    #root = ET.fromstring(url)
+    schema = etree.XMLSchema(root)
+    xmlparser = etree.XMLParser(schema = schema)
+    try:
+        ET.fromstring(url, xmlparser) 
+        return True
+    except etree.XMLSchemaError:
+        return False
