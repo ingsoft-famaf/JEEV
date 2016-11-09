@@ -21,5 +21,17 @@ class MateriaMethodTests(TestCase):
 
 class TemaMethodTests(TestCase):
 
+    def setUp(self):
+        materia1 = Materia.objects.create(nombre_materia='Biologia')
+
+        tema1 = Tema.objects.create(nombre_tema='citologia')
+
+        tema2 = Tema.objects.create(nombre_tema='matrices')
+
     def test_se_cargo_tema_correctamente(self):
-pass
+        response = self.client.post(
+                reverse('cargart'),
+                data={
+                    'materia': 'Biologia',
+                    'nuevo_tema': 'genetica'})
+        self.assertEqual(response.resolver_match.func, cargart)
