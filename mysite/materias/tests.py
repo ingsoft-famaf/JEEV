@@ -11,8 +11,9 @@ class MateriaMethodTests(TestCase):
         response = self.client.post(
                 reverse('cargarm'),
                 data={
-                    'nueva_materia': 'biologia'})
-        self.assertRedirects(response, '/materias/secargo/', fetch_redirect_response=False)
+                    'nueva_materia': 'casa'})
+        print response
+        self.assertRedirects(response, '/materias/secargo/') 
 
 class TemaMethodTests(TestCase):
 
