@@ -1,0 +1,16 @@
+{% extends 'examenes/base.html' %}
+{% load static %}
+{% block content %}
+    {% if pregunta.reportada %}
+        <center><h3>La pregunta ha sido reportada</h3></center>
+        <meta http-equiv="refresh" content="2;url={% url 'resppreg' examen.id %}" />-
+    {% else %}
+        {% if respuesta.es_correcta %}
+            <center><h3>Tu respuesta es Correcta</h3></center>
+            <meta http-equiv="refresh" content="2;url={% url 'resppreg' examen.id %}" />-
+        {% else %}
+            <center><h3>Respuesta Incorrecta</h3></center>
+            <meta http-equiv="refresh" content="2;url={% url 'resppreg' examen.id %}" />-
+        {% endif %}
+    {% endif %}
+{% endblock content%}

@@ -14,4 +14,10 @@ class Exam(models.Model):
     nombre_materia = models.CharField(max_length=100)
     tiempo_preg = models.IntegerField(default=0)
     cantidad_preg = models.IntegerField(default=0)
-    #preguntas_respondidas = ListField()
+    pregunta_actual = models.IntegerField(default=0)
+    preguntas_correctas = models.IntegerField(default=0)
+    preguntas_incorrectas = models.IntegerField(default=0)
+
+class PregResp(models.Model):
+    examen = models.ForeignKey('Exam', on_delete=models.CASCADE)
+question_id = models.CharField(max_length=100)

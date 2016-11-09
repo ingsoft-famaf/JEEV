@@ -1,0 +1,13 @@
+{% extends 'examenes/base.html' %}
+{% load static %}
+{% block content %}
+<body>
+    <center>
+    <h3>Ha finalizado el examen</h3>
+    <h4>Cantidad de respuestas correctas: {{examen.preguntas_correctas}}</h4>
+    <h4>Cantidad de respuestas incorrectas: {{examen.preguntas_incorrectas}}</h4>
+    &emsp;<a href="/estadisticas/" >Ver estadísticas</a>
+    &emsp;<a href="/accounts/profile/" >Volver</a>
+    </center>
+</body>
+{% endblock content%}
