@@ -9,8 +9,7 @@ def estadistica_view(request):
         lista_examenes = Exam.objects.filter(nombre_materia=materia)
         cant_preguntas = lista_examenes.aggregate(Sum('cantidad_preg'))
         preg_correctas = lista_examenes.aggregate(Sum('preguntas_correctas'))
-        preg_incorrectas =
-        lista_examenes.aggregate(Sum('preguntas_incorrectas'))
+        preg_incorrectas = lista_examenes.aggregate(Sum('preguntas_incorrectas'))
         promedio = lista_examenes.aggregate(Avg('preguntas_correctas'))
         return render(request, 'estadisticas/general.html',
                         {'lista_examenes': lista_examenes,
