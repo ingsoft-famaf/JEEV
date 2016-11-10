@@ -38,6 +38,7 @@ class MateriaMethodTests(TestCase):
                 data={
                     'nueva_materia': ''})
         print response
+        print type('nueva_materia')
         self.assertEqual(response.resolver_match.func, cargarm)
 
 
