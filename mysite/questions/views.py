@@ -10,6 +10,19 @@ from django.http import HttpResponse
 from .forms import UploadFileForm
 from materias.models import Materia, Tema
 
+def validar(url):
+    with open('static/XSD/file.xsd', 'r') as f:
+        schema_root = etree.parse(f)
+    schema = etree.XMLSchema(schema_root)
+#    parser = etree.XMLParser(schema = schema)
+    return schema.validate(url)
+    #    try:
+#        etree.fromstring(url, parser)
+#        return root
+#    except etree.XMLSchemaError:
+#        return HttpResponse('El formato del xml no es el correcto')
+#    except XMLSyntaxError:
+#        return HttpResponse('mal formato')
 
 def uploadquestion(request):
     """
@@ -36,8 +49,7 @@ def question_view(url):
     algoritmo de Levenshtein en la base de datos con las que se quieren crear,
     si ya existe se da aviso al usuario, si no existen se crean.
     """
-    root = ET.fromstring(url)
-    root_validado = validarxml(root)
+    root_validado = validar(url)
     index = 0
     preguntas_repetidas = []
     for pregunta in root_validado:
@@ -193,14 +205,3 @@ def sacardereported(request, question_id):
     question.save()
     return render(request, 'questions/reported.html',
                   {'questions': Question.objects.filter(reportada=True)})
-
-
-def validarxml(root):
-    #root = ET.fromstring(url)
-    schema = etree.XMLSchema(root)
-    xmlparser = etree.XMLParser(schema = schema)
-    try:
-        ET.fromstring(url, xmlparser) 
-        return True
-    except etree.XMLSchemaError:
-        return False
