@@ -17,7 +17,6 @@ class MateriaMethodTests(TestCase):
                 reverse('cargarm'),
                 data={
                     'nueva_materia': 'Quimica'})
-        print response
         self.assertEqual(response.resolver_match.func, cargarm)
 
     def test_se_cargo_materia_repetida(self):
@@ -29,16 +28,23 @@ class MateriaMethodTests(TestCase):
                 reverse('cargarm'),
                 data={
                     'nueva_materia': 'Quimica'})
-        print response
+	print response
         self.assertEqual(response.resolver_match.func, cargarm)
 
     def test_se_cargo_materia_vacia(self):
         response = self.client.post(
                 reverse('cargarm'),
                 data={
-                    'nueva_materia': ''})
+                    'nueva_materia':""})
+    	print response
+        self.assertEqual(response.resolver_match.func, cargarm)
+
+    def test_se_cargo_materia_vacia(self):
+        response = self.client.post(
+                reverse('cargarm'),
+                data={
+                    'nueva_materia':" "})
         print response
-        print type('nueva_materia')
         self.assertEqual(response.resolver_match.func, cargarm)
 
 
@@ -56,7 +62,6 @@ class TemaMethodTests(TestCase):
                 data={
                     'materias' : 'Biologia',
                     'nuevo_tema': 'genetica'})
-        print response
         self.assertEqual(response.resolver_match.func, cargart)
 
     def test_se_cargo_tema_repetido(self):
@@ -70,7 +75,7 @@ class TemaMethodTests(TestCase):
                 data={
                     'materias' : 'Biologia',
                     'nuevo_tema': 'genetica'})
-        print response
+	print response
         self.assertEqual(response.resolver_match.func, cargart)
 
     def test_se_cargo_tema_vacio(self):
@@ -78,6 +83,12 @@ class TemaMethodTests(TestCase):
                 reverse('cargart'),
                 data={
                     'materias' : 'Algebra',
-                    'nuevo_tema': ''})
+                    'nuevo_tema': ""})
+	print response
+        response = self.client.post(
+                reverse('cargart'),
+                data={
+                    'materias' : 'Algebra',
+                    'nuevo_tema': " "})
         print response
         self.assertEqual(response.resolver_match.func, cargart)
