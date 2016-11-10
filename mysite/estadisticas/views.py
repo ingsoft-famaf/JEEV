@@ -6,6 +6,10 @@ from Tkinter import *
 
 
 def estadistica_view(request):
+    """Guarda la estadisticas y reedirije a un html
+    :param estadistica_view: pedido de html
+    :type: GET  o POST
+    :return:html"""
     if request.method == "POST":
         materia = request.POST['materia']
         lista_examenes = Exam.objects.filter(nombre_materia=materia)
@@ -24,6 +28,9 @@ def estadistica_view(request):
 
 
 def estadis_examen(request, examen_id):
+    """ opera la estadisticas y devuelve un resultado
+      :param estadis_exam: pedido de html , el id del examen realizado.
+      :return: html"""
     examen = get_object_or_404(Exam, pk=examen_id)
     nota = examen.preguntas_correctas
     nota1 = examen.cantidad_preg

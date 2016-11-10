@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block title %}Do your exam!{% endblock %}
+
+{% block content %}
+  <h3>Question</h3>
+  {% for question in ran_questions|slice:":1" %}
+    <p>{{ question.question_text }}</p>
+    <form action="/exam/answer_result/{{ exam.id }}/{{ question.id }}/" method="post">
+    {% csrf_token %}
+    {% for choice in question.choice_set.all %}
+      <input type="radio" name="choice" id="choice{{ forloop.counter }}" value="{{ choice.id }}" />
+      <label for="choice{{ forloop.counter }}">{{ choice.choice_text }}</label><br />
+    {% endfor %}
+
+  <input type="submit" value="Vote" />
+  <script>
+  function timeout_msg() {
+    setTimeout(redir, {{ exam.time }});
+  }
+  function redir() {
+    alert("Timed out!");
+    window.location.href= "/examenes/templates/";
+  }
+  window.onload = timeout_msg;
+  </script>
+  {%endfor%}
+
+{% endblock %}
