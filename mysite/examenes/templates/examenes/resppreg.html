@@ -11,7 +11,13 @@
                 {% endfor %}
                 <br><input type = "submit" value= "Responder">
             </form>
-            <br><a href="{% url 'reportar' examen.id pregunta.id %}">Reportar</a>
+            <br><br>
+            <form action="{% url 'reportar' examen.id pregunta.id%}" method="post">
+                {% csrf_token %}
+                Nota de reporte:
+                <input type="text" name="nota" width="200" height="600">
+                <input type="submit" value="Reportar">
+            </form>
             <meta http-equiv="refresh" content="{{examen.tiempo_preg}};url={% url 'respuesta' examen.id %}" />
         </center>
     </body>

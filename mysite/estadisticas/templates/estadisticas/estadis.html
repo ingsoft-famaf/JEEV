@@ -5,9 +5,15 @@
     <center>
     <h3>Lista de materias de examenes realizados: </h3>
     <form action="" method="post">
-    {% for nombre_materia in materias %}
+    {% for materia in materias %}
         {% csrf_token %}
-        <br><input type="submit" name="materia" value="{{nombre_materia}}" style="background-color:green">
+        {% if materia.promedio < 3.00 %}
+            <br><input type="submit" name="materia" value="{{materia.nombre_materia}}" style="background-color:red">
+        {% elif materia.promedio > 7.00 %}
+            <br><input type="submit" name="materia" value="{{materia.nombre_materia}}" style="background-color:green">
+        {% else %}
+            <br><input type="submit" name="materia" value="{{materia.nombre_materia}}" style="background-color:yellow">
+        {% endif %}
     {% endfor %}
     <h5>*Referencias: verde OK, amarillo "deberia estudiar más", rojo "no deberia presentarse".</h5>
     <a href="/hompage/superuser/">Volver</a>

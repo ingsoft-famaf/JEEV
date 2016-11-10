@@ -5,7 +5,7 @@ from django.db import models
 
 class Materia(models.Model):
     nombre_materia = models.CharField(max_length=100)
-
+    promedio = models.FloatField(default=0)
 
     def __str__(self):
         return self.nombre_materia

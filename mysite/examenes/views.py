@@ -109,9 +109,18 @@ def reportar(request, examen_id, pregunta_id):
     Output: redirige a un html pasándole dos query
     Esta función le indica al usuario que la pregunta fue reportada.
     """
+    if request.method == "POST":
+        nota = request.POST['nota']
+        if nota == "":
+            return render(request, 'examenes/nota_reportada.html')
+        examen = get_object_or_404(Exam, pk=examen_id)
+        pregunta = get_object_or_404(Question, pk=pregunta_id)
+        pregunta.reportada = True
+        pregunta.nota_reporte = nota
+        pregunta.save()
+        return render(request, 'examenes/respuesta.html',
+                      {'pregunta': pregunta, 'examen': examen})
     examen = get_object_or_404(Exam, pk=examen_id)
     pregunta = get_object_or_404(Question, pk=pregunta_id)
-    pregunta.reportada = True
-    pregunta.save()
-    return render(request, 'examenes/respuesta.html',
+    return render(request,'examenes/resppreg.html',
                   {'pregunta': pregunta, 'examen': examen})
