@@ -21,10 +21,18 @@ def cargarm(request):
         query = Materia.objects.filter(nombre_materia=nuevamat)
         count = query.count()       
         if count == 0:
-            q = Materia(nombre_materia=nuevamat)
-            q.save()
+            nmat = Materia(nombre_materia=nuevamat)
+            nmat.save()
         else:
-            return render(request, 'materias/repetida.html')
+            repetida = False
+            nmat = Materia(nombre_materia=nuevamat)
+            if distance(str(nmat), str(nuevamat)) <= 0:
+                repetida = True
+            if repetida is False:
+                nmat = Materia(nombre_materia=nuevamat)
+                nmat.save()
+            else:
+                return render(request, 'materias/repetida.html')
     	return render(request, 'materias/secargo.html')
     return render(request, 'materias/cargarmateria.html')
 
@@ -36,15 +44,23 @@ def cargart(request):
 	if nuevotema == "" or nuevotema == " ":
 		return render(request, 'materias/temarepetido.html')
 	else:
-        	mt = Materia.objects.filter(nombre_materia = materia)
-        print mt
+        	mat = Materia.objects.filter(nombre_materia = materia)
+        print mat
         query = Tema.objects.filter(nombre_tema=nuevotema)
         count = query.count()       
         if count == 0:
-            m = Tema(temas= mt[0], nombre_tema=nuevotema)
-            m.save()
+            ntema = Tema(temas= mat[0], nombre_tema=nuevotema)
+            ntema.save()
         else:
-        	return render(request, 'materias/temarepetido.html')
+            repetida = False
+            ntema = Tema(temas= mat[0], nombre_tema=nuevotema)
+            if distance(str(ntema), str(nuevotema)) <= 0:
+                repetida = True
+            if repetida is False:
+                ntema = Tema(temas= mat[0], nombre_tema=nuevotema)
+                ntema.save()
+            else:
+        	   return render(request, 'materias/temarepetido.html')
         return render(request, 'materias/secargo.html')
     return render(request, 'materias/cargartema.html',{'list_materias': Materia.objects.values_list(
                         'nombre_materia', flat=True).distinct()})

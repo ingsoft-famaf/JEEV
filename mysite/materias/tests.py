@@ -31,6 +31,20 @@ class MateriaMethodTests(TestCase):
 	print response
         self.assertEqual(response.resolver_match.func, cargarm)
 
+
+    def test_se_cargo_materia_repetida2(self):
+        response = self.client.post(
+                reverse('cargarm'),
+                data={
+                    'nueva_materia': 'Quimica'})
+        response = self.client.post(
+                reverse('cargarm'),
+                data={
+                    'nueva_materia': 'quimica'})
+        print response
+        self.assertEqual(response.resolver_match.func, cargarm)
+
+
     def test_se_cargo_materia_vacia(self):
         response = self.client.post(
                 reverse('cargarm'),
