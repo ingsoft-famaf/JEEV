@@ -12,12 +12,7 @@
                 <br><input type = "submit" value= "Responder">
             </form>
             <br><br>
-            <form action="{% url 'reportar' examen.id pregunta.id%}" method="post">
-                {% csrf_token %}
-                Nota de reporte:
-                <input type="text" name="nota" width="200" height="600">
-                <input type="submit" value="Reportar">
-            </form>
+            <a href="{% url 'nota_reportada' examen.id pregunta.id%}">Reportar</a>
             <meta http-equiv="refresh" content="{{examen.tiempo_preg}};url={% url 'respuesta' examen.id %}" />
         </center>
     </body>

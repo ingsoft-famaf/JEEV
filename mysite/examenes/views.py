@@ -103,6 +103,10 @@ def respuesta(request, examen_id):
     examen.save()
     return render(request, 'examenes/respuesta.html', {'examen':examen})
 
+def nota_reportada(request, examen_id, pregunta_id):
+    return render(request,'examenes/nota_reportada.html',
+                  {'pregunta': pregunta_id, 'examen': examen_id})
+
 def reportar(request, examen_id, pregunta_id):
     """
     Input: HttpRequest, id del examen y id de la pregunta
@@ -112,7 +116,8 @@ def reportar(request, examen_id, pregunta_id):
     if request.method == "POST":
         nota = request.POST['nota']
         if nota == "":
-            return render(request, 'examenes/nota_reportada.html')
+            return render(request, 'examenes/nota_reportada.html',
+                          {'pregunta': pregunta_id, 'examen': examen_id})
         examen = get_object_or_404(Exam, pk=examen_id)
         pregunta = get_object_or_404(Question, pk=pregunta_id)
         pregunta.reportada = True
