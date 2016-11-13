@@ -9,13 +9,27 @@ from Levenshtein import *
 from django.http import HttpResponse
 from .forms import UploadFileForm
 from materias.models import Materia, Tema
+from lxml import etree, objectify
+from lxml.etree import XMLSyntaxError
 
 def validar(url):
-    with open('static/XSD/file.xsd', 'r') as f:
-        schema_root = etree.parse(f)
-    schema = etree.XMLSchema(schema_root)
+    XSD_file = 'static/XSD/file.xsd'
+    #with open('static/XSD/file.xsd', 'r') as f:
+    #    schema_root = etree.parse(f)
+    import pdb
+    pdb.set_trace()
+    try:
+        schema = etree.XMLSchema(file = XSD_file)
+        print schema
+        parser = objectify.makeparser(schema = schema)
+        boolean = objectify.fromstring(url, parser)
+        root = ET.fromstring(url) #Esto lo voy a bajar a Uploadquestion
+        return root
+    except XMLSyntaxError:
+        valido = False
+        return HttpResponse("NO ES VALIDO")
 #    parser = etree.XMLParser(schema = schema)
-    return schema.validate(url)
+    #return schema.validate(url)
     #    try:
 #        etree.fromstring(url, parser)
 #        return root
@@ -35,6 +49,7 @@ def uploadquestion(request):
             for chunk in f.chunks():
                 url = str() + chunk
             # print url
+            #root = ET.fromstring(url)
             return question_view(url)
     else:
         form = UploadFileForm()
@@ -49,10 +64,13 @@ def question_view(url):
     algoritmo de Levenshtein en la base de datos con las que se quieren crear,
     si ya existe se da aviso al usuario, si no existen se crean.
     """
-    root_validado = validar(url)
+    root = validar(url)
+    if root is False:
+        return HttpResponse("No es VALIDO")
+    #root = ET.fromstring(url)
     index = 0
     preguntas_repetidas = []
-    for pregunta in root_validado:
+    for pregunta in root:
         materia = pregunta.find('materia').text
         tema = pregunta.find('tema').text
         texto = pregunta.find('texto').text
