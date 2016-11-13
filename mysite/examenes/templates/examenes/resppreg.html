@@ -1,7 +1,41 @@
-{% extends 'examenes/base.html' %}
+<!DOCTYPE html>
 {% load static %}
-{% block content %}
-    <body>
+
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <script language="Javascript"  type="text/javascript" src="clockCountdown.js"></script>
+        <link rel="stylesheet" href="{% static 'css/estilos.css' %}"> 
+        <title>Examen </title>
+
+    </head>
+
+    <body >
+        <header>
+            <h1>Choice Master</h1>
+        </header>
+        <center>
+        <span class="Apple-style-span" style="color: red; font-family: 'Trebuchet MS', sans-serif;">Tiempo</span>
+        </center>
+        <center>
+        <script language="JavaScript" type="text/javascript">
+        //<![CDATA[
+        TargetDate = "{{examen.tiempo_preg}}";
+        BackColor = "white";
+        ForeColor = "black";
+        CountActive = true;
+        CountStepper = -1;
+        LeadingZero = true;
+        DisplayFormat = "%%H%% Horas, %%M%% Minutos, %%S%% Segundos.";
+        FinishMessage = "Feliz fin del mundo!!!";
+        //]]>
+        </script>
+        <script language="JavaScript" src="http://scripts.hashemian.com/js/countdown.js" type="text/javascript">
+        </script>
+        </center>
         <center>
             <form action="{% url 'respuesta' examen.id %}" method="post">
                 {% csrf_token %}
@@ -15,5 +49,6 @@
             <a href="{% url 'nota_reportada' examen.id pregunta.id%}">Reportar</a>
             <meta http-equiv="refresh" content="{{examen.tiempo_preg}};url={% url 'respuesta' examen.id %}" />
         </center>
+        <footer><h3>JEEV</h3></footer>
     </body>
-{% endblock content%}
+</html>
