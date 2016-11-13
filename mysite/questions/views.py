@@ -16,18 +16,17 @@ def validar(url):
     XSD_file = 'static/XSD/file.xsd'
     #with open('static/XSD/file.xsd', 'r') as f:
     #    schema_root = etree.parse(f)
-    import pdb
-    pdb.set_trace()
+    #import pdb
+    #pdb.set_trace()
     try:
         schema = etree.XMLSchema(file = XSD_file)
         print schema
         parser = objectify.makeparser(schema = schema)
         boolean = objectify.fromstring(url, parser)
-        root = ET.fromstring(url) #Esto lo voy a bajar a Uploadquestion
+        root = ET.fromstring(url)
         return root
     except XMLSyntaxError:
-        valido = False
-        return HttpResponse("NO ES VALIDO")
+       return False
 #    parser = etree.XMLParser(schema = schema)
     #return schema.validate(url)
     #    try:
@@ -49,7 +48,6 @@ def uploadquestion(request):
             for chunk in f.chunks():
                 url = str() + chunk
             # print url
-            #root = ET.fromstring(url)
             return question_view(url)
     else:
         form = UploadFileForm()
@@ -67,7 +65,6 @@ def question_view(url):
     root = validar(url)
     if root is False:
         return HttpResponse("No es VALIDO")
-    #root = ET.fromstring(url)
     index = 0
     preguntas_repetidas = []
     for pregunta in root:
