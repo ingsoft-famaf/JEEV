@@ -4,14 +4,17 @@
 <body>
     <center>
     <h3>Lista de materias de examenes realizados: </h3>
-    <form action="" method="post">
-    {% for nombre_materia in materias %}
-        {% csrf_token %}
-        <br><input type="submit" name="materia" value="{{nombre_materia}}" style="background-color:green">
+    {% for materia in materias %}
+        {% if materia.promedio < 3.00 %}
+            <br><a href="{%url 'estadis' materia.nombre_materia %}" role="button" value="{materia.nombre_materia}}" style="background-color:red; font-size:160%">{{materia.nombre_materia}}</a>
+        {% elif materia.promedio > 7.00 %}
+            <br><a href="{%url 'estadis' materia.nombre_materia %}" role="button" value="{materia.nombre_materia}}" style="background:green; font-size:160%">{{materia.nombre_materia}}</a>
+        {% else %}
+            <br><a href="{%url 'estadis' materia.nombre_materia %}" role="button" value="{materia.nombre_materia}}" style="background-color:yellow; font-size:160%">{{materia.nombre_materia}}</a>
+        {% endif %}
     {% endfor %}
     <h5>*Referencias: verde OK, amarillo "deberia estudiar más", rojo "no deberia presentarse".</h5>
     <a href="/accounts/profile/">Volver</a>
-    </form>
     </center>
 </body>
 {% endblock content%}

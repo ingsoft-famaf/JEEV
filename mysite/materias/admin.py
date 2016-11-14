@@ -8,6 +8,7 @@ class TemaInline(admin.TabularInline):
 class MateriaAdmin(admin.ModelAdmin):
     fieldsets = [
         (None, {'fields':['nombre_materia']}),
+        (None, {'fields':['promedio']})
     ]
     inlines = [TemaInline]
 

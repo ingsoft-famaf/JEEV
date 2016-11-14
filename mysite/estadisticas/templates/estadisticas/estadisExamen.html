@@ -1,0 +1,18 @@
+{% extends 'examenes/base.html' %}
+{% load static %}
+{% block content %}
+<body>
+    <center>
+    <h3>Estadisticas particualres del examen: </h3>
+    <h4>Configuración: </h4>
+    Materia: {{examen.nombre_materia}}<br>
+    Tema: {{examen.nombre_tema}}<br>
+    Cantidad de preguntas: {{examen.cantidad_preg}}<br>
+    Tiempo entre preguntas: {{examen.tiempo_preg}}<br><br>
+    <h4>Cantidad de preguntas correctas: {{examen.preguntas_correctas}}</h4>
+    <h4>Cantidad de preguntas incorrectas: {{examen.preguntas_incorrectas}}</h4>
+    <h4>Nota obtenida: {{nota}}%</h4>
+    <a href="{%url 'estadis' examen.nombre_materia %}">Volver</a>
+    </center>
+</body>
+{% endblock content%}

@@ -1,8 +1,80 @@
-{% extends 'examenes/base.html' %}
+<!DOCTYPE html>
 {% load static %}
-{% block content %}
-    <body>
+
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <link rel="stylesheet" href="{% static 'css/estilos.css' %}"> 
+        <title>Examen </title>
+
+        <script language="javascript">
+        if ({{examen.tiempo_preg}} < 60)
+        {
+            toHour=0;
+            toMinute=0;
+            toSecond={{examen.tiempo_preg}};
+        } else {
+            toHour = 0
+            toMinute = {{examen.tiempo_preg}}/60
+            toSecond = 0
+        }
+
+        //cuenta atras
+        function countDown()
+        {
+            toSecond=toSecond-1;
+            if(toSecond<0)
+            {
+                toSecond=59;
+                toMinute=toMinute-1;
+            }
+            form.second.value=toSecond;
+            if(toMinute<0)
+            {
+                toMinute=59;
+                toHour=toHour-1;
+            }
+            form.minute.value=toMinute;
+            form.hour.value=toHour;
+            if(toHour<0)
+            {
+                //final
+                form.second.value=0;
+                form.minute.value=0;
+                form.hour.value=0;
+            } else {
+                setTimeout("countDown()",1000);
+            }
+        }
+        -->
+        </script>
+        <style type="text/css">
+        .form_input
+        {
+            font-family: Verdana;
+            font-size: 40;
+            color: #ffffff;
+            border-width: 0;
+            background-color: rgb(103, 129, 255);
+            text-align: right;
+        }
+        </style>
+    </head>
+
+    <body onload="countDown();">
+        <header>
+            <h1>Choice Master</h1>
+        </header>
         <center>
+        <form name="form">
+            <h4>Tiempo restante: </h4>
+            <input type="text" size="5" class="form_input" name="hour" disabled>:
+            <input type="text" size="5" class="form_input" name="minute" disabled>:
+            <input type="text" size="5" class="form_input" name="second" disabled>
+        </form>
             <form action="{% url 'respuesta' examen.id %}" method="post">
                 {% csrf_token %}
                 <h3>{{pregunta}}</h3>
@@ -11,8 +83,10 @@
                 {% endfor %}
                 <br><input type = "submit" value= "Responder">
             </form>
-            <br><a href="{% url 'reportar' examen.id pregunta.id %}">Reportar</a>
+            <br><br>
+            <a href="{% url 'nota_reportada' examen.id pregunta.id%}">Reportar</a>
             <meta http-equiv="refresh" content="{{examen.tiempo_preg}};url={% url 'respuesta' examen.id %}" />
         </center>
+        <footer><h3>JEEV</h3></footer>
     </body>
-{% endblock content%}
+</html>

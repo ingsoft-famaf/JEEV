@@ -29,6 +29,7 @@ urlpatterns = [
     url(r'^questions/', include('questions.urls')),
     url(r'^materias/', include('materias.urls')),
     url(r'^accounts/', include('allauth.urls')),
+    url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
     url(r'^admin/', admin.site.urls),
     url(r'^', include('homepage.urls')),
 ]

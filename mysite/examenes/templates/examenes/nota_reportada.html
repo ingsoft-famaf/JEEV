@@ -1,0 +1,15 @@
+{% extends 'examenes/base.html' %}
+{% load static %}
+{% block content %}
+ <body>
+    <center>
+    <h3>Por favor ingrese una nota de reporte: </h3>
+    <form action="{% url 'reportar' examen pregunta %}" method="post">
+        {% csrf_token %}
+        Nota de reporte:
+        <input type="text" name="nota" width="200" height="600">
+        <input type="submit" value="Reportar">
+    </form>
+    </center>
+</body>
+{% endblock content%}
