@@ -1,45 +1,20 @@
-<html>
-  <head>
-    <title>Ejemplo2 Canvas </title>
-    <script type="text/javascript">
-      function dibujarCanvas(){
-        var ctx = document.getElementById ('miCanvas');
-        var contenido = ctx.getContext ('2d');
-            contenido.fillStyle =  '#CCCCCC';
-            contenido.fillRect (0, 0, 450, 350);
-            //Indicar el grosor de la línea
-            contenido.lineWidth = 3;
-            //Dibujo las líneas para simular la gráfica
-            contenido.beginPath();
-            contenido.moveTo(16,156);
-            contenido.lineTo(77,66);
-            contenido.lineTo(135,100);
-            contenido.lineTo(194,200);
-            contenido.lineTo(255,185);
-            contenido.lineTo(316,195);
-            contenido.lineTo(376,155);
-            contenido.lineTo(436,185);
-            contenido.strokeStyle = "hsla(333, 71%, 53%, 1)";
-            contenido.stroke();
-        
-    }
-
-    </script>
-  </head>
-<body onload="dibujarCanvas();">
+{% extends 'examenes/base.html' %}
+{% load static %}
+{% block content %}
+<body>
     <center>
         <h4>Estadisticas generales de {{materia}}: </h4>
-        <h5>Promedio: {{promedio.preguntas_correctas__avg}}</h5>
+        <h5>Promedio: {{promedio}}</h5>
         <h5>Cantidad de examenes respondidos: {{lista_examenes.count}}</h5>
-        <h5>Cantidad de preguntas responidas: {{cant_preguntas.cantidad_preg__sum}}</h5>
+        <h5>Cantidad de preguntas respondidas: {{cant_preguntas.cantidad_preg__sum}}</h5>
         <h5>Cantidad de preguntas correctas: {{preg_correctas.preguntas_correctas__sum}}</h5>
         <h5>Cantidad de preguntas incorrectas: {{preg_incorrectas.preguntas_incorrectas__sum}}</h5>
-        <h5>Grafico </h5>
-            <canvas id="miCanvas" width="450" height="350">No se puede ver</canvas>
+        <h5>Grafico: <a href="{% url 'grafico' materia %}">Ver grafico</a> </h5>
         <h4>Listado de exámenes realizados: </h4>
         {% for examen in lista_examenes %}
             <br><a href="{% url 'estadis_examen' examen.id %}">Examen: {{examen.id}}</a>
         {% endfor %}
+        <br><a href="{%url 'estadisticas' %}">Volver</a>
     </center>
 </body>
-</html>
+{% endblock content%}

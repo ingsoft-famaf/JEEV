@@ -94,6 +94,10 @@ def respuesta(request, examen_id):
     examen.save()
     return render(request, 'examenes/respuesta.html', {'examen':examen})
 
+def nota_reportada(request, examen_id, pregunta_id):
+    return render(request,'examenes/nota_reportada.html',
+                  {'pregunta': pregunta_id, 'examen': examen_id})
+
 def reportar(request, examen_id, pregunta_id):
     """
     Esta función le indica al usuario que la pregunta fue reportada.
@@ -102,9 +106,19 @@ def reportar(request, examen_id, pregunta_id):
     :Param pregunta_id: id de la pregunta
     :retun: redirige a un html pasándole dos query
     """
+    if request.method == "POST":
+        nota = request.POST['nota']
+        if nota == "":
+            return render(request, 'examenes/nota_reportada.html',
+                          {'pregunta': pregunta_id, 'examen': examen_id})
+        examen = get_object_or_404(Exam, pk=examen_id)
+        pregunta = get_object_or_404(Question, pk=pregunta_id)
+        pregunta.reportada = True
+        pregunta.nota_reporte = nota
+        pregunta.save()
+        return render(request, 'examenes/respuesta.html',
+                      {'pregunta': pregunta, 'examen': examen})
     examen = get_object_or_404(Exam, pk=examen_id)
     pregunta = get_object_or_404(Question, pk=pregunta_id)
-    pregunta.reportada = True
-    pregunta.save()
-    return render(request, 'examenes/respuesta.html',
+    return render(request,'examenes/resppreg.html',
                   {'pregunta': pregunta, 'examen': examen})

@@ -10,7 +10,7 @@ class Materia(models.Model):
     :type: Model
     """
     nombre_materia = models.CharField(max_length=100)
-
+    promedio = models.FloatField(default=0)
 
     def __str__(self):
         return self.nombre_materia
