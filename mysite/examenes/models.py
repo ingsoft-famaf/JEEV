@@ -21,6 +21,6 @@ class Exam(models.Model):
 class PregResp(models.Model):
     examen = models.ForeignKey('Exam', on_delete=models.CASCADE)
     question = models.ForeignKey('questions.Question',
-                                on_delete=models.PROTECT,
+                                #on_delete=models.PROTECT,
                                 blank=True,
                                 null=True)
