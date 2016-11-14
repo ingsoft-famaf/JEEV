@@ -20,4 +20,7 @@ class Exam(models.Model):
 
 class PregResp(models.Model):
     examen = models.ForeignKey('Exam', on_delete=models.CASCADE)
-question_id = models.CharField(max_length=100)
+    question = models.ForeignKey('questions.Question',
+                                on_delete=models.PROTECT,
+                                blank=True,
+                                null=True)

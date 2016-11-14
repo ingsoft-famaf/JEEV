@@ -2,10 +2,21 @@
 from django.shortcuts import render, get_object_or_404
 
 from questions.models import Question, Answer
-from .models import Exam
+from .models import Exam, PregResp
 import questions.models #import Answer
 import random
 from django.http import HttpResponse
+
+"""aux functions"""
+#def question_random
+def filter_query (realquery, querytofilt):
+    for q in querytofilt:
+        for q2 in realquery:
+            if q.question.id == q2.id :
+                realquery.delete(q2)
+    return realquery
+"""End aux functions"""
+
 
 def examen_view(request):
     """
@@ -65,9 +76,16 @@ def resppreg(request, examen_id):
     query1 = Question.objects.filter(nombre_tema=tema)
     query2 = query1.filter(nombre_materia=materia)
     query3 = query2.filter(reportada=False)
+    queryresp = PregResp.objects.filter(examen = examen)
+    print "query3 antes de filtrar"
+    print query3
+    query3 = filter_query(query3,queryresp)
+    print "despues de filtrar"
+    print query3
     randomm = random.sample(query3, 1)
     #materia = Exam.objects.filter(id=)
     pregunta = randomm[0]
+    PregResp.objects.create(examen = examen, question = pregunta)
 #    print examen.pregunta_actual
 #    print examen.cantidad_preg
     if examen.pregunta_actual == examen.cantidad_preg:
@@ -80,7 +98,7 @@ def respuesta(request, examen_id):
     """
     Input: HttpRequest y id del examen
     Output: redirige a un html pasándole una query
-    Esta función recoge la respuesta seleccionada y le indica al usuario si 
+    Esta función recoge la respuesta seleccionada y le indica al usuario si
     es correcta o no. Si no responde en el tiempo predeterminado le indica que
     la respuesta es incorrecta.
     """
