@@ -49,6 +49,17 @@ def examenencurso_view(request):
     return render(request, 'examenes/examenencurso.html' ,
                     {'examen':examen})
 
+def examen_basadoenerrores(request):
+    materia = request.POST['materias']
+    cantidad = request.POST['cantidad']
+    tiempo = request.POST['tiempo']
+    examen = Exam(nombre_materia = materia,
+                    cantidad_preg = cantidad, tiempo_preg = tiempo)
+    examen.save()
+        return render(request, 'examenes/examen_basadoenerrores.html' ,
+                    {'examen':examen})
+
+
 def resppreg(request, examen_id):
     """
     Input: HttpRequest y id del examen
