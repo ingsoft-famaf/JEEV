@@ -9,7 +9,34 @@ from Levenshtein import *
 from django.http import HttpResponse
 from .forms import UploadFileForm
 from materias.models import Materia, Tema
+from lxml import etree, objectify
+from lxml.etree import XMLSyntaxError
 
+def validar(url):
+    XSD_file = 'static/XSD/file.xsd'
+    #with open('static/XSD/file.xsd', 'r') as f:
+    #    schema_root = etree.parse(f)
+    import pdb
+    pdb.set_trace()
+    try:
+        schema = etree.XMLSchema(file = XSD_file)
+        print schema
+        parser = objectify.makeparser(schema = schema)
+        boolean = objectify.fromstring(url, parser)
+        root = ET.fromstring(url) #Esto lo voy a bajar a Uploadquestion
+        return root
+    except XMLSyntaxError:
+        valido = False
+        return HttpResponse("NO ES VALIDO")
+#    parser = etree.XMLParser(schema = schema)
+    #return schema.validate(url)
+    #    try:
+#        etree.fromstring(url, parser)
+#        return root
+#    except etree.XMLSchemaError:
+#        return HttpResponse('El formato del xml no es el correcto')
+#    except XMLSyntaxError:
+#        return HttpResponse('mal formato')
 
 def uploadquestion(request):
     """
@@ -21,7 +48,8 @@ def uploadquestion(request):
             f = request.FILES['file']
             for chunk in f.chunks():
                 url = str() + chunk
-            #print url
+            # print url
+            #root = ET.fromstring(url)
             return question_view(url)
     else:
         form = UploadFileForm()
@@ -36,16 +64,22 @@ def question_view(url):
     algoritmo de Levenshtein en la base de datos con las que se quieren crear,
     si ya existe se da aviso al usuario, si no existen se crean.
     """
-    root = ET.fromstring(url)
+    root = validar(url)
+    if root is False:
+        return HttpResponse("No es VALIDO")
+    #root = ET.fromstring(url)
+    index = 0
+    preguntas_repetidas = []
     for pregunta in root:
         materia = pregunta.find('materia').text
         tema = pregunta.find('tema').text
         texto = pregunta.find('texto').text
-        materia_exists = Materia.objects.filter(nombre_materia=materia).exists()
+        materia_exists = Materia.objects.filter(
+            nombre_materia=materia).exists()
         if not materia_exists:
-           return HttpResponse('La materia %s no existe,'
-                        ' creela antes de ingresar las preguntas' % materia)
-        materias_con_tema = Materia.objects.filter(tema__nombre_tema = tema)
+            return HttpResponse('La materia %s no existe,'
+                                ' creela antes de ingresar las preguntas' % materia)
+        materias_con_tema = Materia.objects.filter(tema__nombre_tema=tema)
         count_materias = materias_con_tema.count()
         tema_exist = False
         for i in range(count_materias):
@@ -55,7 +89,7 @@ def question_view(url):
                 break
         if not tema_exist:
             return HttpResponse('El tema %s no existe,'
-                        ' creela antes de ingresar las preguntas' % tema)
+                                ' creela antes de ingresar las preguntas' % tema)
         if type(texto) == unicode:
             return HttpResponse("La pregunta %s esta mal formada" % texto)
         query = Question.objects.filter(
@@ -102,13 +136,11 @@ def question_view(url):
                                    es_correcta=False)
                         a.save()
             else:
-                return HttpResponse('La pregunta: "%s"'
-                                    ' esta repetida o es similar'
-                                    ' a otra ingresada. Borre o modifiquela'
-                                    ' y vuelva a ingresar el archivo'
-                                    ' a partir de esa pregunta' % texto)
-
-    return HttpResponse('Las preguntas se cargaron con exito!!')
+                preguntas_repetidas.insert(index,texto)
+                index +=  1
+    return HttpResponse("Las preguntas no repetidas fueron cargadas con exito."
+                        ' Las preguntas que no se cargaron por' 
+                            ' estar repetidas son: %s' % preguntas_repetidas)
 
 
 def reported(request):
