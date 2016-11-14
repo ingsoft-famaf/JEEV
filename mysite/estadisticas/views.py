@@ -1,9 +1,15 @@
 from django.shortcuts import render, get_object_or_404
 from examenes.models import Exam
 from django.db.models import Avg, Sum, FloatField
+#from gpcharts import figure
+from Tkinter import *
 
 
 def estadistica_view(request):
+    """Guarda la estadisticas y reedirije a un html
+    :param estadistica_view: pedido de html
+    :type: GET  o POST
+    :return:html"""
     if request.method == "POST":
         materia = request.POST['materia']
         lista_examenes = Exam.objects.filter(nombre_materia=materia)
@@ -19,3 +25,17 @@ def estadistica_view(request):
     return render(request, 'estadisticas/estadis.html',
                   {'materias': Exam.objects.values_list(
                                'nombre_materia', flat=True).distinct()})
+
+
+def estadis_examen(request, examen_id):
+    """ opera la estadisticas y devuelve un resultado
+      :param estadis_exam: pedido de html , el id del examen realizado.
+      :return: html"""
+    examen = get_object_or_404(Exam, pk=examen_id)
+    nota = examen.preguntas_correctas
+    nota1 = examen.cantidad_preg
+    print nota
+    nota = (nota * 100)/ nota1
+    print float(nota)
+    return render(request, 'estadisticas/estadisExamen.html',
+                  {'examen': examen, 'nota': nota})

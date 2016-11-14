@@ -3,15 +3,16 @@ from django.shortcuts import render, get_object_or_404
 
 from questions.models import Question, Answer
 from .models import Exam
-import questions.models #import Answer
+import questions.models
 import random
 from django.http import HttpResponse
 
 def examen_view(request):
     """
-    Input: HttpRequest
-    Output: redirige a un html pasándole dos query
     Esta función muestra las opciones para la configuración del examen.
+    :param request: HttpRequest
+    :type: Http
+    :return: redirige a un html pasándole dos query
     """
     return render(request, 'examenes/examen.html',
                   {'list_materias': Question.objects.values_list(
@@ -21,10 +22,10 @@ def examen_view(request):
 
 def examenencurso_view(request):
     """
-    Input: HttpRequest
-    Output: redirige a un html pasándole una query
     Esta función recoge la configuración del usuario y le indica al usuario
     que la configuración se realizó correctamente.
+    :param request: HttpRequest
+    :return: redirige a un html pasándole una query
     """
     materia = request.POST['materias']
     tema = request.POST['temas']
@@ -34,27 +35,16 @@ def examenencurso_view(request):
                     cantidad_preg = cantidad, tiempo_preg = tiempo)
     examen.save()
 
-    """materia = request.POST['materias']
-    tema = request.POST['temas']
-    cantidad = request.POST['cantidad']
-    tiempo = request.POST['tiempo']
-    randomint = []
-    query = Question.objects.filter(
-        nombre_tema=tema).filter(
-            nombre_materia=materia).values_list('id', flat=True)
-    count = query.count()
-    population = query
-    cantidadint = int(cantidad)
-    """
     return render(request, 'examenes/examenencurso.html' ,
                     {'examen':examen})
 
 def resppreg(request, examen_id):
     """
-    Input: HttpRequest y id del examen
-    Output: redirige a un html pasándole dos query
     Esta función muestra una pregunta con sus respuestas para que el usuario
     haga la elección de un de ellas.
+    :Param  request: HttpRequest 
+    :Param examen_id: id del examen
+    :return: redirige a un html pasándole dos query
     """
     examen = get_object_or_404(Exam, pk=examen_id)
     tema = examen.nombre_tema
@@ -78,11 +68,12 @@ def resppreg(request, examen_id):
 
 def respuesta(request, examen_id):
     """
-    Input: HttpRequest y id del examen
-    Output: redirige a un html pasándole una query
     Esta función recoge la respuesta seleccionada y le indica al usuario si 
     es correcta o no. Si no responde en el tiempo predeterminado le indica que
     la respuesta es incorrecta.
+    :Param request: HttpRequest 
+    :Param examen_id: id del examen
+    :return: redirige a un html pasándole una query
     """
     if request.method == 'POST':
         respuesta_id = request.POST['respuesta']
@@ -105,9 +96,11 @@ def respuesta(request, examen_id):
 
 def reportar(request, examen_id, pregunta_id):
     """
-    Input: HttpRequest, id del examen y id de la pregunta
-    Output: redirige a un html pasándole dos query
     Esta función le indica al usuario que la pregunta fue reportada.
+    :Param request: HttpRequest
+    :Param examen_id: id del examen 
+    :Param pregunta_id: id de la pregunta
+    :retun: redirige a un html pasándole dos query
     """
     examen = get_object_or_404(Exam, pk=examen_id)
     pregunta = get_object_or_404(Question, pk=pregunta_id)

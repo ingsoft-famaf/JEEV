@@ -12,6 +12,9 @@ from Levenshtein import *
 
 # cargarm 
 def cargarm(request):
+    """ :Param request: HttpRequest
+        :type: Http
+        :return: redirecciona a Http segun corresponda el caso """
     if request.method == "POST":
         nuevamat = request.POST['nueva_materia']
         if type(nuevamat) != unicode:
@@ -38,6 +41,11 @@ def cargarm(request):
 
 
 def cargart(request):
+    """
+        :Param request: HttpRequest
+        :type: Http
+        :return: redirecciona a Http segun corresponda el caso """
+    
     if request.method == "POST" and request.method != "NULL":
             materia = request.POST['materias']
             nuevotema = request.POST['nuevo_tema']
@@ -63,10 +71,11 @@ def cargart(request):
                         'nombre_materia', flat=True).distinct()})
 
 def obtener_tema_materia(request):
-    print "hola"
-    print (Materia.objects.values_list(
-                            'nombre_materia', flat=True))
-    return render(request, 'materias/cargartema.html',
+        """:Param request: HttpRequest
+        :type: Http
+        :return: redirecciona a Http segun corresponda """
+
+        return render(request, 'materias/cargartema.html',
               {'list_materias': Materia.objects.values_list(
                         'nombre_materia', flat=True).distinct()})
 
