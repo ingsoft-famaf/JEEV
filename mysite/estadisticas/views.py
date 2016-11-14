@@ -3,9 +3,9 @@ from django.shortcuts import render, get_object_or_404
 from examenes.models import Exam
 from materias.models import Materia
 from django.db.models import Avg, Sum, FloatField
-import scipy as sp
-from matplotlib import pyplot, pylab
-from pylab import *
+#import scipy as sp
+from matplotlib import pyplot #, pylab
+#from pylab import *
 import matplotlib.pyplot as plt
 
 
@@ -21,7 +21,7 @@ def grafico(request, materia):
     for x in xrange(1,lista_examenes.count()+1):
         listx.append(x)
     plt.plot(listx,y)
-    plt.xlabel('tiempo en dias')
+    plt.xlabel('tiempo')
     plt.ylabel('porcentaje')
     plt.show()
     return render(request, 'estadisticas/graphic.html', {'materia':materia})
