@@ -12,6 +12,22 @@ from materias.models import Materia, Tema
 from lxml import etree, objectify
 from lxml.etree import XMLSyntaxError
 
+
+
+def validar_respuestas(root):
+    for pregunta in root:
+        tiene_estado = 0
+        for respuesta in pregunta.iter("respuesta"):
+                    resp_text = respuesta.text
+                    attrib = respuesta.get("estado")
+                    if attrib is not None:
+                        print ("la respuestas %s tiene estado" % respuesta.text)
+                        tiene_estado += 1
+        print ("tiene_estado es %s" % tiene_estado)
+        if tiene_estado <1 or tiene_estado >1:
+            return False
+
+
 def validar(url):
     XSD_file = 'static/XSD/file.xsd'
     #with open('static/XSD/file.xsd', 'r') as f:
@@ -64,7 +80,10 @@ def question_view(url):
     """
     root = validar(url)
     if root is False:
-        return HttpResponse("No es VALIDO")
+        return HttpResponse("El XML ingresado no es valido")
+    respuestas_validas = validar_respuestas(root)
+    if respuestas_validas is False:
+        return HttpResponse("Solo puede haber una respuesta correcta")
     index = 0
     preguntas_repetidas = []
     for pregunta in root:
