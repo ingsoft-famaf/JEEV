@@ -16,8 +16,8 @@ def validar(url):
     XSD_file = 'static/XSD/file.xsd'
     #with open('static/XSD/file.xsd', 'r') as f:
     #    schema_root = etree.parse(f)
-    import pdb
-    pdb.set_trace()
+    #import pdb
+    #pdb.set_trace()
     try:
         schema = etree.XMLSchema(file = XSD_file)
         print schema
