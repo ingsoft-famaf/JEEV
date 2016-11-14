@@ -2,7 +2,7 @@
 from django.shortcuts import render, get_object_or_404
 
 from questions.models import Question, Answer
-from .models import Exam
+from .models import Exam, ExamErrores
 import questions.models #import Answer
 import random
 from django.http import HttpResponse
@@ -33,32 +33,22 @@ def examenencurso_view(request):
     examen = Exam(nombre_materia = materia,nombre_tema = tema,
                     cantidad_preg = cantidad, tiempo_preg = tiempo)
     examen.save()
-
-    """materia = request.POST['materias']
+    return render(request, 'examenes/examenencurso.html' ,
+                    {'examen':examen})
+"""
+def examen_basadoenerrores(request):
+    materia = request.POST['materias']
+    cantidad_temas = request.POST['cantidad_temas']
     tema = request.POST['temas']
     cantidad = request.POST['cantidad']
     tiempo = request.POST['tiempo']
-    randomint = []
-    query = Question.objects.filter(
-        nombre_tema=tema).filter(
-            nombre_materia=materia).values_list('id', flat=True)
-    count = query.count()
-    population = query
-    cantidadint = int(cantidad)
-    """
-    return render(request, 'examenes/examenencurso.html' ,
-                    {'examen':examen})
-
-def examen_basadoenerrores(request):
-    materia = request.POST['materias']
-    cantidad = request.POST['cantidad']
-    tiempo = request.POST['tiempo']
-    examen = Exam(nombre_materia = materia,
+    examen = ExamErrores(nombre_materia = materia,
+                    cantidad_temas = cantidad_temas, nombre_tema = tema,
                     cantidad_preg = cantidad, tiempo_preg = tiempo)
     examen.save()
-        return render(request, 'examenes/examen_basadoenerrores.html' ,
+    return render(request, 'examenes/examenencurso.html' ,
                     {'examen':examen})
-
+"""
 
 def resppreg(request, examen_id):
     """
