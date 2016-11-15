@@ -2,10 +2,21 @@
 from django.shortcuts import render, get_object_or_404
 
 from questions.models import Question, Answer
-from .models import Exam, ExamErrores
+from .models import Exam, PregResp
 import questions.models #import Answer
 import random
 from django.http import HttpResponse
+
+"""aux functions"""
+#def question_random
+def filter_query (realquery, querytofilt):
+    for q in querytofilt:
+        for q2 in realquery:
+            if q.question.id == q2.id :
+                realquery = realquery.exclude(id = q2.id)
+    return realquery
+"""End aux functions"""
+
 
 def examen_view(request):
     """
@@ -47,20 +58,28 @@ def resppreg(request, examen_id):
     examen = get_object_or_404(Exam, pk=examen_id)
     tema = examen.nombre_tema
     materia = examen.nombre_materia
-    cantidad = examen.cantidad_preg
-    cantidad = int(cantidad)
     randomm =[]
     query1 = Question.objects.filter(nombre_tema=tema)
     query2 = query1.filter(nombre_materia=materia)
     query3 = query2.filter(reportada=False)
-    randomm = random.sample(query3, 1)
-    #materia = Exam.objects.filter(id=)
-    pregunta = randomm[0]
-#    print examen.pregunta_actual
-#    print examen.cantidad_preg
+    #si pide mas preguntas de las que tenemos disminuimos la cantidad
+    #para no generar conflictos de bordes
+    if examen.cantidad_preg > query3.count():
+        examen.cantidad_preg = query3.count()
+
+    print examen.cantidad_preg
     if examen.pregunta_actual == examen.cantidad_preg:
         return render(request, 'examenes/finalizo.html',
                       {'examen': examen})
+    print examen.cantidad_preg
+    #query con las respuestas ya respondidas
+    queryresp = PregResp.objects.filter(examen = examen)
+    #se filtran las ya respondidas
+    query3 = filter_query(query3,queryresp)
+    randomm = random.sample(query3, 1)
+    pregunta = randomm[0]
+    PregResp.objects.create(examen = examen, question = pregunta)
+
     return render(request,'examenes/resppreg.html',
                   {'pregunta': pregunta,'examen':examen})
 
@@ -68,7 +87,7 @@ def respuesta(request, examen_id):
     """
     Input: HttpRequest y id del examen
     Output: redirige a un html pasándole una query
-    Esta función recoge la respuesta seleccionada y le indica al usuario si 
+    Esta función recoge la respuesta seleccionada y le indica al usuario si
     es correcta o no. Si no responde en el tiempo predeterminado le indica que
     la respuesta es incorrecta.
     """
