@@ -17,6 +17,28 @@ def filter_query (realquery, querytofilt):
     return realquery
 """End aux functions"""
 
+def elegirExamen(request):
+    """
+    Input: HttpRequest
+    Output: redirige a un html pasándole dos query
+    Esta función muestra las opciones de algoritmos para el examen.
+    """
+    return render(request, 'examenes/elegirExamen.html')
+
+
+def examen_basadoenerrores(request):
+    materia = request.POST['materias']
+    cantidad_temas = request.POST['cantidad_temas']
+    tema = request.POST['temas']
+    cantidad = request.POST['cantidad']
+    tiempo = request.POST['tiempo']
+    examen = ExamErrores(nombre_materia = materia,
+                    cantidad_temas = cantidad_temas, nombre_tema = tema,
+                    cantidad_preg = cantidad, tiempo_preg = tiempo)
+    examen.save()
+    return render(request, 'examenes/examen_basadoenerrores.html' ,
+                    {'examen':examen})
+
 
 def examen_view(request):
     """
