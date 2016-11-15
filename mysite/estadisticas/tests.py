@@ -44,4 +44,6 @@ class EstadisticasTest(TestCase):
         self.assertEqual(response1.resolver_match.func, estadis_examen)
 
     def test_grafico(self):
-        pass
+        materia = Materia.objects.get(nombre_materia='Lengua')
+        response = self.client.get(reverse('grafico', args=[materia]))
+        self.assertEqual(response.resolver_match.func, grafico)
