@@ -54,10 +54,7 @@ def estadistica_view(request):
         materia = get_object_or_404(Materia, nombre_materia=lista_materias[x])
         materia.promedio = (promedio['preguntas_correctas__avg'])*10
         materia.save()
-#    materias = Materia.objects.all()
         materias.insert(x,Materia.objects.get(nombre_materia=lista_materias[x]))
-    print materias
-    #materias = Materia.objects.all()
     #print materias
     return render(request, 'estadisticas/estadis.html', {'materias': materias})
 

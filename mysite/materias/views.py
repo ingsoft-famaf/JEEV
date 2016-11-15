@@ -67,8 +67,8 @@ def obtener_tema_materia(request):
     """:Param request: HttpRequest
     :type: Http
     :return: redirecciona a Http segun corresponda """
-    print (Materia.objects.values_list(
-                            'nombre_materia', flat=True))
+    #print (Materia.objects.values_list(
+    #                        'nombre_materia', flat=True))
     return render(request, 'materias/cargartema.html',
               {'list_materias': Materia.objects.values_list(
                                 'nombre_materia', flat=True).distinct()})

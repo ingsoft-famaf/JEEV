@@ -37,6 +37,8 @@ def examenencurso_view(request):
     :param request: HttpRequest
     :return: redirige a un html pasándole una query
     """
+    if request.POST['cantidad'] == "":
+        return render(request, 'examenes/vacio.html')
     materia = request.POST['materias']
     tema = request.POST['temas']
     cantidad = request.POST['cantidad']
@@ -67,11 +69,11 @@ def resppreg(request, examen_id):
     if examen.cantidad_preg > query3.count():
         examen.cantidad_preg = query3.count()
 
-    print examen.cantidad_preg
+    #print examen.cantidad_preg
     if examen.pregunta_actual == examen.cantidad_preg:
         return render(request, 'examenes/finalizo.html',
                       {'examen': examen})
-    print examen.cantidad_preg
+    #print examen.cantidad_preg
     #query con las respuestas ya respondidas
     queryresp = PregResp.objects.filter(examen = examen)
     #se filtran las ya respondidas
