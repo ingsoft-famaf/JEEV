@@ -2,9 +2,10 @@
 from django.shortcuts import render, get_object_or_404
 
 from questions.models import Question, Answer
-from .models import Exam, PregResp
+from .models import Exam, PregResp, ExamErrores
 import questions.models #import Answer
 import random
+from materias.models import Materia, Tema
 from django.http import HttpResponse
 
 """aux functions"""
@@ -26,19 +27,44 @@ def elegirExamen(request):
     return render(request, 'examenes/elegirExamen.html')
 
 
-def examen_basadoenerrores(request):
+def selcMateria(request):
+    """
+    Input: HttpRequest
+    Output: redirige a un html pasándole dos query
+    Esta función muestra las opciones para la configuración del examen.
+    """
+    query = Materia.objects.values_list(
+                            'nombre_materia', flat=True).distinct()
+    print query
+    return render(request, 'examenes/selcMateria.html',
+                  {'list_materias': Materia.objects.values_list(
+                            'nombre_materia', flat=True).distinct()})
+
+def selcTemas(request):
+    """
+    Input: HttpRequest
+    Output: redirige a un html pasándole dos query
+    Esta función muestra las opciones para la configuración del examen.
+    """
     materia = request.POST['materias']
+    list_temas= Tema.objects.values_list(
+                            'nombre_tema',flat=True).filter(temas__nombre_materia=materia)
+    print list_temas
+    return render(request, 'examenes/selcTemas.html', {'list_temas':list_temas})
+
+
+def examen_encurso(request):
+    if request.POST['cantidad'] == "":
+        return render(request, 'examenes/datosIncorrectos.html')
     cantidad_temas = request.POST['cantidad_temas']
     tema = request.POST['temas']
     cantidad = request.POST['cantidad']
     tiempo = request.POST['tiempo']
-    examen = ExamErrores(nombre_materia = materia,
-                    cantidad_temas = cantidad_temas, nombre_tema = tema,
+    examen = ExamErrores(cantidad_temas = cantidad_temas, nombre_tema = tema,
                     cantidad_preg = cantidad, tiempo_preg = tiempo)
     examen.save()
-    return render(request, 'examenes/examen_basadoenerrores.html' ,
+    return render(request, 'examenes/encurso.html' ,
                     {'examen':examen})
-
 
 def examen_view(request):
     """
@@ -60,6 +86,8 @@ def examenencurso_view(request):
     Esta función recoge la configuración del usuario y le indica al usuario
     que la configuración se realizó correctamente.
     """
+    if request.POST['cantidad'] == "":
+        return render(request, 'examenes/datosIncorrectos.html')
     materia = request.POST['materias']
     tema = request.POST['temas']
     cantidad = request.POST['cantidad']
