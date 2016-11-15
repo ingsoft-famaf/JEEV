@@ -28,7 +28,7 @@ class MateriaMethodTests(TestCase):
                 reverse('cargarm'),
                 data={
                     'nueva_materia': 'Quimica'})
-	print response
+
         self.assertEqual(response.resolver_match.func, cargarm)
 
 
@@ -41,7 +41,6 @@ class MateriaMethodTests(TestCase):
                 reverse('cargarm'),
                 data={
                     'nueva_materia': 'quimica'})
-        print response
         self.assertEqual(response.resolver_match.func, cargarm)
 
 
@@ -50,7 +49,6 @@ class MateriaMethodTests(TestCase):
                 reverse('cargarm'),
                 data={
                     'nueva_materia':""})
-    	print response
         self.assertEqual(response.resolver_match.func, cargarm)
 
     def test_se_cargo_materia_vacia(self):
@@ -58,7 +56,6 @@ class MateriaMethodTests(TestCase):
                 reverse('cargarm'),
                 data={
                     'nueva_materia':" "})
-        print response
         self.assertEqual(response.resolver_match.func, cargarm)
 
 
@@ -89,7 +86,6 @@ class TemaMethodTests(TestCase):
                 data={
                     'materias' : 'Biologia',
                     'nuevo_tema': 'genetica'})
-	print response
         self.assertEqual(response.resolver_match.func, cargart)
 
     def test_se_cargo_tema_vacio(self):
@@ -98,11 +94,9 @@ class TemaMethodTests(TestCase):
                 data={
                     'materias' : 'Algebra',
                     'nuevo_tema': ""})
-	print response
         response = self.client.post(
                 reverse('cargart'),
                 data={
                     'materias' : 'Algebra',
                     'nuevo_tema': " "})
-        print response
         self.assertEqual(response.resolver_match.func, cargart)
