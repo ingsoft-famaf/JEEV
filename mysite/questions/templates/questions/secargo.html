@@ -11,15 +11,12 @@
 </head>
 <body>
 <center>
-    <h4>Ingrese el archivo .xml en donde contenga las preguntas que desea cargar</h4>
-    <ul>
-    <form action="" enctype="multipart/form-data" method="post">
-        {% csrf_token %}
-        {{ form }}
-        <input type="submit" value="Subir preguntas">
-    </form>
-    </ul>
-    <a href="/hompage/superuser/" >Volver</a>
+    <h4>Las preguntas no repetidas fueron cargadas con exito.</h4>
+    <h4>Las preguntas que no se cargaron por estar repetidas son: </h4>
+    {% for pregunta in preguntas%}
+        {{pregunta}}<br><br>
+    {% endfor %}
+    <a href="/homepage/superuser/" >Volver</a>
 </center>
 </body>
-</html>
+</html>                            

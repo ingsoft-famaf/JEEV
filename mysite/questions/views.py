@@ -64,13 +64,13 @@ def uploadquestion(request):
             for chunk in f.chunks():
                 url = str() + chunk
             # print url
-            return question_view(url)
+            return question_view(request, url)
     else:
         form = UploadFileForm()
     return render(request, 'questions/uploadquestion.html', {'form': form})
 
 
-def question_view(url):
+def question_view(request, url):
     """
     Esta función se utiliza para realizar la creacion de preguntas con sus
     respectivas respuestas parsea un archivo xml, utilizando la libreria LXML.
@@ -80,10 +80,10 @@ def question_view(url):
     """
     root = validar(url)
     if root is False:
-        return HttpResponse("El XML ingresado no es valido")
+        return render(request, 'questions/invalido.html')
     respuestas_validas = validar_respuestas(root)
     if respuestas_validas is False:
-        return HttpResponse("Solo puede haber una respuesta correcta")
+        return render(request, 'questions/resp_invalida.html')
     index = 0
     preguntas_repetidas = []
     for pregunta in root:
@@ -93,8 +93,7 @@ def question_view(url):
         materia_exists = Materia.objects.filter(
             nombre_materia=materia).exists()
         if not materia_exists:
-            return HttpResponse('La materia %s no existe,'
-                                ' creela antes de ingresar las preguntas' % materia)
+            return render(request, 'questions/noExisteMat.html', {'materia': materia})
         materias_con_tema = Materia.objects.filter(tema__nombre_tema=tema)
         count_materias = materias_con_tema.count()
         tema_exist = False
@@ -104,8 +103,7 @@ def question_view(url):
                 tema_exist = True
                 break
         if not tema_exist:
-            return HttpResponse('El tema %s no existe,'
-                                ' creela antes de ingresar las preguntas' % tema)
+            return render(request, 'questions/noExisteTema.html', {'tema': tema})
         if type(texto) == unicode:
             return HttpResponse("La pregunta %s esta mal formada" % texto)
         query = Question.objects.filter(
@@ -154,9 +152,7 @@ def question_view(url):
             else:
                 preguntas_repetidas.insert(index,texto)
                 index +=  1
-    return HttpResponse("Las preguntas no repetidas fueron cargadas con exito."
-                        ' Las preguntas que no se cargaron por' 
-                            ' estar repetidas son: %s' % preguntas_repetidas)
+    return render(request, 'questions/secargo.html', {'preguntas':preguntas_repetidas})
 
 
 def reported(request):
