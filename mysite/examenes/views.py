@@ -19,6 +19,7 @@ def examen_view(request):
                    'list_temas': Question.objects.values_list(
                             'nombre_tema', flat=True).distinct()})
 
+
 def examenencurso_view(request):
     """
     Input: HttpRequest
@@ -35,20 +36,6 @@ def examenencurso_view(request):
     examen.save()
     return render(request, 'examenes/examenencurso.html' ,
                     {'examen':examen})
-"""
-def examen_basadoenerrores(request):
-    materia = request.POST['materias']
-    cantidad_temas = request.POST['cantidad_temas']
-    tema = request.POST['temas']
-    cantidad = request.POST['cantidad']
-    tiempo = request.POST['tiempo']
-    examen = ExamErrores(nombre_materia = materia,
-                    cantidad_temas = cantidad_temas, nombre_tema = tema,
-                    cantidad_preg = cantidad, tiempo_preg = tiempo)
-    examen.save()
-    return render(request, 'examenes/examenencurso.html' ,
-                    {'examen':examen})
-"""
 
 def resppreg(request, examen_id):
     """
