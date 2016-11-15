@@ -44,10 +44,6 @@ def examenencurso_view(request):
     examen = Exam(nombre_materia = materia,nombre_tema = tema,
                     cantidad_preg = cantidad, tiempo_preg = tiempo)
     examen.save()
-<<<<<<< HEAD
-
-=======
->>>>>>> origin/examenrepetidas
     return render(request, 'examenes/examenencurso.html' ,
                     {'examen':examen})
 
@@ -89,13 +85,7 @@ def resppreg(request, examen_id):
 
 def respuesta(request, examen_id):
     """
-<<<<<<< HEAD
     Esta función recoge la respuesta seleccionada y le indica al usuario si 
-=======
-    Input: HttpRequest y id del examen
-    Output: redirige a un html pasándole una query
-    Esta función recoge la respuesta seleccionada y le indica al usuario si
->>>>>>> origin/examenrepetidas
     es correcta o no. Si no responde en el tiempo predeterminado le indica que
     la respuesta es incorrecta.
     :Param request: HttpRequest 
