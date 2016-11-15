@@ -32,7 +32,7 @@ class EstadisticasTest(TestCase):
     def test_estadistica_materia(self):
         materia = Materia.objects.get(nombre_materia='Lengua')
         response = self.client.get(reverse('estadis', args=[materia]))
-        print response
+        #print response
         self.assertEqual(response.resolver_match.func, estadis)
 
     def test_estadistica_examen(self):
@@ -46,4 +46,5 @@ class EstadisticasTest(TestCase):
     def test_grafico(self):
         materia = Materia.objects.get(nombre_materia='Lengua')
         response = self.client.get(reverse('grafico', args=[materia]))
+        #no abrir grafico
         self.assertEqual(response.resolver_match.func, grafico)

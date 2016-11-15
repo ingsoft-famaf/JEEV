@@ -133,6 +133,8 @@ def reportar(request, examen_id, pregunta_id):
         pregunta.reportada = True
         pregunta.nota_reporte = nota
         pregunta.save()
+        examen.cantidad_preg -= 1
+        examen.save()
         return render(request, 'examenes/respuesta.html',
                       {'pregunta': pregunta, 'examen': examen})
     examen = get_object_or_404(Exam, pk=examen_id)
