@@ -29,4 +29,8 @@ class PregResp(models.Model):
     return : none
 """
     examen = models.ForeignKey('Exam', on_delete=models.CASCADE)
-    question_id = models.CharField(max_length=100)
+    question = models.ForeignKey('questions.Question',
+                                #on_delete=models.PROTECT,
+                                blank=True,
+                                null=True)
+
