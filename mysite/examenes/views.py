@@ -71,8 +71,11 @@ def resppreg(request, examen_id):
 
     #print examen.cantidad_preg
     if examen.pregunta_actual == examen.cantidad_preg:
-        return render(request, 'examenes/finalizo.html',
-                      {'examen': examen})
+        nota = examen.preguntas_correctas
+        nota1 = examen.cantidad_preg
+        examen.porcentaje = ((nota * 100)/ nota1)
+        examen.save()
+        return render(request, 'examenes/finalizo.html', {'examen': examen})
     #print examen.cantidad_preg
     #query con las respuestas ya respondidas
     queryresp = PregResp.objects.filter(examen = examen)
