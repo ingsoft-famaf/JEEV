@@ -14,6 +14,46 @@ from lxml.etree import XMLSyntaxError
 
 
 
+def modificacion_input(string):
+    """
+    Esta funcion transfomar el string de input en un string sin espacios
+    y con la primera letra en mayuscula
+    :Param string: string
+    :Return: String
+
+    """
+    string_splited = "".join(string.split())
+    #print string_splited
+    string_lower = string_splited.lower()
+    #print string_lower
+    string_titled = string_lower.title()
+    #print string_titled
+    return string_titled
+
+
+def comparacion_preguntas(string1,string2):
+    """
+    Esta funcion devuelve la distancia de Levenshtein entre
+    dos strings sin espacios y en minuscula
+    :Param string1: String
+    :Param string2: String
+    :Return: String
+    """
+    #print string1
+    #print string2
+    string2_joined = "".join(string2.split())
+    string1_joined = "".join(string1.split())
+    #print string1_joined
+    #print string2_joined 
+    string1_lower = string1_joined.lower()
+    string2_lower = string2_joined.lower()
+    #print ("String1_lower es %s" % string1_lower)
+    #print ("String2_lower es %s" % string2_lower)
+    distancia = distance(string1_lower, string2_lower) == 0
+    #print distancia
+    return distancia
+
+
 def validar_respuestas(root):
     for pregunta in root:
         tiene_estado = 0
@@ -77,6 +117,8 @@ def question_view(url):
     Una vez parseado, se comparan las preguntas existentes utilizando el
     algoritmo de Levenshtein en la base de datos con las que se quieren crear,
     si ya existe se da aviso al usuario, si no existen se crean.
+    :Param url: String
+    :Return: Http
     """
     root = validar(url)
     if root is False:
@@ -87,9 +129,9 @@ def question_view(url):
     index = 0
     preguntas_repetidas = []
     for pregunta in root:
-        materia = pregunta.find('materia').text
-        tema = pregunta.find('tema').text
-        texto = pregunta.find('texto').text
+        materia =modificacion_input(pregunta.find('materia').text)
+        tema = modificacion_input(pregunta.find('tema').text)
+        texto = (pregunta.find('texto').text)
         materia_exists = Materia.objects.filter(
             nombre_materia=materia).exists()
         if not materia_exists:
@@ -132,7 +174,7 @@ def question_view(url):
             for i in range(count):
                 repetida = False
                 firstObj = query[i]
-                if distance(str(firstObj.text_preg), texto) <= 0:
+                if comparacion_preguntas(str(firstObj.text_preg), texto):
                     repetida = True
                     break
             if repetida is False:
