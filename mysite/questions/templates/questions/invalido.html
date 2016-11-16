@@ -11,15 +11,8 @@
 </head>
 <body>
 <center>
-    <h4>Ingrese el archivo .xml en donde contenga las preguntas que desea cargar</h4>
-    <ul>
-    <form action="" enctype="multipart/form-data" method="post">
-        {% csrf_token %}
-        {{ form }}
-        <input type="submit" value="Subir preguntas">
-    </form>
-    </ul>
-    <a href="/hompage/superuser/" >Volver</a>
+    <h4>El archivo XML ingresado no es válido</h4>
+    <a href="/questions/uploadquestion/" >Volver</a>
 </center>
 </body>
 </html>
