@@ -13,6 +13,90 @@ from lxml import etree, objectify
 from lxml.etree import XMLSyntaxError
 
 
+def comparacion_preguntas(string1,string2):
+    """
+    Esta funcion devuelve la distancia de Levenshtein entre
+    dos strings sin espacios y en minuscula
+    :Param string1: String
+    :Param string2: String
+    :Return: String
+    """
+    #print string1
+    #print string2
+    string2_joined = "".join(string2.split())
+    string1_joined = "".join(string1.split())
+    #print string1_joined
+    #print string2_joined 
+    string1_lower = string1_joined.lower()
+    string2_lower = string2_joined.lower()
+    #print ("String1_lower es %s" % string1_lower)
+    #print ("String2_lower es %s" % string2_lower)
+    distancia = distance(string1_lower, string2_lower) == 0
+    #print distancia
+    return distancia
+
+
+def exist_materia(materia):
+    return Materia.objects.filter(nombre_materia=materia).exists()
+
+def exist_tema(tema, materia):
+    materias_con_tema = Materia.objects.filter(tema__nombre_tema=tema)
+    count_materias = materias_con_tema.count()
+    tema_exist = False
+    for i in range(count_materias):
+        bd_materia = str(materias_con_tema[i])
+        if bd_materia == materia:
+            tema_exist = True
+            break
+    return tema_exist
+
+def agregarPreg(request):
+    if request.method == "POST":
+        materia = request.POST['materia']
+        tema = request.POST['tema']
+        titulo = request.POST['titulo']
+        cant_opcion = request.POST['opcion']
+        if not exist_materia(materia):
+            return render(request, 'questions/MatnoEx.html', {'materia': materia})
+        if not exist_tema(tema, materia):
+            return render(request, 'questions/TemanoEx.html', {'tema': tema})
+        query = Question.objects.filter(nombre_tema=tema).filter(nombre_materia=materia)
+        count = query.count()
+        if count == 0:
+            q = Question(nombre_tema=tema, nombre_materia=materia, text_preg=titulo, reportada=False)
+            q.save()
+        else:
+            for i in range(count):
+                repetida = False
+                firstObj = query[i]
+                if comparacion_preguntas(str(firstObj.text_preg), str(titulo)):
+                    repetida = True
+                    break
+            if repetida is False:
+                q = Question(nombre_tema=tema, nombre_materia=materia, text_preg=titulo,
+                             reportada=False)
+                q.save()
+            else:
+                return render(request, 'questions/repetida.html', {'titulo':titulo})
+        opcion = 'opcion'
+        opciones = []
+        for x in xrange(0,int(cant_opcion)):
+            opcion += `x`
+            opciones.append(request.POST[opcion])
+            opcion = 'opcion'
+            a = Answer(respuesta=q, text_resp=opciones[x], es_correcta=False)
+            a.save()
+        return render(request, 'questions/seguarda.html', {'q':q, 'opciones': opciones})
+    return render(request, 'questions/agregarPreg.html')
+
+def guardarPreg(request, question_id):
+    opcion = request.POST['opcion']
+    q = get_object_or_404(Question, pk=question_id)
+    a = Answer.objects.get(respuesta=q, text_resp=opcion)
+    a.es_correcta = True
+    a.save()
+    return render(request, 'questions/seagrego.html')
+
 
 def validar_respuestas(root):
     for pregunta in root:
@@ -90,19 +174,9 @@ def question_view(request, url):
         materia = pregunta.find('materia').text
         tema = pregunta.find('tema').text
         texto = pregunta.find('texto').text
-        materia_exists = Materia.objects.filter(
-            nombre_materia=materia).exists()
-        if not materia_exists:
+        if not exist_materia(materia):
             return render(request, 'questions/noExisteMat.html', {'materia': materia})
-        materias_con_tema = Materia.objects.filter(tema__nombre_tema=tema)
-        count_materias = materias_con_tema.count()
-        tema_exist = False
-        for i in range(count_materias):
-            bd_materia = str(materias_con_tema[i])
-            if bd_materia == materia:
-                tema_exist = True
-                break
-        if not tema_exist:
+        if not exist_tema(tema):
             return render(request, 'questions/noExisteTema.html', {'tema': tema})
         if type(texto) == unicode:
             return HttpResponse("La pregunta %s esta mal formada" % texto)

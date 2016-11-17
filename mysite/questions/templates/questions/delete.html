@@ -1,3 +1,19 @@
-<h4>La pregunta ha sido eliminada correctamenta</h4>
+<!DOCTYPE html>
+{%load static%}
+<html>
+<head>
+    <lnk rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="{% static 'css/estilos.css' %}">
+    <header>
+        <h1>ADMIN</h1>
+    </header>
+</head>
+<body>
+<center>
+    <h4>La pregunta ha sido eliminada correctamenta</h4>
 
-<a href="{% url 'reported' %}">Volver a la lista de preguntas reportadas</a>
+    <a href="{% url 'reported' %}">Volver</a>
+</center>
+</body>
+</html>

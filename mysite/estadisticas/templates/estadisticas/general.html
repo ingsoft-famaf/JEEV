@@ -27,7 +27,7 @@
             {{ chart.as_html }}
         <h4>Listado de exámenes realizados: </h4>
         {% for examen in lista_examenes %}
-            <br><a href="{% url 'estadis_examen' examen.id %}">Examen: {{examen.id}}</a>
+            <br><a href="{% url 'estadis_examen' examen.id %}">Examen</a>
         {% endfor %}
         <br><a href="{%url 'estadisticas' %}">Volver</a>
     </center>
