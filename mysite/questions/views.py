@@ -11,6 +11,7 @@ from .forms import UploadFileForm
 from materias.models import Materia, Tema
 from lxml import etree, objectify
 from lxml.etree import XMLSyntaxError
+from materias.views import modificacion_input
 
 
 def comparacion_preguntas(string1,string2):
@@ -35,6 +36,22 @@ def comparacion_preguntas(string1,string2):
     #print distancia
     return distancia
 
+def comparacion_distancia(string1,string2):
+    """
+    Esta funcion devuelve la distancia de Levenshtein entre
+    dos strings sin espacios y en minuscula
+    :Param string1: String
+    :Param string2: String
+    :Return: String
+    """
+    string2_joined = "".join(string2.split())
+    string1_joined = "".join(string1.split())
+    string1_lower = string1_joined.lower()
+    string2_lower = string2_joined.lower()
+    distancia = distance(string1_lower, string2_lower) >=1 and distance(string1_lower, string2_lower) <=10
+    #print distancia
+    return distancia
+
 
 def exist_materia(materia):
     return Materia.objects.filter(nombre_materia=materia).exists()
@@ -50,6 +67,17 @@ def exist_tema(tema, materia):
             break
     return tema_exist
 
+
+def guardarPreg(materia, tema, titulo):
+    q = Question(nombre_tema=tema, nombre_materia=materia, text_preg=titulo)
+    q.save()
+    return q
+
+def guardarResp(question, resp):
+    a = Answer(respuesta=question, text_resp=resp)
+    a.save()
+
+
 def agregarPreg(request):
     if request.method == "POST":
         materia = request.POST['materia']
@@ -60,11 +88,11 @@ def agregarPreg(request):
             return render(request, 'questions/MatnoEx.html', {'materia': materia})
         if not exist_tema(tema, materia):
             return render(request, 'questions/TemanoEx.html', {'tema': tema})
+        parecida = False
         query = Question.objects.filter(nombre_tema=tema).filter(nombre_materia=materia)
         count = query.count()
         if count == 0:
-            q = Question(nombre_tema=tema, nombre_materia=materia, text_preg=titulo, reportada=False)
-            q.save()
+            q = guardarPreg(materia, tema, titulo)
         else:
             for i in range(count):
                 repetida = False
@@ -72,10 +100,10 @@ def agregarPreg(request):
                 if comparacion_preguntas(str(firstObj.text_preg), str(titulo)):
                     repetida = True
                     break
+                if comparacion_distancia(str(firstObj.text_preg), str(titulo)):
+                    parecida = True
             if repetida is False:
-                q = Question(nombre_tema=tema, nombre_materia=materia, text_preg=titulo,
-                             reportada=False)
-                q.save()
+                q = guardarPreg(materia, tema, titulo)
             else:
                 return render(request, 'questions/repetida.html', {'titulo':titulo})
         opcion = 'opcion'
@@ -84,12 +112,11 @@ def agregarPreg(request):
             opcion += `x`
             opciones.append(request.POST[opcion])
             opcion = 'opcion'
-            a = Answer(respuesta=q, text_resp=opciones[x], es_correcta=False)
-            a.save()
-        return render(request, 'questions/seguarda.html', {'q':q, 'opciones': opciones})
+            guardarResp(q, opciones[x])
+        return render(request, 'questions/seguarda.html', {'q':q, 'opciones': opciones, 'parecida': parecida})
     return render(request, 'questions/agregarPreg.html')
 
-def guardarPreg(request, question_id):
+def guardarCorrecta(request, question_id):
     opcion = request.POST['opcion']
     q = get_object_or_404(Question, pk=question_id)
     a = Answer.objects.get(respuesta=q, text_resp=opcion)

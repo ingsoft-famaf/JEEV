@@ -3,7 +3,7 @@ from django.contrib import admin
 from . import views
 
 urlpatterns = [
-    url(r'^(?P<question_id>[0-9]+)/guardarPreg', views.guardarPreg, name='guardarPreg'),
+    url(r'^(?P<question_id>[0-9]+)/guardarCorrecta', views.guardarCorrecta, name='guardarCorrecta'),
     url(r'^agregarPreg', views.agregarPreg, name='agregarPreg'),
     url(r'^uploadquestion', views.uploadquestion, name='uploadquestion'),
     url(r'reported/', views.reported, name='reported'),

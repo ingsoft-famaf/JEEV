@@ -1,0 +1,11 @@
+{% extends 'examenes/base.html' %}
+{% load static %}
+{% block content %}
+<body>
+    <center>
+    <h3>La cantidad ingresada es mayor a la cantidad de preguntas existentes.</h3>
+    <h3>Ingrese una cantidad igual o menor a {{cantidad}}.</h3>
+    <a href="/examenes/examen/" >Volver</a>
+    </center>
+</body>
+{% endblock content%}

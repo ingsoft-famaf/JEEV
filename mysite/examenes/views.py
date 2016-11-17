@@ -43,6 +43,12 @@ def examenencurso_view(request):
     tema = request.POST['temas']
     cantidad = request.POST['cantidad']
     tiempo = request.POST['tiempo']
+    query = Question.objects.filter(nombre_materia=materia).filter(nombre_tema=tema)
+    cantidad_preg = query.count()
+    print cantidad_preg
+    print type(cantidad)
+    if int(cantidad) > cantidad_preg:
+        return render(request, 'examenes/validarCant.html', {'cantidad': cantidad_preg})
     examen = Exam(nombre_materia = materia,nombre_tema = tema,
                     cantidad_preg = cantidad, tiempo_preg = tiempo)
     examen.save()
