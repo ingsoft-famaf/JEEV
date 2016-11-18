@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from django.shortcuts import render, get_object_or_404
 from lxml import etree
 import xml.etree.ElementTree as ET
@@ -13,7 +12,6 @@ from lxml import etree, objectify
 from lxml.etree import XMLSyntaxError
 
 
-
 def validar_respuestas(root):
     for pregunta in root:
         tiene_estado = 0
@@ -24,39 +22,25 @@ def validar_respuestas(root):
                         print ("la respuestas %s tiene estado" % respuesta.text)
                         tiene_estado += 1
         print ("tiene_estado es %s" % tiene_estado)
-        if tiene_estado <1 or tiene_estado >1:
+        if tiene_estado < 1 or tiene_estado > 1:
             return False
 
 
 def validar(url):
     XSD_file = 'static/XSD/file.xsd'
-    #with open('static/XSD/file.xsd', 'r') as f:
-    #    schema_root = etree.parse(f)
-    #import pdb
-    #pdb.set_trace()
     try:
-        schema = etree.XMLSchema(file = XSD_file)
+        schema = etree.XMLSchema(file=XSD_file)
         print schema
-        parser = objectify.makeparser(schema = schema)
+        parser = objectify.makeparser(schema=schema)
         boolean = objectify.fromstring(url, parser)
         root = ET.fromstring(url)
         return root
     except XMLSyntaxError:
-       return False
-#    parser = etree.XMLParser(schema = schema)
-    #return schema.validate(url)
-    #    try:
-#        etree.fromstring(url, parser)
-#        return root
-#    except etree.XMLSchemaError:
-#        return HttpResponse('El formato del xml no es el correcto')
-#    except XMLSyntaxError:
-#        return HttpResponse('mal formato')
+        return False
+
 
 def uploadquestion(request):
-    """
 
-    """
     if request.method == 'POST':
         form = UploadFileForm(request.POST, request.FILES)
         if form.is_valid():
@@ -150,9 +134,9 @@ def question_view(request, url):
                                    es_correcta=False)
                         a.save()
             else:
-                preguntas_repetidas.insert(index,texto)
-                index +=  1
-    return render(request, 'questions/secargo.html', {'preguntas':preguntas_repetidas})
+                preguntas_repetidas.insert(index, texto)
+                index += 1
+    return render(request, 'questions/secargo.html', {'preguntas': preguntas_repetidas})
 
 
 def reported(request):
