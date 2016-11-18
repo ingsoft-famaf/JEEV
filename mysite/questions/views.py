@@ -14,7 +14,7 @@ from lxml.etree import XMLSyntaxError
 from materias.views import modificacion_input
 
 
-def comparacion_preguntas(string1,string2):
+def comparacion_preguntas(string1, string2):
     """
     Esta funcion devuelve la distancia de Levenshtein entre
     dos strings sin espacios y en minuscula
@@ -29,7 +29,8 @@ def comparacion_preguntas(string1,string2):
     distancia = distance(string1_lower, string2_lower) == 0
     return distancia
 
-def comparacion_distancia(string1,string2):
+
+def comparacion_distancia(string1, string2):
     """
     Esta funcion devuelve la distancia de Levenshtein entre
     dos strings sin espacios y en minuscula
@@ -41,8 +42,7 @@ def comparacion_distancia(string1,string2):
     string1_joined = "".join(string1.split())
     string1_lower = string1_joined.lower()
     string2_lower = string2_joined.lower()
-    distancia = distance(string1_lower, string2_lower) >=1 and distance(string1_lower, string2_lower) <=10
-    #print distancia
+    distancia = distance(string1_lower, string2_lower) >= 1 and distance(string1_lower, string2_lower) <= 10
     return distancia
 
 
@@ -53,6 +53,7 @@ def exist_materia(materia):
     :Return: Booleano
     """
     return Materia.objects.filter(nombre_materia=materia).exists()
+
 
 def exist_tema(tema, materia):
     """
@@ -84,6 +85,7 @@ def guardarPreg(materia, tema, titulo):
     q.save()
     return q
 
+
 def guardarResp(question, resp):
     """
     Esta funcion guarda la respuesta de una pregunta.
@@ -99,7 +101,7 @@ def agregarPreg(request):
     Esta funcion agrega una nueva pregunta creada por el administrador.
     :Param request: HttpRequest
     :type: Http
-    :Return: redirecciona a Http segun corresponda el caso 
+    :Return: redirecciona a Http segun corresponda el caso
     """
     if request.method == "POST":
         materia = request.POST['materia']
@@ -129,19 +131,20 @@ def agregarPreg(request):
             if repetida is False:
                 q = guardarPreg(materia, tema, titulo)
             else:
-                return render(request, 'questions/repetida.html', {'titulo':titulo})
+                return render(request, 'questions/repetida.html', {'titulo': titulo})
         opcion = 'opcion'
         opciones = []
-        for x in xrange(0,int(cant_opcion)):
-            opcion += `x`
+        for x in xrange(0, int(cant_opcion)):
+            opcion += repr(x)
             opciones.append(request.POST[opcion])
             opcion = 'opcion'
             guardarResp(q, opciones[x])
             if opciones[x] == "":
                 q.delete()
                 return render(request, 'questions/PregVacio.html')
-        return render(request, 'questions/seguarda.html', {'q':q, 'opciones': opciones, 'parecida': parecida})
+        return render(request, 'questions/seguarda.html', {'q': q, 'opciones': opciones, 'parecida': parecida})
     return render(request, 'questions/agregarPreg.html')
+
 
 def guardarCorrecta(request, question_id):
     """
@@ -166,37 +169,23 @@ def validar_respuestas(root):
                     resp_text = respuesta.text
                     attrib = respuesta.get("estado")
                     if attrib is not None:
-                        print ("la respuestas %s tiene estado" % respuesta.text)
                         tiene_estado += 1
-        print ("tiene_estado es %s" % tiene_estado)
-        if tiene_estado <1 or tiene_estado >1:
+        if tiene_estado < 1 or tiene_estado > 1:
             return False
 
 
 def validar(url):
     XSD_file = 'static/XSD/file.xsd'
-    #with open('static/XSD/file.xsd', 'r') as f:
-    #    schema_root = etree.parse(f)
-    #import pdb
-    #pdb.set_trace()
     try:
-        schema = etree.XMLSchema(file = XSD_file)
+        schema = etree.XMLSchema(file=XSD_file)
         print schema
-        parser = objectify.makeparser(schema = schema)
+        parser = objectify.makeparser(schema=schema)
         boolean = objectify.fromstring(url, parser)
         root = ET.fromstring(url)
         return root
     except XMLSyntaxError:
-       return False
-#    parser = etree.XMLParser(schema = schema)
-    #return schema.validate(url)
-    #    try:
-#        etree.fromstring(url, parser)
-#        return root
-#    except etree.XMLSchemaError:
-#        return HttpResponse('El formato del xml no es el correcto')
-#    except XMLSyntaxError:
-#        return HttpResponse('mal formato')
+        return False
+
 
 def uploadquestion(request):
     """
@@ -285,9 +274,9 @@ def question_view(request, url):
                                    es_correcta=False)
                         a.save()
             else:
-                preguntas_repetidas.insert(index,texto)
-                index +=  1
-    return render(request, 'questions/secargo.html', {'preguntas':preguntas_repetidas})
+                preguntas_repetidas.insert(index, texto)
+                index += 1
+    return render(request, 'questions/secargo.html', {'preguntas': preguntas_repetidas})
 
 
 def reported(request):

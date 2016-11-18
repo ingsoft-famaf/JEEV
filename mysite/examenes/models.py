@@ -3,6 +3,7 @@ from django.db import models
 from django.utils.encoding import python_2_unicode_compatible
 from questions.models import Question
 
+
 class Exam(models.Model):
     """
     Esta clase crea el modelo de examen, el examen va a tener como
@@ -21,17 +22,15 @@ class Exam(models.Model):
     preguntas_incorrectas = models.IntegerField(default=0)
     porcentaje = models.IntegerField(default=0)
 
+
 class PregResp(models.Model):
-    """Crea el modelo Pregunta y Respuesta el cual va a tener como 
-    objetos el examen y una question_id que representa una simple 
+    """
+    Crea el modelo Pregunta y Respuesta el cual va a tener como
+    objetos el examen y una question_id que representa una simple
     base de datos.
     :param models: tiene los campos de la tabla PregResp.
     :type models : Model
     return : none
-"""
+    """
     examen = models.ForeignKey('Exam', on_delete=models.CASCADE)
-    question = models.ForeignKey('questions.Question',
-                                #on_delete=models.PROTECT,
-                                blank=True,
-                                null=True)
-
+    question = models.ForeignKey('questions.Question', blank=True, null=True)

@@ -8,6 +8,13 @@ from graphos.renderers import flot
 
 
 def estadis(request, materia):
+    """
+    Esta funcion devuelve las estadisticas generales de la materia seleccionada.
+    :param request: HttpRequest
+    :param materia: String
+    :type: POST
+    :return:html
+    """
     lista_examenes = Exam.objects.filter(nombre_materia=materia)
     cant_preguntas = lista_examenes.aggregate(Sum('cantidad_preg'))
     preg_correctas = lista_examenes.aggregate(Sum('preguntas_correctas'))
@@ -18,15 +25,17 @@ def estadis(request, materia):
     chart = flot.LineChart(data_source, height=300, width=500)
     return render(request, 'estadisticas/general.html',
                   {'lista_examenes': lista_examenes, 'cant_preguntas': cant_preguntas,
-                   'preg_correctas':preg_correctas, 'preg_incorrectas': preg_incorrectas,
-                   'materia': materia, 'promedio': promedio, 'chart':chart})
+                   'preg_correctas': preg_correctas, 'preg_incorrectas': preg_incorrectas,
+                   'materia': materia, 'promedio': promedio, 'chart': chart})
 
 
 def estadistica_view(request):
-    """Guarda la estadisticas y reedirije a un html
-    :param estadistica_view: pedido de html
-    :type: GET  o POST
-    :return:html"""
+    """
+    Esta funcion genera los promedios de cada materia, según los examenes realizados por el usuario.
+    :param request: HttpRequest
+    :type: Http
+    :return: redirige a un html pasándole la lista de las materias
+    """
     lista_materias = Exam.objects.values_list('nombre_materia', flat=True).distinct()
     materias = []
     for x in xrange(lista_materias.count()):
@@ -35,12 +44,11 @@ def estadistica_view(request):
         cant_preguntas = lista_examenes.aggregate(Sum('cantidad_preg'))
         suma = float(promedio['preguntas_correctas__sum'])
         cantidad = float(cant_preguntas['cantidad_preg__sum'])
-        promedio = float(suma/cantidad)
-        print promedio
+        promedio = float(suma / cantidad)
         materia = get_object_or_404(Materia, nombre_materia=lista_materias[x])
-        materia.promedio = promedio*10
+        materia.promedio = promedio * 10
         materia.save()
-        materias.insert(x,Materia.objects.get(nombre_materia=lista_materias[x]))
+        materias.insert(x, Materia.objects.get(nombre_materia=lista_materias[x]))
     return render(request, 'estadisticas/estadis.html', {'materias': materias})
 
 
