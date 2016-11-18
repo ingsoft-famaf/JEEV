@@ -22,18 +22,11 @@ def comparacion_preguntas(string1,string2):
     :Param string2: String
     :Return: String
     """
-    #print string1
-    #print string2
     string2_joined = "".join(string2.split())
     string1_joined = "".join(string1.split())
-    #print string1_joined
-    #print string2_joined 
     string1_lower = string1_joined.lower()
     string2_lower = string2_joined.lower()
-    #print ("String1_lower es %s" % string1_lower)
-    #print ("String2_lower es %s" % string2_lower)
     distancia = distance(string1_lower, string2_lower) == 0
-    #print distancia
     return distancia
 
 def comparacion_distancia(string1,string2):
@@ -54,9 +47,20 @@ def comparacion_distancia(string1,string2):
 
 
 def exist_materia(materia):
+    """
+    Esta funcion devuelve true o false dependidendo si la materia existe o no.
+    :Param materia: String
+    :Return: Booleano
+    """
     return Materia.objects.filter(nombre_materia=materia).exists()
 
 def exist_tema(tema, materia):
+    """
+    Esta funcion devuelve true o false dependidendo si el tema existe o no.
+    :Param tema: String
+    :Param materia: String
+    :Return: Booleano
+    """
     materias_con_tema = Materia.objects.filter(tema__nombre_tema=tema)
     count_materias = materias_con_tema.count()
     tema_exist = False
@@ -69,16 +73,34 @@ def exist_tema(tema, materia):
 
 
 def guardarPreg(materia, tema, titulo):
+    """
+    Esta funcion guarda la pregunta en la base de datos.
+    :Param materia: String
+    :Param tema: String
+    :Param titulo: String
+    :Return: el objeto question que fue guardado
+    """
     q = Question(nombre_tema=tema, nombre_materia=materia, text_preg=titulo)
     q.save()
     return q
 
 def guardarResp(question, resp):
+    """
+    Esta funcion guarda la respuesta de una pregunta.
+    :Param question: objeto Question
+    :Param resp: String
+    """
     a = Answer(respuesta=question, text_resp=resp)
     a.save()
 
 
 def agregarPreg(request):
+    """
+    Esta funcion agrega una nueva pregunta creada por el administrador.
+    :Param request: HttpRequest
+    :type: Http
+    :Return: redirecciona a Http segun corresponda el caso 
+    """
     if request.method == "POST":
         materia = request.POST['materia']
         tema = request.POST['tema']
@@ -88,6 +110,8 @@ def agregarPreg(request):
             return render(request, 'questions/MatnoEx.html', {'materia': materia})
         if not exist_tema(tema, materia):
             return render(request, 'questions/TemanoEx.html', {'tema': tema})
+        if titulo == "":
+            return render(request, 'questions/PregVacio.html')
         parecida = False
         query = Question.objects.filter(nombre_tema=tema).filter(nombre_materia=materia)
         count = query.count()
@@ -113,10 +137,20 @@ def agregarPreg(request):
             opciones.append(request.POST[opcion])
             opcion = 'opcion'
             guardarResp(q, opciones[x])
+            if opciones[x] == "":
+                q.delete()
+                return render(request, 'questions/PregVacio.html')
         return render(request, 'questions/seguarda.html', {'q':q, 'opciones': opciones, 'parecida': parecida})
     return render(request, 'questions/agregarPreg.html')
 
 def guardarCorrecta(request, question_id):
+    """
+    Esta funcion guarda la respuesta correcta seleccionada por el administrador,
+    de la pregunta nueva que quiere agregar.
+    :Param request:HttpRequest
+    :Param question_id: Integre
+    :Return: redirecciona a Http indicando que se agregó con éxito
+    """
     opcion = request.POST['opcion']
     q = get_object_or_404(Question, pk=question_id)
     a = Answer.objects.get(respuesta=q, text_resp=opcion)
