@@ -59,9 +59,10 @@ def examen_encurso(request):
     """
     if request.POST['cantidad'] == "":
         return render(request, 'examenes/datosIncorrectos.html')
+    tema = request.POST['temas']
     cantidad = request.POST['cantidad']
     tiempo = request.POST['tiempo']
-    examen = ExamErrores(cantidad_preg = cantidad, tiempo_preg = tiempo)
+    examen = ExamErrores(nombre_tema = tema,cantidad_preg = cantidad, tiempo_preg = tiempo)
     examen.save()
     return render(request, 'examenes/encurso.html' ,
                     {'examen':examen})
