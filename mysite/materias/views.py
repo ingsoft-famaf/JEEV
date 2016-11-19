@@ -9,6 +9,22 @@ from Levenshtein import *
 # devuelven una instancia de HttpResponse utilizando el atajo render.
 # Los parámetros de render son request y template_name.
 
+def modificacion_input(string):
+    """
+    Esta funcion transfomar el string de input en un string sin espacios
+    y con la primera letra en mayuscula
+    :Param string: string
+    :Return: String
+
+    """
+    string_splited = "".join(string.split())
+    #print string_splited
+    string_lower = string_splited.lower()
+    #print string_lower
+    string_titled = string_lower.title()
+    #print string_titled
+    return string_titled
+
 
 # cargarm 
 def cargarm(request):

@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
+import yaml
+import xml.etree.ElementTree as ET
 from django.shortcuts import render, get_object_or_404
 from lxml import etree
-import xml.etree.ElementTree as ET
 from StringIO import StringIO
 from lxml.builder import ElementMaker
 from models import Question, Answer
@@ -11,24 +12,65 @@ from .forms import UploadFileForm
 from materias.models import Materia, Tema
 from lxml import etree, objectify
 from lxml.etree import XMLSyntaxError
+from materias.views import modificacion_input
+from schema import Schema, And, Use, Optional
+from schema import SchemaError
 
 
 
-def modificacion_input(string):
+def es_parecida(string1, string2):
     """
-    Esta funcion transfomar el string de input en un string sin espacios
-    y con la primera letra en mayuscula
-    :Param string: string
+    Esta funcion devuelve la distancia de Levenshtein entre
+    dos strings sin espacios y en minuscula
+    :Param string1: String
+    :Param string2: String
     :Return: String
-
     """
-    string_splited = "".join(string.split())
-    string_lower = string_splited.lower()
-    #print string_lower
-    string_titled = string_lower.title()
-    #print string_titled
-    return string_titled
+    string2_joined = "".join(string2.split())
+    string1_joined = "".join(string1.split())
+    string1_lower = string1_joined.lower()
+    string2_lower = string2_joined.lower()
+    distancia = distance(string1_lower, string2_lower) >= 1 and distance(string1_lower, string2_lower) <= 10
+    return distancia
 
+def guardarPreg(materia, tema, titulo):
+    q = Question(nombre_tema=tema, nombre_materia=materia, text_preg=titulo)
+    q.save()
+    return q
+
+def guardarResp(question, resp, es_correcta, attrib):
+    if attrib is not None:
+        a = Answer(respuesta=question, text_resp=resp, es_correcta=es_correcta)
+        a.save()
+    else:
+        a = Answer(respuesta=question, text_resp=resp, es_correcta=es_correcta)
+        a.save()
+
+def guardar_resp_dict(resp_dict, question):
+    resp = resp_dict.get('correcta')
+    if resp is not None:
+        a = Answer(respuesta=question, text_resp=resp, es_correcta=True)
+        a.save()
+    else:
+        resp = resp_dict.get('incorrecta')
+        a = Answer(respuesta=question, text_resp=resp, es_correcta=False)
+        a.save()
+
+
+def exist_materia(materia):
+     return Materia.objects.filter(nombre_materia=materia).exists()
+ 
+
+def exist_tema(tema, materia):
+     materias_con_tema = Materia.objects.filter(tema__nombre_tema=tema)
+     count_materias = materias_con_tema.count()
+     tema_exist = False
+     for i in range(count_materias):
+         bd_materia = str(materias_con_tema[i])
+         if bd_materia == materia:
+             tema_exist = True
+             break
+     return tema_exist
 
 def comparacion_preguntas(string1,string2):
     """
@@ -38,21 +80,29 @@ def comparacion_preguntas(string1,string2):
     :Param string2: String
     :Return: String
     """
-    #print string1
-    #print string2
     string2_joined = "".join(string2.split())
-    string1_joined = "".join(string1.split())
-    #print string1_joined
-    #print string2_joined 
+    string1_joined = "".join(string1.split()) 
     string1_lower = string1_joined.lower()
     string2_lower = string2_joined.lower()
-    #print ("String1_lower es %s" % string1_lower)
-    #print ("String2_lower es %s" % string2_lower)
     distancia = distance(string1_lower, string2_lower) == 0
-    #print distancia
     return distancia
-
-
+def validar_respuestas_yml(objeto):
+    valido = False
+    for bloque in objeto:
+        respuestas_lista = bloque.get('Respuesta')
+        print respuestas_lista
+        count_respuestas = len(respuestas_lista)
+        for i in range(count_respuestas):
+            resp_dict = respuestas_lista[i]
+            resp = resp_dict.get('correcta')
+            #print resp
+            if resp is not None:
+                valido = True
+                break
+            else:
+                valido = False
+    return valido
+                
 def validar_respuestas(root):
     for pregunta in root:
         tiene_estado = 0
@@ -66,13 +116,25 @@ def validar_respuestas(root):
         if tiene_estado <1 or tiene_estado >1:
             return False
 
+def validar_yaml(yaml_object):
+    schema = Schema([{'Materia':str,
+                  'Respuesta':Use(str,int),
+                  'Pregunta':str,
+                  'Tema':str}])
 
-def validar(url):
+    lista_bloque = []
+    index = 0
+    for bloque in yaml_object:
+        lista_bloque.insert(0,bloque)
+        index +=1
+    try:
+        validated = schema.validate(lista_bloque)
+        es_valida = True
+    except:
+        es_valida = False
+
+def validar_xml(url):
     XSD_file = 'static/XSD/file.xsd'
-    #with open('static/XSD/file.xsd', 'r') as f:
-    #    schema_root = etree.parse(f)
-    #import pdb
-    #pdb.set_trace()
     try:
         schema = etree.XMLSchema(file = XSD_file)
         print schema
@@ -82,15 +144,6 @@ def validar(url):
         return root
     except XMLSyntaxError:
        return False
-#    parser = etree.XMLParser(schema = schema)
-    #return schema.validate(url)
-    #    try:
-#        etree.fromstring(url, parser)
-#        return root
-#    except etree.XMLSchemaError:
-#        return HttpResponse('El formato del xml no es el correcto')
-#    except XMLSyntaxError:
-#        return HttpResponse('mal formato')
 
 def uploadquestion(request):
     """
@@ -102,12 +155,72 @@ def uploadquestion(request):
             f = request.FILES['file']
             for chunk in f.chunks():
                 url = str() + chunk
-            # print url
-            return question_view(request, url)
+                print url
+            return upload_question_yaml(request,url)
+            #return question_view(request, url)
     else:
         form = UploadFileForm()
     return render(request, 'questions/uploadquestion.html', {'form': form})
 
+def upload_question_yaml(request, url):
+    #import pdb
+    #pdb.set_trace()
+    yml = yaml.load_all(url)
+    yml_validacion = yaml.load_all(url)
+    yml_respuestas = yaml.load_all(url)
+    valido = validar_yaml(yml_validacion)
+    if valido is False:
+        return render(request, 'questions/invalido.html')
+    respuestas_validas = validar_respuestas_yml(yml_respuestas)
+    print respuestas_validas
+    if respuestas_validas is False:
+        return render(request, 'questions/resp_invalida.html')
+    index_iguales = 0
+    index_parecidas = 0
+    preguntas_repetidas = []
+    preguntas_parecidas = []
+    for block in yml:
+        materia = modificacion_input(block.get('Materia'))
+        tema = modificacion_input(block.get('Tema'))
+        pregunta = block.get('Pregunta')
+        respuestas_lista = block.get('Respuesta')
+        materia_existe = exist_materia(materia)
+        if not materia_existe:
+            return render(request, 'questions/noExisteMat.html', {'materia': materia})
+        tema_existe = exist_tema(tema, materia)
+        if not tema_existe:
+            return render(request, 'questions/noExisteTema.html', {'tema': tema})
+        query = Question.objects.filter(
+            nombre_tema=tema).filter(nombre_materia=materia)
+        count = query.count()
+        count_respuestas = len(respuestas_lista)
+        parecida = False
+        if count == 0:
+            qobject = guardarPreg(materia, tema, pregunta)
+            for i in range(count_respuestas):
+                resp_dict = respuestas_lista[i]
+                guardar_resp_dict(resp_dict, qobject)
+        else:
+            for i in range(count):
+                repetida = False
+                firstObj = query[i]
+                if comparacion_preguntas(str(firstObj.text_preg), pregunta):
+                    repetida = True
+                    break
+                if es_parecida(str(firstObj.text_preg), pregunta):
+                    parecida = True
+            if repetida is False:
+                if parecida is True:
+                    preguntas_parecidas.insert(index_parecidas, pregunta)
+                    index_parecidas += 1
+                q_saved = guardarPreg(materia, tema, pregunta)
+                for i in range(count_respuestas):
+                    resp_dict = respuestas_lista[i]
+                    guardar_resp_dict(resp_dict,q_saved)
+            else:
+                preguntas_repetidas.insert(index_iguales, pregunta)
+                index_iguales +=  1
+    return render(request, 'questions/secargo_yml.html', {'preguntas': preguntas_repetidas, 'preguntas_similares': preguntas_parecidas})
 
 def question_view(request, url):
     """
@@ -119,7 +232,7 @@ def question_view(request, url):
     :Param url: String
     :Return: Http
     """
-    root = validar(url)
+    root = validar_xml(url)
     if root is False:
         return render(request, 'questions/invalido.html')
     respuestas_validas = validar_respuestas(root)
@@ -191,8 +304,8 @@ def question_view(request, url):
                                    es_correcta=False)
                         a.save()
             else:
-                preguntas_repetidas.insert(index,texto)
-                index +=  1
+                preguntas_repetidas.insert(index, texto)
+                index += 1
     return render(request, 'questions/secargo.html', {'preguntas':preguntas_repetidas})
 
 
@@ -260,8 +373,8 @@ def save_view(request, question_id, answer_id):
     answer.text_resp = resp_nueva
     answer.save()
     return render(request, 'questions/detail.html',
-                  {'answers': Answer.objects.filter(respuesta=question),
-                   'question': question})
+                {'answers': Answer.objects.filter(respuesta=question),
+                'question': question})
 
 
 def sacardereported(request, question_id):
@@ -275,4 +388,4 @@ def sacardereported(request, question_id):
     question.reportada = False
     question.save()
     return render(request, 'questions/reported.html',
-                  {'questions': Question.objects.filter(reportada=True)})
+                {'questions': Question.objects.filter(reportada=True)})
