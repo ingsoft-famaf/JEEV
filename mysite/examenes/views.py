@@ -16,10 +16,10 @@ def filter_query(realquery, querytofilt):
 
 def examen_view(request):
     """
-        Esta función muestra las opciones para la configuración del examen.
+        Esta funcion muestra las opciones para la configuracion del examen.
         :param request: HttpRequest
         :type: Http
-        :return: redirige a un html pasándole dos query
+        :return: redirige a un html pasandole dos query
     """
     return render(request, 'examenes/examen.html',
                   {'list_materias': Question.objects.values_list(
@@ -30,10 +30,10 @@ def examen_view(request):
 
 def examenencurso_view(request):
     """
-    Esta función recoge la configuración del usuario y le indica al usuario
-    que la configuración se realizó correctamente.
+    Esta funcion recoge la configuracion del usuario y le indica al usuario
+    que la configuracion se realizo correctamente.
     :param request: HttpRequest
-    :return: redirige a un html pasándole una query
+    :return: redirige a un html pasandole una query
     """
     if request.POST['cantidad'] == "":
         return render(request, 'examenes/vacio.html')
@@ -50,11 +50,11 @@ def examenencurso_view(request):
 
 def resppreg(request, examen_id):
     """
-    Esta función muestra una pregunta con sus respuestas para que el usuario
-    haga la elección de un de ellas.
-    :Param  request: HttpRequest
-    :Param examen_id: id del examen
-    :return: redirige a un html pasándole dos query
+    Esta funcion muestra una pregunta con sus respuestas para que el usuario
+        haga la eleccion de un de ellas.
+        :Param  request: HttpRequest
+        :Param examen_id: id del examen
+        :return: redirige a un html pasandole dos query
     """
     examen = get_object_or_404(Exam, pk=examen_id)
     tema = examen.nombre_tema
@@ -80,12 +80,12 @@ def resppreg(request, examen_id):
 
 def respuesta(request, examen_id):
     """
-    Esta función recoge la respuesta seleccionada y le indica al usuario si
+    Esta funcion recoge la respuesta seleccionada y le indica al usuario si
     es correcta o no. Si no responde en el tiempo predeterminado le indica que
     la respuesta es incorrecta.
     :Param request: HttpRequest
     :Param examen_id: id del examen
-    :return: redirige a un html pasándole una query
+    :return: redirige a un html pasandole una query
     """
     if request.method == 'POST':
         respuesta_id = request.POST['respuesta']
@@ -114,11 +114,11 @@ def nota_reportada(request, examen_id, pregunta_id):
 
 def reportar(request, examen_id, pregunta_id):
     """
-    Esta función le indica al usuario que la pregunta fue reportada.
+    Esta funcipn le indica al usuario que la pregunta fue reportada.
     :Param request: HttpRequest
     :Param examen_id: id del examen
     :Param pregunta_id: id de la pregunta
-    :retun: redirige a un html pasándole dos query
+    :retun: redirige a un html pasandole dos query
     """
     if request.method == "POST":
         nota = request.POST['nota']
