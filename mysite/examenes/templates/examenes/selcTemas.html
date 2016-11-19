@@ -15,13 +15,11 @@
             <form  action="{% url 'encurso' %}" method= "post">
             {% csrf_token %}
             <p> Seleccione el tema </p>
-            <select name="temas">
             {% for nombre_tema in list_temas %}
-            <option value="{{ nombre_tema }}" name="tema">{{ nombre_tema }}</option>
+                <br><input type="checkbox" name="temaElegir" value="{{nombre_tema.id}}">{{nombre_tema}}
+                </br>
             {% endfor %}
             </select>
-            <p> Seleccione cantidad de temas</p>
-            <input name="cantidad_temas" type="number" value="" />
             <p> Seleccione cantidad de preguntas</p>
             <input name="cantidad" type="number" value="" />
             <p> Tiempo deseado entre preguntas (en segundos)</p>

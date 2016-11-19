@@ -25,7 +25,6 @@ class ExamErrores(models.Model):
     pregunta y la cantidad de preguntas a realizar.
     """
     nombre_tema = models.CharField(max_length=100)
-    cantidad_temas = models.IntegerField(default=0)
     nombre_materia = models.CharField(max_length=100)
     tiempo_preg = models.IntegerField(default=0)
     cantidad_preg = models.IntegerField(default=0)

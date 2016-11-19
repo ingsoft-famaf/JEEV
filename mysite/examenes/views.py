@@ -26,12 +26,13 @@ def elegirExamen(request):
     """
     return render(request, 'examenes/elegirExamen.html')
 
-
+""" Algoritmo basado en errores"""
 def selcMateria(request):
     """
     Input: HttpRequest
     Output: redirige a un html pasándole dos query
-    Esta función muestra las opciones para la configuración del examen.
+    Esta función muestra las opciones de materias para la configuración del examen
+    para el algoritmo basado en errores.
     """
     query = Materia.objects.values_list(
                             'nombre_materia', flat=True).distinct()
@@ -44,28 +45,67 @@ def selcTemas(request):
     """
     Input: HttpRequest
     Output: redirige a un html pasándole dos query
-    Esta función muestra las opciones para la configuración del examen.
+    Esta función muestra las opciones de temas para la configuración del examen
+    para el algoritmo basado en errores.
     """
     materia = request.POST['materias']
     list_temas= Tema.objects.values_list(
                             'nombre_tema',flat=True).filter(temas__nombre_materia=materia)
-    print list_temas
     return render(request, 'examenes/selcTemas.html', {'list_temas':list_temas})
 
-
 def examen_encurso(request):
+    """
+    Algoritmo basado en errores.
+    """
     if request.POST['cantidad'] == "":
         return render(request, 'examenes/datosIncorrectos.html')
-    cantidad_temas = request.POST['cantidad_temas']
-    tema = request.POST['temas']
     cantidad = request.POST['cantidad']
     tiempo = request.POST['tiempo']
-    examen = ExamErrores(cantidad_temas = cantidad_temas, nombre_tema = tema,
-                    cantidad_preg = cantidad, tiempo_preg = tiempo)
+    examen = ExamErrores(cantidad_preg = cantidad, tiempo_preg = tiempo)
     examen.save()
     return render(request, 'examenes/encurso.html' ,
                     {'examen':examen})
 
+"""
+def respuestaAE(request, examen_id):
+ 
+    Input: HttpRequest y id del examen
+    Output: redirige a un html pasándole dos query
+    Esta función muestra una pregunta con sus respuestas para que el usuario
+    haga la elección de un de ellas.
+   
+    examen = get_object_or_404(Exam, pk=examen_id)
+    tema = examen.nombre_tema
+    materia = examen.nombre_materia
+    randomm =[]
+    query1 = Question.objects.filter(nombre_tema=tema)
+    query2 = query1.filter(nombre_materia=materia)
+    query3 = query2.filter(reportada=False)
+    #si pide mas preguntas de las que tenemos disminuimos la cantidad
+    #para no generar conflictos de bordes
+    if examen.cantidad_preg > query3.count():
+        examen.cantidad_preg = query3.count()
+
+    print examen.cantidad_preg
+    if examen.pregunta_actual == examen.cantidad_preg:
+        return render(request, 'examenes/finalizo.html',
+                      {'examen': examen})
+    print examen.cantidad_preg
+    #query con las respuestas ya respondidas
+    queryresp = PregResp.objects.filter(examen = examen)
+    #se filtran las ya respondidas
+    query3 = filter_query(query3,queryresp)
+    randomm = random.sample(query3, 1)
+    pregunta = randomm[0]
+    PregResp.objects.create(examen = examen, question = pregunta)
+
+    return render(request,'examenes/resppreg.html',
+                  {'pregunta': pregunta,'examen':examen})
+
+
+"""
+
+""" Algoritmo aleatorio"""
 def examen_view(request):
     """
     Input: HttpRequest
