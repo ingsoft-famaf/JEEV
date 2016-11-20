@@ -392,16 +392,18 @@ def guardar_modif(request, question_id):
     q.text_preg = titulo
     q.save()
     cant_opcion = request.POST['opcion']
-    opcion = 'opcion'
-    opciones = []
-    for x in xrange(0, int(cant_opcion)):
-        opcion += repr(x)
-        opciones.append(request.POST[opcion])
+    print cant_opcion
+    if cant_opcion != "":
         opcion = 'opcion'
-        guardarResp(q, opciones[x])
-        if opciones[x] == "":
-            q.delete()
-            return render(request, 'questions/PregVacio.html')
+        opciones = []
+        for x in xrange(int(cant_opcion)):
+            opcion += repr(x)
+            opciones.append(request.POST[opcion])
+            opcion = 'opcion'
+            guardarResp(q, opciones[x])
+            if opciones[x] == "":
+                q.delete()
+                return render(request, 'questions/PregVacio.html')
     respuestas = Answer.objects.filter(respuesta=q)
     return render(request, 'questions/modificado.html', {'pregunta': q, 'respuestas': respuestas})
 
