@@ -11,11 +11,14 @@
 </head>
 <body>
 <center>
-    <h4>Ingrese el archivo .xml en donde contenga las preguntas que desea cargar</h4>
+    <h4>Ingrese el archivo en donde contenga las preguntas que desea cargar</h4>
     <ul>
     <form action="" enctype="multipart/form-data" method="post">
         {% csrf_token %}
         {{ form }}
+        <br>
+        <br><input type="radio" name="tipo" value="YAML" checked> Subir con YAML
+        <br><input type="radio" name="tipo" value="XML"> Subir con XML<br>
         <input type="submit" value="Subir preguntas">
     </form>
     </ul>

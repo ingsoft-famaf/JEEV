@@ -34,11 +34,25 @@ def es_parecida(string1, string2):
     return distancia
 
 def guardarPreg(materia, tema, titulo):
+    """
+    Esta funcion guarda en la base de datos la pregunta
+    :Param materia: String
+    :Param tema: String
+    :Param titulo: String
+    :Return: Object
+    """
     q = Question(nombre_tema=tema, nombre_materia=materia, text_preg=titulo)
     q.save()
     return q
 
 def guardarResp(question, resp, es_correcta, attrib):
+    """
+    Esta funcion guarda la respuesta
+    :Param question: Object
+    :Param resp: String
+    :Param es_correcta: Bool
+    :Param attrib: String or None
+    """
     if attrib is not None:
         a = Answer(respuesta=question, text_resp=resp, es_correcta=es_correcta)
         a.save()
@@ -47,6 +61,11 @@ def guardarResp(question, resp, es_correcta, attrib):
         a.save()
 
 def guardar_resp_dict(resp_dict, question):
+    """
+    Esta funcion guarda la respuesta
+    :Param resp_dict: Dict 
+    :Param question: Object
+    """
     resp = resp_dict.get('correcta')
     if resp is not None:
         a = Answer(respuesta=question, text_resp=resp, es_correcta=True)
@@ -58,19 +77,32 @@ def guardar_resp_dict(resp_dict, question):
 
 
 def exist_materia(materia):
-     return Materia.objects.filter(nombre_materia=materia).exists()
+    """
+    Esta funcion comprueba la existencia
+    de la materia en la base de datos
+    :Param materia: String
+    :Return: Bool
+    """
+    return Materia.objects.filter(nombre_materia=materia).exists()
  
 
 def exist_tema(tema, materia):
-     materias_con_tema = Materia.objects.filter(tema__nombre_tema=tema)
-     count_materias = materias_con_tema.count()
-     tema_exist = False
-     for i in range(count_materias):
-         bd_materia = str(materias_con_tema[i])
-         if bd_materia == materia:
-             tema_exist = True
-             break
-     return tema_exist
+    """
+    Esta funcion comprueba la existencia
+    de la materia en la base de datos
+    :Param materia: String
+    :Param tema: String
+    :Return: Bool
+    """
+    materias_con_tema = Materia.objects.filter(tema__nombre_tema=tema)
+    count_materias = materias_con_tema.count()
+    tema_exist = False
+    for i in range(count_materias):
+        bd_materia = str(materias_con_tema[i])
+        if bd_materia == materia:
+            tema_exist = True
+            break
+    return tema_exist
 
 def comparacion_preguntas(string1,string2):
     """
@@ -86,7 +118,15 @@ def comparacion_preguntas(string1,string2):
     string2_lower = string2_joined.lower()
     distancia = distance(string1_lower, string2_lower) == 0
     return distancia
+
+
 def validar_respuestas_yml(objeto):
+    """
+    Esta funcion devuelve si las respuestas del archivo
+    tiene la forma correcta
+    :Param string1: objeto yaml
+    :Return: Bool
+    """
     valido = False
     for bloque in objeto:
         respuestas_lista = bloque.get('Respuesta')
@@ -95,7 +135,6 @@ def validar_respuestas_yml(objeto):
         for i in range(count_respuestas):
             resp_dict = respuestas_lista[i]
             resp = resp_dict.get('correcta')
-            #print resp
             if resp is not None:
                 valido = True
                 break
@@ -104,6 +143,12 @@ def validar_respuestas_yml(objeto):
     return valido
                 
 def validar_respuestas(root):
+    """
+    Esta funcion devuelve si las respuestas del archivo
+    tiene la forma correcta
+    :Param root: String
+    :Return: Bool
+    """
     for pregunta in root:
         tiene_estado = 0
         for respuesta in pregunta.iter("respuesta"):
@@ -117,23 +162,42 @@ def validar_respuestas(root):
             return False
 
 def validar_yaml(yaml_object):
+    """
+    Esta funcion devuelve si las respuestas del archivo
+    tiene la forma correcta
+    :Param string1: objeto yaml
+    :Return: Bool
+    """
     schema = Schema([{'Materia':str,
                   'Respuesta':Use(str,int),
                   'Pregunta':str,
                   'Tema':str}])
-
+    try:
+        yml_validacion = yaml.load_all(yaml_object)
+        es_valida = True
+    except:
+        es_valida = False  
     lista_bloque = []
     index = 0
-    for bloque in yaml_object:
+    for bloque in yml_validacion:
+        print bloque
         lista_bloque.insert(0,bloque)
         index +=1
+        print lista_bloque
     try:
         validated = schema.validate(lista_bloque)
         es_valida = True
     except:
         es_valida = False
+    return es_valida
 
 def validar_xml(url):
+    """
+    Esta funcion devuelve si el archivo
+    tiene la forma correcta
+    :Param url: string 
+    :Return: Bool
+    """
     XSD_file = 'static/XSD/file.xsd'
     try:
         schema = etree.XMLSchema(file = XSD_file)
@@ -147,32 +211,45 @@ def validar_xml(url):
 
 def uploadquestion(request):
     """
-
+    Esta funcion crea un string del archivo y lo parsea
+    segun el tipo de archivo
+    :Param request: request 
+    :Return: Bool
     """
     if request.method == 'POST':
+        tipo = request.POST['tipo']
         form = UploadFileForm(request.POST, request.FILES)
         if form.is_valid():
             f = request.FILES['file']
             for chunk in f.chunks():
                 url = str() + chunk
-                print url
-            return upload_question_yaml(request,url)
-            #return question_view(request, url)
+                #print url
+            print ("El tipo de parseo es %s" % tipo)
+            if tipo == "YAML":
+                return upload_question_yaml(request,url)  
+            else:
+                return question_view(request, url)
     else:
         form = UploadFileForm()
     return render(request, 'questions/uploadquestion.html', {'form': form})
 
 def upload_question_yaml(request, url):
-    #import pdb
-    #pdb.set_trace()
+    """
+    Esta función se utiliza para realizar la creacion de preguntas con sus
+    respectivas respuestas parsea un archivo yaml, utilizando la libreria schema.
+    Una vez parseado, se comparan las preguntas existentes utilizando el
+    algoritmo de Levenshtein en la base de datos con las que se quieren crear,
+    si ya existe se da aviso al usuario, si no existen se crean.
+    :Param url: String
+    :Param request: Request
+    :Return: Http
+    """
     yml = yaml.load_all(url)
-    yml_validacion = yaml.load_all(url)
     yml_respuestas = yaml.load_all(url)
-    valido = validar_yaml(yml_validacion)
+    valido = validar_yaml(url)
     if valido is False:
-        return render(request, 'questions/invalido.html')
+        return render(request, 'questions/invalido_YAML.html')
     respuestas_validas = validar_respuestas_yml(yml_respuestas)
-    print respuestas_validas
     if respuestas_validas is False:
         return render(request, 'questions/resp_invalida.html')
     index_iguales = 0
@@ -230,11 +307,12 @@ def question_view(request, url):
     algoritmo de Levenshtein en la base de datos con las que se quieren crear,
     si ya existe se da aviso al usuario, si no existen se crean.
     :Param url: String
+    :Param request: Request
     :Return: Http
     """
     root = validar_xml(url)
     if root is False:
-        return render(request, 'questions/invalido.html')
+        return render(request, 'questions/invalido_XML.html')
     respuestas_validas = validar_respuestas(root)
     if respuestas_validas is False:
         return render(request, 'questions/resp_invalida.html')
