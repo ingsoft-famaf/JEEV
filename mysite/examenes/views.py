@@ -80,10 +80,16 @@ def examen_view(request):
     Output: redirige a un html pasándole dos query
     Esta función muestra las opciones para la configuración del examen.
     """
-    return render(request, 'examenes/examen.html',
-                  {'list_materias': Question.objects.values_list(
+    query = Question.objects.all()
+    count = query.count()
+    print count
+    if count == 0:
+        return render(request, 'examenes/preguntasCero.html')
+    else:
+        return render(request, 'examenes/examen.html',
+                  {'list_materias': Materia.objects.values_list(
                             'nombre_materia', flat=True).distinct(),
-                   'list_temas': Question.objects.values_list(
+                   'list_temas': Tema.objects.values_list(
                             'nombre_tema', flat=True).distinct()})
 
 
@@ -98,13 +104,20 @@ def examenencurso_view(request):
         return render(request, 'examenes/datosIncorrectos.html')
     materia = request.POST['materias']
     tema = request.POST['temas']
-    cantidad = request.POST['cantidad']
-    tiempo = request.POST['tiempo']
-    examen = Exam(nombre_materia = materia,nombre_tema = tema,
-                    cantidad_preg = cantidad, tiempo_preg = tiempo)
-    examen.save()
-    return render(request, 'examenes/examenencurso.html' ,
-                    {'examen':examen})
+    query = Question.objects.filter(nombre_tema=tema)
+    count = query.count()
+    print "count de cantidad de temas"
+    print count
+    if count == 0:
+        return render(request, 'examenes/TemaSinPreguntas.html')
+    else: 
+        cantidad = request.POST['cantidad']
+        tiempo = request.POST['tiempo']
+        examen = Exam(nombre_materia = materia,nombre_tema = tema,
+                        cantidad_preg = cantidad, tiempo_preg = tiempo)
+        examen.save()
+        return render(request, 'examenes/examenencurso.html' ,
+                        {'examen':examen})
 
 def resppreg(request, examen_id):
     """
