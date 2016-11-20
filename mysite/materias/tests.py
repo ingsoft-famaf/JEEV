@@ -14,6 +14,10 @@ class MateriaMethodTests(TestCase):
         materia2 = Materia.objects.create(nombre_materia='Algebra')
 
     def test_se_cargo_materia_correctamente(self):
+        """
+        pre: carga datos y envia un formulario a la funcion cargrm
+        post: 
+        """
         response = self.client.post(reverse('cargarm'),
                                     data={'nueva_materia': 'Quimica'})
         self.assertEqual(response.resolver_match.func, cargarm)

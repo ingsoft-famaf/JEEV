@@ -26,10 +26,19 @@ class EstadisticasTest(TestCase):
                                       preguntas_incorrectas=3)
 
     def test_lista_materias(self):
+        """el usuario se redirecciona a estadisticas para observar las estadisticas de 
+          su historial.
+          precondicion: simula ingresar pedido de redireccion.
+          post :  compara si el resultado es la pagina con toda la estadisticas.
+        """
         response = self.client.get(reverse('estadisticas'))
         self.assertEqual(response.resolver_match.func, estadistica_view)
 
     def test_estadistica_materia(self):
+        """simula pedir el nombre de la materia lenguas
+            pre: se redirecciona a estadis con el arg materia.
+            post: compara el resultado si es igual al esperado
+        """
         materia = Materia.objects.get(nombre_materia='Lengua')
         response = self.client.get(reverse('estadis', args=[materia]))
         self.assertEqual(response.resolver_match.func, estadis)
@@ -42,6 +51,11 @@ class EstadisticasTest(TestCase):
         self.assertEqual(response1.resolver_match.func, estadis_examen)
 
     def test_grafico(self):
+        """ 
+        pre: simula pedir el campo nombre_materia.
+        post: redirecciona al grafico de esa materia
+
+        """
         materia = Materia.objects.get(nombre_materia='Lengua')
         response = self.client.get(reverse('grafico', args=[materia]))
         self.assertEqual(response.resolver_match.func, grafico)
