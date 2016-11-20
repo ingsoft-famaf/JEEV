@@ -40,19 +40,6 @@ def estadis(request, materia):
                    'materia': materia, 'promedio': promedio})
 
 
-def estadis(request, materia):
-    lista_examenes = Exam.objects.filter(nombre_materia=materia)
-    cant_preguntas = lista_examenes.aggregate(Sum('cantidad_preg'))
-    preg_correctas = lista_examenes.aggregate(Sum('preguntas_correctas'))
-    preg_incorrectas = lista_examenes.aggregate(Sum('preguntas_incorrectas'))
-    promedio = lista_examenes.aggregate(Avg('preguntas_correctas'))
-    promedio= (promedio['preguntas_correctas__avg'])*10
-    return render(request, 'estadisticas/general.html',
-                  {'lista_examenes': lista_examenes, 'cant_preguntas': cant_preguntas,
-                   'preg_correctas':preg_correctas, 'preg_incorrectas': preg_incorrectas,
-                   'materia': materia, 'promedio': promedio})
-
-
 def estadistica_view(request):
     """Guarda la estadisticas y reedirije a un html
     :param estadistica_view: pedido de html
@@ -60,13 +47,15 @@ def estadistica_view(request):
     :return:html"""
     lista_materias = Exam.objects.values_list(
                         'nombre_materia', flat=True).distinct()
+    materias = []
     for x in xrange(lista_materias.count()):
         lista_examenes = Exam.objects.filter(nombre_materia=lista_materias[x])
         promedio = lista_examenes.aggregate(Avg('preguntas_correctas'))
         materia = get_object_or_404(Materia, nombre_materia=lista_materias[x])
         materia.promedio = (promedio['preguntas_correctas__avg'])*10
         materia.save()
-    materias = Materia.objects.all()
+        materias.insert(x,Materia.objects.get(nombre_materia=lista_materias[x]))
+    #print materias
     return render(request, 'estadisticas/estadis.html', {'materias': materias})
 
 
