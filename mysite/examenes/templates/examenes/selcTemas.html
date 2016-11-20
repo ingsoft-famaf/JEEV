@@ -19,9 +19,8 @@
                 <br><input type="checkbox" name="temaElegir" value="{{nombre_tema.id}}">{{nombre_tema}}
                 </br>
             {% endfor %}
-            </select>
             <p> Seleccione cantidad de preguntas</p>
-            <input name="cantidad" type="number" value="" />
+            <input name="cantidad" type="number" value="" min=1 />
             <p> Tiempo deseado entre preguntas (en segundos)</p>
             <input name="tiempo" type="number" value="" />
             </br></br>

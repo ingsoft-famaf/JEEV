@@ -7,6 +7,7 @@ import questions.models #import Answer
 import random
 from materias.models import Materia, Tema
 from django.http import HttpResponse
+import pdb
 
 """aux functions"""
 #def question_random
@@ -59,52 +60,18 @@ def examen_encurso(request):
     """
     if request.POST['cantidad'] == "":
         return render(request, 'examenes/datosIncorrectos.html')
-    tema = request.POST['temas']
+   # tema = []
+    tema = request.POST.getlist('tema.id')
+    print "ESTOY ACA"
+    print tema
     cantidad = request.POST['cantidad']
+    print cantidad
     tiempo = request.POST['tiempo']
     examen = ExamErrores(nombre_tema = tema,cantidad_preg = cantidad, tiempo_preg = tiempo)
     examen.save()
     return render(request, 'examenes/encurso.html' ,
                     {'examen':examen})
 
-"""
-def respuestaAE(request, examen_id):
- 
-    Input: HttpRequest y id del examen
-    Output: redirige a un html pasándole dos query
-    Esta función muestra una pregunta con sus respuestas para que el usuario
-    haga la elección de un de ellas.
-   
-    examen = get_object_or_404(Exam, pk=examen_id)
-    tema = examen.nombre_tema
-    materia = examen.nombre_materia
-    randomm =[]
-    query1 = Question.objects.filter(nombre_tema=tema)
-    query2 = query1.filter(nombre_materia=materia)
-    query3 = query2.filter(reportada=False)
-    #si pide mas preguntas de las que tenemos disminuimos la cantidad
-    #para no generar conflictos de bordes
-    if examen.cantidad_preg > query3.count():
-        examen.cantidad_preg = query3.count()
-
-    print examen.cantidad_preg
-    if examen.pregunta_actual == examen.cantidad_preg:
-        return render(request, 'examenes/finalizo.html',
-                      {'examen': examen})
-    print examen.cantidad_preg
-    #query con las respuestas ya respondidas
-    queryresp = PregResp.objects.filter(examen = examen)
-    #se filtran las ya respondidas
-    query3 = filter_query(query3,queryresp)
-    randomm = random.sample(query3, 1)
-    pregunta = randomm[0]
-    PregResp.objects.create(examen = examen, question = pregunta)
-
-    return render(request,'examenes/resppreg.html',
-                  {'pregunta': pregunta,'examen':examen})
-
-
-"""
 
 """ Algoritmo aleatorio"""
 def examen_view(request):
