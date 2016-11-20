@@ -47,7 +47,6 @@ def uploadquestion(request):
             f = request.FILES['file']
             for chunk in f.chunks():
                 url = str() + chunk
-            # print url
             return question_view(request, url)
     else:
         form = UploadFileForm()

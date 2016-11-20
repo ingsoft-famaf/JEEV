@@ -58,7 +58,7 @@ class ExamTest(TestCase):
 
     def test_set_up_exam(self):
         response = self.client.post(reverse('examenencurso'),
-                                    data={'materias': 'Legua',
+                                    data={'materias': 'Lengua',
                                           'temas': 'Lectura',
                                           'cantidad': 1,
                                           'tiempo': 10})
@@ -68,15 +68,6 @@ class ExamTest(TestCase):
         examen = Exam.objects.get(nombre_materia='Lengua')
         response = self.client.get(reverse('resppreg', args=[examen.id]))
         self.assertEqual(response.resolver_match.func, resppreg)
-
-    def test_respuesta(self):
-        examen = Exam.objects.get(nombre_materia='Matematicas')
-        question1 = Question.objects.get(text_preg='2 + 2 ?')
-        respuestas = Answer.objects.filter(es_correcta=True)
-        respuesta = respuestas[0]
-        response = self.client.post(reverse('respuesta', args=[examen.id]),
-                                    data={'respuesta': respuesta.id})
-        self.assertEqual(response.resolver_match.func, respuesta)
 
     def test_reportar(self):
         examen = Exam.objects.get(nombre_materia='Matematicas')
