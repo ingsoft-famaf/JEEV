@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+{%load static%}
+<html>
+<head>
+    <lnk rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="{% static 'css/estilos.css' %}">
+    <header>
+        <h1>ADMIN</h1>
+    </header>
+</head>
+<body>
+<center>
+    <h3>Seleccione la pregunta que desea modificar:</h3>
+    {% for pregunta in preguntas %}
+        <br><li><a href="{% url 'modificar' pregunta.id %}">{{pregunta.text_preg}}</li>
+    {% endfor %}
+   </form>
+</center>
+</body>
+</html

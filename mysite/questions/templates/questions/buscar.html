@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+{%load static%}
+<html>
+<head>
+    <lnk rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="{% static 'css/estilos.css' %}">
+    <script type="text/javascript" src="js/jquery-1.9.1.min.js" >
+    jQuery(document).ready(function() {
+        jQuery("#miForm").change(function() {
+            var materia = $("#materia").val();
+            jQuery.ajax({
+                type: "POST",
+                url: 'temas',
+                data: {'materia' : materia},
+                success: function(data) {
+                    jQuery('#subareas').html(data);
+                    //alert( "Data Saved: " + data);
+
+                },
+            });
+        });
+    });
+    </script>
+    <header>
+        <h1>ADMIN</h1>
+    </header>
+</head>
+<body>
+<center>
+    <form action="" id="miForm" method="post">
+        {% csrf_token %}
+        <h3>Seleccione una materia:</h3>
+        <select id="materia" name="materia">
+        {% for materia in materias %}
+            <br><option name="materia" value="{{materia.id}}">{{materia.nombre_materia}}</option>
+        {% endfor %}
+        </select>
+        <br><br>
+        <select id="subareas" name="subareas"> </select>
+        <br><br><input type="submit" value="Buscar">
+   </form>
+</center>
+</body>
+</html>

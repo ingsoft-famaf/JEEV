@@ -279,10 +279,140 @@ def question_view(request, url):
     return render(request, 'questions/secargo.html', {'preguntas': preguntas_repetidas})
 
 
+def buscar_view(request):
+    """
+    Esta funcion devuelve la lista de todas las preguntas, una vez seleccionada la materia
+    se muestran los temas de esa materia.
+    :Param request: HttpRequest
+    :type: Http
+    :Return: redirecciona a Http que corresponda.
+    """
+    if request.method == "POST":
+        mat = request.POST['materia']
+        materia = get_object_or_404(Materia, pk=mat)
+        temas = Tema.objects.filter(temas=materia)
+        return render(request, 'questions/buscarT.html', {'materia': materia, 'temas': temas})
+    return render(request, 'questions/buscar.html', {'materias': Materia.objects.all()})
+
+
+def temas(request):
+    mat = request.POST['materia']
+    materia = get_object_or_404(Materia, nombre_materia=mat)
+    temas = Tema.objects.filter(temas=materia)
+    print temas
+    return render(request, {'temas': temas})
+
+
+def lista_view(request, materia_id):
+    """
+    Esta funcion da la lista de los temas sólos los de la materia preseleccionada.
+    :Param request: HttpRequest
+    :type: Http
+    :Return: redirecciona a Http 
+    """
+    if request.method == "POST":
+        materia = get_object_or_404(Materia, pk=materia_id)
+        tema = request.POST.get('tema', False)
+        if tema == False:
+            return render(request, 'questions/temaVacio.html', {'materia': materia})
+        preguntas = Question.objects.filter(nombre_materia=materia).filter(nombre_tema=tema)
+        return render(request, 'questions/listaPreg.html', {'preguntas': preguntas})
+    materia = get_object_or_404(Materia, pk=materia_id)
+    temas = Tema.objects.filter(temas=materia)
+    return render(request, 'questions/buscarT.html', {'materia': materia, 'temas': temas})
+
+
+def modificar_view(request, question_id):
+    """
+    Esta funcion da los detalles de una pregunta para modificar.
+    :Param request: HttpRequest
+    :Param question_id: Integer 
+    :Return: redirecciona a Http 
+    """
+    pregunta = get_object_or_404(Question, pk=question_id)
+    respuestas = Answer.objects.filter(respuesta=pregunta)
+    return render(request, 'questions/modificar.html', {'pregunta': pregunta, 'respuestas': respuestas})
+
+
+def modifiResp(request, question_id, answer_id):
+    """
+    Esta funcion modifica una respuesta preseleccionada.
+    :Param request: HttpRequest
+    :Param question_id: Integer
+    :Param answer_id: Integer
+    :Return: redirecciona a Http
+    """
+    if request.method == "POST":
+        question = get_object_or_404(Question, pk=question_id)
+        answer = get_object_or_404(Answer, pk=answer_id)
+        resp_nueva = request.POST['nueva_resp']
+        answer.text_resp = resp_nueva
+        answer.save()
+        return render(request, 'questions/modificar.html',
+                  {'respuestas': Answer.objects.filter(respuesta=question),
+                   'pregunta': question})
+    question = get_object_or_404(Question, pk=question_id)
+    answer = get_object_or_404(Answer, pk=answer_id)
+    return render(request, 'questions/modifiResp.html',{'answer': answer, 'question': question})
+
+
+def eliminar_resp(request, question_id, answer_id):
+    """
+    Esta funcion elimina una respuesta preseleccionada.
+    :Param request: HttpRequest
+    :Param question_id: Integer
+    :Param answer_id: Integer
+    :Return: redirecciona a Http
+    """
+    pregunta = get_object_or_404(Question, pk=question_id)
+    respuesta = get_object_or_404(Answer, pk=answer_id)
+    respuesta.delete()
+    return render(request, 'questions/eliminar_resp.html', {'pregunta': pregunta})
+
+
+def guardar_modif(request, question_id):
+    """
+    Esta funcion elimina una respuesta preseleccionada.
+    :Param request: HttpRequest
+    :Param question_id: Integer
+    :Return: redirecciona a Http
+    """
+    q = get_object_or_404(Question, pk=question_id)
+    materia = request.POST['materia']
+    tema = request.POST['tema']
+    titulo = request.POST['textPreg']
+    if not exist_materia(materia):
+        return render(request, 'questions/mateNE.html', {'materia': materia, 'q': q})
+    if not exist_tema(tema, materia):
+        return render(request, 'questions/temaNE.html', {'materia': materia, 'tema': tema, 'q': q})
+    if titulo == "":
+        return render(request, 'questions/textPregVacio.html', {'q': q})
+    q.nombre_materia = materia
+    q.nombre_tema = tema
+    q.text_preg = titulo
+    q.save()
+    cant_opcion = request.POST['opcion']
+    opcion = 'opcion'
+    opciones = []
+    for x in xrange(0, int(cant_opcion)):
+        opcion += repr(x)
+        opciones.append(request.POST[opcion])
+        opcion = 'opcion'
+        guardarResp(q, opciones[x])
+        if opciones[x] == "":
+            q.delete()
+            return render(request, 'questions/PregVacio.html')
+    respuestas = Answer.objects.filter(respuesta=q)
+    return render(request, 'questions/modificado.html', {'pregunta': q, 'respuestas': respuestas})
+
+
 def reported(request):
     """
     Esta función redirecciona la vista a un html pasandole sólo las preguntas
-    que estén reportadas, el html motrará una lista de esas preguntas.
+    que estén reportadas.
+    :Param request: HttpRequest
+    :type: Http
+    :Return: redirecciona a Http
     """
     return render(request, 'questions/reported.html',
                   {'questions': Question.objects.filter(reportada=True)})
@@ -321,29 +451,19 @@ def update_view(request, question_id, answer_id):
     la vista a un html en donde este muestra la respuesta que se seleccionó
     para modificar y le inidca al usuario que ingrese la nueva respuesta.
     """
+    if request.method == "POST":
+        question = get_object_or_404(Question, pk=question_id)
+        answer = get_object_or_404(Answer, pk=answer_id)
+        resp_nueva = request.POST['new_answer']
+        answer.text_resp = resp_nueva
+        answer.save()
+        return render(request, 'questions/detail.html',
+                      {'answers': Answer.objects.filter(respuesta=question),
+                       'question': question})
     question = get_object_or_404(Question, pk=question_id)
     answer = get_object_or_404(Answer, pk=answer_id)
     return render(request, 'questions/update.html',
                   {'answer': answer,
-                   'question': question})
-
-
-def save_view(request, question_id, answer_id):
-    """
-    Esta función toma el id de la pregunta y el id de una respuesta y las busca
-    en la base de datos, sino se encuentran devuelve un error 404. Toma la
-    nueva respuesta que ingresó el usuario, la coloca en el campo text_resp de
-    la respuesta y lo guarda. Redirecciona la vista al html en donde esta la
-    pregunta con sus respectivas respuestas pero esta vez con la respuesta que
-    se modificó actualizada.
-    """
-    question = get_object_or_404(Question, pk=question_id)
-    answer = get_object_or_404(Answer, pk=answer_id)
-    resp_nueva = request.POST['new_answer']
-    answer.text_resp = resp_nueva
-    answer.save()
-    return render(request, 'questions/detail.html',
-                  {'answers': Answer.objects.filter(respuesta=question),
                    'question': question})
 
 

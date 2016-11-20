@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+!DOCTYPE html>
 {%load static%}
 <html>
 <head>
@@ -10,11 +10,10 @@
 </header>
 </head>
 <body>
-<center>    
-    <h4 style="color:red">Error al agregar la pregunta</h4>
-    <h4>Por favor ingrese los datos correctamente.</h4>
-    <h4>Es posible que usted no haya ingresado el título de la pregunta, o bien no haya ingresado alguna respuesta.</h4>
-    <a href="{% url 'agregarPreg' %}">Volver</a>
+<center>
+    <h4 style="color:red">Error al guardar la pregunta.</h4>
+    <h4>El título de la pregunta es vacio, por favor ingrese un título correcto.</h4>
+    <a href="{% url 'modificar' q.id %}">Volver</a>
 </center>
 </body>
 </html>

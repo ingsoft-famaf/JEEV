@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+{%load static%}
+<html>
+<head>
+    <lnk rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="{% static 'css/estilos.css' %}">
+    <header>
+        <h1>ADMIN</h1>
+    </header>
+</head>
+<body>
+<center>
+    <form action="{% url 'lista' materia.id %}" method="post">
+        {% csrf_token %}
+        <h3>Seleccione una tema de la materia {{materia.nombre_materia}}:</h3>
+        {% for tema in temas %}
+            <br><input type="radio" name="tema" value="{{tema.nombre_tema}}">{{tema.nombre_tema}}
+        {% endfor %}
+        <br><br><input type="submit" value="Buscar">
+   </form>
+</center>
+</body>
+</html
