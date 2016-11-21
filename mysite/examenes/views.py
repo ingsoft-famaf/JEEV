@@ -86,7 +86,8 @@ def respPregErrores(request, examenE_id):
     Esta función muestra una pregunta con sus respuestas para que el usuario
     haga la elección de un de ellas.
     """
-    examen1 = get_object_or_404(ExamErrores, pk=examenE.id)
+    print examenE_id
+    examen1 = get_object_or_404(ExamErrores, pk=examenE_id)
     tema = examen1.nombre_tema
     randomm =[]
     query1 = Question.objects.filter(nombre_tema=tema)
@@ -99,18 +100,18 @@ def respPregErrores(request, examenE_id):
     print examen1.cantidad_preg
     if examen1.pregunta_actual == examen1.cantidad_preg:
         return render(request, 'examenes/finalizo.html',
-                      {'examenE': examenE})
+                      {'examenE': examen1})
     print examen1.cantidad_preg
     #query con las respuestas ya respondidas
-    queryresp = PregResp.objects.filter(examenE = examenE)
+    queryresp = PregResp.objects.filter(examenE = examen1)
     #se filtran las ya respondidas
     query3 = filter_query(query3,queryresp)
     randomm = random.sample(query3, 1)
     pregunta = randomm[0]
-    PregResp.objects.create(examenE = examenE, question = pregunta)
+    PregResp.objects.create(examenE = examen1, question = pregunta)
 
     return render(request,'examenes/respPregErrores.html',
-                  {'pregunta': pregunta,'examenE':examenE})
+                  {'pregunta': pregunta,'examenE':examen1})
 
 
 """ Algoritmo aleatorio"""
