@@ -62,6 +62,13 @@ def selcTemas(request):
     print materia
     return render(request, 'examenes/selcTemas.html', {'list_temas':list_temas}, materia)
 
+def list2str(lista, tema):
+    for i in tema:
+        lista.append(str(i))
+    return lista
+#    for i in lista:
+ #       print i
+
 def examen_encurso(request):
     """
     Algoritmo basado en errores.
@@ -70,14 +77,24 @@ def examen_encurso(request):
         return render(request, 'examenes/datosIncorrectos.html')
     tema = request.POST.getlist('tema')
     print "ESTOY ACA"
-    print tema
+    lista = []
+    list2str(lista,tema)
+    for i in lista:
+        print "en exmamen"
+        print i
     cantidad = request.POST['cantidad']
     print cantidad
     tiempo = request.POST['tiempo']
-    examenE = ExamErrores(nombre_tema = tema,cantidad_preg = cantidad, tiempo_preg = tiempo)
+    examenE = ExamErrores(nombre_tema = lista,cantidad_preg = cantidad, tiempo_preg = tiempo)
     examenE.save()
     return render(request, 'examenes/encurso.html' ,
                     {'examenE':examenE})
+
+def unicode2list(lista_nueva, unicodelist):
+    for i in unicodelist:
+        lista_nueva.append(str(i))
+    return lista_nueva
+
 
 def respPregErrores(request, examenE_id):
     """
@@ -88,10 +105,20 @@ def respPregErrores(request, examenE_id):
     """
     print examenE_id
     examen1 = get_object_or_404(ExamErrores, pk=examenE_id)
+    tema = []
     tema = examen1.nombre_tema
+
+    print type(tema)
+    lista = []
+    print "en respPregErrores"
+    unicode2list(lista,tema)
     randomm =[]
-    query1 = Question.objects.filter(nombre_tema=tema)
-    query2 = query1.count()
+    for i in lista:
+        print "dentro de lista"
+        print i
+        query1 = Question.objects.filter(nombre_tema=i)
+        query2 = query1.count()
+
     #si pide mas preguntas de las que tenemos disminuimos la cantidad
     #para no generar conflictos de bordes
     if examen1.cantidad_preg > query2:
