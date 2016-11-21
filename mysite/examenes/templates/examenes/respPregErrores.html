@@ -1,0 +1,18 @@
+{% extends 'examenes/base.html' %}
+{% load static %}
+{% block content %}
+    <body>
+        <center>
+            <form action="{% url 'respuesta' examenE.id %}" method="post">
+                {% csrf_token %}
+                <h3>{{pregunta}}</h3>
+                {% for respuesta in pregunta.answer_set.all %}
+                    <br><input type="radio" name="respuesta" value="{{respuesta.id}}">{{respuesta.text_resp}}
+                {% endfor %}
+                <br><input type = "submit" value= "Responder">
+            </form>
+            <br><a href="{% url 'reportar' examenE.id pregunta.id %}">Reportar</a>
+            <meta http-equiv="refresh" content="{{examenE.tiempo_preg}};url={% url 'respuesta' examenE.id %}" />
+        </center>
+    </body>
+{% endblock content%}

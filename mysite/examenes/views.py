@@ -3,7 +3,6 @@ from django.shortcuts import render, get_object_or_404
 
 from questions.models import Question, Answer
 from .models import Exam, PregResp, ExamErrores
-import questions.models #import Answer
 import random
 from materias.models import Materia, Tema
 from django.http import HttpResponse
@@ -35,10 +34,17 @@ def selcMateria(request):
     Esta función muestra las opciones de materias para la configuración del examen
     para el algoritmo basado en errores.
     """
-    query = Materia.objects.values_list(
-                            'nombre_materia', flat=True).distinct()
-    print query
-    return render(request, 'examenes/selcMateria.html',
+
+    query = Question.objects.all()
+    count = query.count()
+    print count
+    if count == 0:
+        return render(request, 'examenes/preguntasCero.html')
+    else:
+        query = Materia.objects.values_list(
+                                'nombre_materia', flat=True).distinct()
+        print query
+        return render(request, 'examenes/selcMateria.html',
                   {'list_materias': Materia.objects.values_list(
                             'nombre_materia', flat=True).distinct()})
 
@@ -52,7 +58,9 @@ def selcTemas(request):
     materia = request.POST['materias']
     list_temas= Tema.objects.values_list(
                             'nombre_tema',flat=True).filter(temas__nombre_materia=materia)
-    return render(request, 'examenes/selcTemas.html', {'list_temas':list_temas})
+    print "print materia"
+    print materia
+    return render(request, 'examenes/selcTemas.html', {'list_temas':list_temas}, materia)
 
 def examen_encurso(request):
     """
@@ -60,17 +68,49 @@ def examen_encurso(request):
     """
     if request.POST['cantidad'] == "":
         return render(request, 'examenes/datosIncorrectos.html')
-   # tema = []
-    tema = request.POST.getlist('tema.id')
+    tema = request.POST.getlist('tema')
     print "ESTOY ACA"
     print tema
     cantidad = request.POST['cantidad']
     print cantidad
     tiempo = request.POST['tiempo']
-    examen = ExamErrores(nombre_tema = tema,cantidad_preg = cantidad, tiempo_preg = tiempo)
-    examen.save()
+    examenE = ExamErrores(nombre_tema = tema,cantidad_preg = cantidad, tiempo_preg = tiempo)
+    examenE.save()
     return render(request, 'examenes/encurso.html' ,
-                    {'examen':examen})
+                    {'examenE':examenE})
+
+def respPregErrores(request, examenE_id):
+    """
+    Input: HttpRequest y id del examen
+    Output: redirige a un html pasándole dos query
+    Esta función muestra una pregunta con sus respuestas para que el usuario
+    haga la elección de un de ellas.
+    """
+    examen1 = get_object_or_404(ExamErrores, pk=examenE.id)
+    tema = examen1.nombre_tema
+    randomm =[]
+    query1 = Question.objects.filter(nombre_tema=tema)
+    query2 = query1.count()
+    #si pide mas preguntas de las que tenemos disminuimos la cantidad
+    #para no generar conflictos de bordes
+    if examen1.cantidad_preg > query2:
+        examen1.cantidad_preg = query2
+
+    print examen1.cantidad_preg
+    if examen1.pregunta_actual == examen1.cantidad_preg:
+        return render(request, 'examenes/finalizo.html',
+                      {'examenE': examenE})
+    print examen1.cantidad_preg
+    #query con las respuestas ya respondidas
+    queryresp = PregResp.objects.filter(examenE = examenE)
+    #se filtran las ya respondidas
+    query3 = filter_query(query3,queryresp)
+    randomm = random.sample(query3, 1)
+    pregunta = randomm[0]
+    PregResp.objects.create(examenE = examenE, question = pregunta)
+
+    return render(request,'examenes/respPregErrores.html',
+                  {'pregunta': pregunta,'examenE':examenE})
 
 
 """ Algoritmo aleatorio"""
