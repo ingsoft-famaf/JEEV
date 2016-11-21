@@ -16,8 +16,11 @@
     {% for pregunta in preguntas%}
         {{pregunta}}<br><br>
     {% endfor %}
+    <h4>Las preguntas que se cargaron pero podrian ser similares son: </h4>
+    {% for pregunta in preguntas_similares%}
+        {{pregunta}}<br><br>
+    {% endfor %}
     <a href="/homepage/superuser/" >Volver</a>
 </center>
 </body>
 </html>                            
-

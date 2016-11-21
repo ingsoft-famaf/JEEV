@@ -4,6 +4,21 @@ from django.shortcuts import render
 from models import Materia, Tema
 from Levenshtein import *
 
+
+def modificacion_input(string):
+    """
+    Esta funcion transfomar el string de input en un string sin espacios
+    y con la primera letra en mayuscula
+    :Param string: string
+    :Return: String
+
+    """
+    string_splited = "".join(string.split())
+    string_lower = string_splited.lower()
+    string_titled = string_lower.title()
+    return string_titled
+
+
 def cargarm(request):
     """ :Param request: HttpRequest
         :type: Http
@@ -67,8 +82,6 @@ def obtener_tema_materia(request):
     """:Param request: HttpRequest
     :type: Http
     :return: redirecciona a Http segun corresponda """
-    #print (Materia.objects.values_list(
-    #                        'nombre_materia', flat=True))
     return render(request, 'materias/cargartema.html',
               {'list_materias': Materia.objects.values_list(
                                 'nombre_materia', flat=True).distinct()})
