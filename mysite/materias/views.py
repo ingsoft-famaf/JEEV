@@ -10,7 +10,6 @@ def modificacion_input(string):
     y con la primera letra en mayuscula
     :Param string: string
     :Return: String
-
     """
     string_splited = "".join(string.split())
     string_lower = string_splited.lower()
@@ -24,9 +23,10 @@ def cargarm(request):
         :return: redirecciona a Http segun corresponda el caso
     """
     if request.method == "POST":
-        nuevamat = request.POST['nueva_materia']
+        nuevaM = request.POST['nueva_materia']
+        nuevamat = modificacion_input(nuevaM)
         if nuevamat == "" or nuevamat == " ":
-            return render(request, 'materias/repetida.html')
+            return render(request, 'materias/vacio.html')
         query = Materia.objects.filter(nombre_materia__iexact=nuevamat)
         repetida = False
         count = query.count()
@@ -52,12 +52,12 @@ def cargart(request):
         :type: Http
         :return: redirecciona a Http segun corresponda el caso
     """
-
     if request.method == "POST":
         materia = request.POST['materias']
-        nuevotema = request.POST['nuevo_tema']
+        nuevoT = request.POST['nuevo_tema']
+        nuevotema = modificacion_input(nuevoT)
         if nuevotema == "" or nuevotema == " ":
-            return render(request, 'materias/temarepetido.html')
+            return render(request, 'materias/temavacio.html')
         mat = Materia.objects.filter(nombre_materia=materia)
         query = Tema.objects.filter(nombre_tema__iexact=nuevotema)
         repetida = False
@@ -76,7 +76,7 @@ def cargart(request):
             else:
                 return render(request, 'materias/temarepetido.html')
     return render(request, 'materias/cargartema.html', {'list_materias': Materia.objects.values_list(
-                  'nombre_materia', flat=True).distinct()})
+                                                        'nombre_materia', flat=True).distinct()})
 
 
 def obtener_tema_materia(request):
@@ -84,6 +84,5 @@ def obtener_tema_materia(request):
     :type: Http
     :return: redirecciona a Http segun corresponda
     """
-    return render(request, 'materias/cargartema.html',
-                  {'list_materias': Materia.objects.values_list(
-                   'nombre_materia', flat=True).distinct()})
+    return render(request, 'materias/cargartema.html', {'list_materias': Materia.objects.values_list(
+                                                        'nombre_materia', flat=True).distinct()})

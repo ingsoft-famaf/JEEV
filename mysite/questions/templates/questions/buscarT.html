@@ -11,9 +11,14 @@
 </head>
 <body>
 <center>
-    <h4>La pregunta ha sido eliminada correctamente</h4>
-
-    <a href="/superuser/">Volver</a>
+    <form action="{% url 'lista' materia.id %}" method="post">
+        {% csrf_token %}
+        <h3>Seleccione una tema de la materia {{materia.nombre_materia}}:</h3>
+        {% for tema in temas %}
+            <br><input type="radio" name="tema" value="{{tema.nombre_tema}}">{{tema.nombre_tema}}
+        {% endfor %}
+        <br><br><input type="submit" value="Buscar">
+   </form>
 </center>
 </body>
-</html>
+</html

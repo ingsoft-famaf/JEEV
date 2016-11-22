@@ -20,17 +20,18 @@ class Exam(models.Model):
     pregunta_actual = models.IntegerField(default=0)
     preguntas_correctas = models.IntegerField(default=0)
     preguntas_incorrectas = models.IntegerField(default=0)
+    porcentaje = models.IntegerField(default=0)
+
 
 
 class PregResp(models.Model):
-    """Crea el modelo Pregunta y Respuesta el cual va a tener como
-        objetos el examen y una question_id que representa una simple
-        base de datos.
-        :param models: tiene los campos de la tabla PregResp.
-        :type models : Model
-        return : none
+    """
+    Crea el modelo Pregunta y Respuesta el cual va a tener como
+    objetos el examen y una question_id que representa una simple
+    base de datos.
+    :param models: tiene los campos de la tabla PregResp.
+    :type models : Model
+    return : none
     """
     examen = models.ForeignKey('Exam', on_delete=models.CASCADE)
-    question = models.ForeignKey('questions.Question',
-                                 blank=True,
-                                 null=True)
+    question = models.ForeignKey('questions.Question', blank=True, null=True)

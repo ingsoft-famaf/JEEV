@@ -1,4 +1,5 @@
 from django.test import TestCase
+<<<<<<< HEAD
 from django.core.urlresolvers import reverse
 from allauth.account.forms import BaseSignupForm
 from django.test.client import Client
@@ -9,9 +10,7 @@ from examenes.views import *
 from questions.views import *
 
 
-
 class QuestionTest(TestCase):
-
 
     def setUp(self):
         examen1 = Exam.objects.create(nombre_materia='Matematicas',

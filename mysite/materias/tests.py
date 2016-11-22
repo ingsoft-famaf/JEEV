@@ -10,7 +10,6 @@ class MateriaMethodTests(TestCase):
 
     def setUp(self):
         materia1 = Materia.objects.create(nombre_materia='Biologia')
-
         materia2 = Materia.objects.create(nombre_materia='Algebra')
 
     def test_se_cargo_materia_correctamente(self):
@@ -18,33 +17,25 @@ class MateriaMethodTests(TestCase):
         pre: carga datos y envia un formulario a la funcion cargrm
         post: 
         """
-        response = self.client.post(reverse('cargarm'),
-                                    data={'nueva_materia': 'Quimica'})
+        response = self.client.post(reverse('cargarm'), data={'nueva_materia': 'Quimica'})
         self.assertEqual(response.resolver_match.func, cargarm)
 
     def test_se_cargo_materia_repetida(self):
-        response = self.client.post(reverse('cargarm'),
-                                    data={'nueva_materia': 'Quimica'})
-        response = self.client.post(reverse('cargarm'),
-                                    data={'nueva_materia': 'Quimica'})
-
+        response = self.client.post(reverse('cargarm'), data={'nueva_materia': 'Quimica'})
+        response = self.client.post(reverse('cargarm'), data={'nueva_materia': 'Quimica'})
         self.assertEqual(response.resolver_match.func, cargarm)
 
     def test_se_cargo_materia_repetida2(self):
-        response = self.client.post(reverse('cargarm'),
-                                    data={'nueva_materia': 'Quimica'})
-        response = self.client.post(reverse('cargarm'),
-                                    data={'nueva_materia': 'quimica'})
+        response = self.client.post(reverse('cargarm'), data={'nueva_materia': 'Quimica'})
+        response = self.client.post(reverse('cargarm'), data={'nueva_materia': 'quimica'})
         self.assertEqual(response.resolver_match.func, cargarm)
 
     def test_se_cargo_materia_vacia(self):
-        response = self.client.post(reverse('cargarm'),
-                                    data={'nueva_materia': ""})
+        response = self.client.post(reverse('cargarm'), data={'nueva_materia': ""})
         self.assertEqual(response.resolver_match.func, cargarm)
 
     def test_se_cargo_materia_vacia(self):
-        response = self.client.post(reverse('cargarm'),
-                                    data={'nueva_materia': " "})
+        response = self.client.post(reverse('cargarm'), data={'nueva_materia': " "})
         self.assertEqual(response.resolver_match.func, cargarm)
 
 
@@ -65,9 +56,14 @@ class TemaMethodTests(TestCase):
                                     data={'materias': 'Biologia',
                                           'nuevo_tema': 'genetica'})
         response = self.client.post(reverse('cargart'),
+<<<<<<< HEAD
                                     data={
                                         'materias': 'Biologia',
                                         'nuevo_tema': 'genetica'})
+=======
+                                    data={'materias': 'Biologia',
+                                          'nuevo_tema': 'genetica'})
+>>>>>>> Estadistica
         self.assertEqual(response.resolver_match.func, cargart)
 
     def test_se_cargo_tema_vacio(self):

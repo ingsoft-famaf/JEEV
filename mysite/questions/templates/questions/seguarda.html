@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+{% load static %}
+
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <script  type="text/javascript" src="http://cdn.jsdelivr.net/jquery.flot/0.8.3/jquery.flot.min.js"></script>
+        <link rel="stylesheet" href="{% static 'css/estilos.css' %}">
+
+    <header>
+        <h1>ADMIN</h1>
+    </header>
+</head>
+<body>
+<center>
+    <form action="{% url 'guardarCorrecta' q.id %}" method="post">
+        {% csrf_token %}
+        <h3>Detalles de la pregunta</h3>
+        <h4>Materia: {{q.nombre_materia}}</h4> 
+        <h4>Tema: {{q.nombre_tema}}</h4>
+        {% if parecida %}
+            <h4 style="color:red">Warning: la pregunta que esta ingresando pude que ya exista</h4>
+        {% endif %}
+        <h4>Titulo de la pregunta: {{q.text_preg}}</h4>
+        <h3>Seleccione sólo una respuesta correcta: </h3>
+        {% for opcion in opciones %}
+            <br><input type="radio" name="opcion" value="{{opcion}}">{{opcion}}
+        {% endfor %}
+        <br><br><input type="submit" value="Agregar pregunta">
+    </form>
+    <br><a href="{% url 'delete' q.id %}">Cancelar</a>
+</center>
+</body>
+</html>

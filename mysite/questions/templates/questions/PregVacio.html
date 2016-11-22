@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+{%load static%}
+<html>
+<head>
+<lnk rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+<link rel="stylesheet" href="{% static 'css/estilos.css' %}">
+<header>
+    <h1>ADMIN</h1>
+</header>
+</head>
+<body>
+<center>    
+    <h4 style="color:red">Error al agregar la pregunta</h4>
+    <h4>Por favor ingrese los datos correctamente.</h4>
+    <h4>Es posible que usted no haya ingresado el título de la pregunta, o bien no haya ingresado alguna respuesta.</h4>
+    <a href="{% url 'agregarPreg' %}">Volver</a>
+</center>
+</body>
+</html>
