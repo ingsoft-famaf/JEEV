@@ -290,22 +290,30 @@ def validar_yaml(yaml_object):
                   'Respuesta':Use(str,int),
                   'Pregunta':str,
                   'Tema':str}])
-    try:
-        yml_validacion = yaml.load_all(yaml_object)
-        es_valida = True
-    except:
-        es_valida = False  
+    # try:
+    #     yml_validacion = 
+    #     print yml_validacion
+    #     es_valida = True
+    # except:
+    #     es_valida = False
+    #     print "except"
+    #     return es_valida 
     lista_bloque = []
     index = 0
-    for bloque in yml_validacion:
-        lista_bloque.insert(0,bloque)
-        index +=1
     try:
-        validated = schema.validate(lista_bloque)
-        es_valida = True
+        for bloque in yaml.load_all(yaml_object):
+            lista_bloque.insert(0,bloque)
+            index +=1
     except:
-        es_valida = False
-    return es_valida
+        return False
+    else:
+        return True
+    # try:
+    #     validated = schema.validate(lista_bloque)
+    #     es_valida = True
+    # except:
+    #     es_valida = False
+    # return es_valida
 
 def validar_xml(url):
     """
@@ -502,11 +510,15 @@ def buscar_view(request):
 
 
 def temas(request):
-    mat = request.POST['materia']
-    materia = get_object_or_404(Materia, nombre_materia=mat)
+    from django.http import HttpResponse
+    import json
+    mat = request.GET['materia']
+    print mat
+    materia = get_object_or_404(Materia, pk=mat)
     temas = Tema.objects.filter(temas=materia)
-    print temas
-    return render(request, {'temas': temas})
+    temas = [tema.nombre_tema for tema in temas]
+    return HttpResponse(json.dumps(temas), content_type="application/json")
+    #return render(request, {'temas': temas})
 
 
 def lista_view(request, materia_id):
@@ -606,7 +618,7 @@ def guardar_modif(request, question_id):
             opcion += repr(x)
             opciones.append(request.POST[opcion])
             opcion = 'opcion'
-            guardarResp(q, opciones[x])
+            guardar_resp(q, opciones[x])
             if opciones[x] == "":
                 q.delete()
                 return render(request, 'questions/PregVacio.html')

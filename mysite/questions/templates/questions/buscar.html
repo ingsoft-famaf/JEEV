@@ -2,31 +2,46 @@
 {%load static%}
 <html>
 <head>
-    <lnk rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
     <link rel="stylesheet" href="{% static 'css/estilos.css' %}">
-    <script type="text/javascript" src="js/jquery-1.9.1.min.js" >
-    jQuery(document).ready(function() {
-        jQuery("#miForm").change(function() {
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>  
+    <script type="text/javascript">
+    // jQuery(document).ready(function() {
+    //     jQuery("#miForm").change(function() {
+    //         var materia = $("#materia").val();
+    //         jQuery.ajax({
+    //             type: "POST",
+    //             url: 'temas',
+    //             data: {'materia' : materia},
+    //             success: function(data) {
+    //                 jQuery('#subareas').html(data);
+    //                 //alert( "Data Saved: " + data);
+
+    //             },
+    //         });
+    //     });
+    // });
+
+    $(document).ready(function() {
+        $("#materia").on("change", function(){
             var materia = $("#materia").val();
-            jQuery.ajax({
-                type: "POST",
-                url: 'temas',
+            $.ajax({
+                type: "GET",
+                url: '/questions/temas',
                 data: {'materia' : materia},
                 success: function(data) {
-                    jQuery('#subareas').html(data);
-                    //alert( "Data Saved: " + data);
-
-                },
+                    $.each(data, function() {console.log(data)});
+                }
             });
         });
     });
     </script>
+</head>
+<body>
     <header>
         <h1>ADMIN</h1>
     </header>
-</head>
-<body>
 <center>
     <form action="" id="miForm" method="post">
         {% csrf_token %}

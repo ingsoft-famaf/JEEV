@@ -32,7 +32,6 @@ class QuestionTest(TestCase):
                               es_correcta=False)
         Answer.objects.create(respuesta=question2, text_resp="26",
                               es_correcta=False)
-        
         question3 = Question.objects.create(nombre_tema='Lectura',
                                             nombre_materia='Lengua',
                                             text_preg='frodo amigo de sam?',
@@ -41,7 +40,6 @@ class QuestionTest(TestCase):
                               es_correcta=True)
         Answer.objects.create(respuesta=question1, text_resp="no",
                               es_correcta=False)
-        
         question4 = Question.objects.create(nombre_tema='Lectura',
                                             nombre_materia='Lengua',
                                             text_preg='harry potter es colorado?',

@@ -44,7 +44,7 @@
         {% for respuesta in respuestas %}
             {% if respuesta.es_correcta %}
                 <li style="color:green; font-weight:700">{{respuesta.text_resp}}
-                &emsp;<a href="{% url 'modifiResp' pregunta.id respuesta.id %}" >Modificar</a>
+                &emsp;<a href="{% url 'modifiResp' pregunta.id respuesta.id %}" >Modificar</a></li>
             {% else %}
                 <li>{{respuesta.text_resp}}
                 &emsp;<a href="{% url 'modifiResp' pregunta.id respuesta.id %}" >Modificar</a>
