@@ -16,6 +16,15 @@ def filter_query (realquery, querytofilt):
             if q.question.id == q2.id :
                 realquery = realquery.exclude(id = q2.id)
     return realquery
+
+
+def unicodetolist (unicodelist):
+    newlist = []
+    print unicodelist[0]
+    for i in unicodelist:
+        newlist.append(str(i))
+    print newlist
+    return newlist
 """End aux functions"""
 
 def elegirExamen(request):
@@ -58,8 +67,6 @@ def selcTemas(request):
     materia = request.POST['materias']
     list_temas= Tema.objects.values_list(
                             'nombre_tema',flat=True).filter(temas__nombre_materia=materia)
-    print "print materia"
-    print materia
     return render(request, 'examenes/selcTemas.html', {'list_temas':list_temas}, materia)
 
 def examen_encurso(request):
@@ -69,8 +76,8 @@ def examen_encurso(request):
     if request.POST['cantidad'] == "":
         return render(request, 'examenes/datosIncorrectos.html')
     tema = request.POST.getlist('tema')
-    print "ESTOY ACA"
-    print tema
+    unicodetolist(tema)
+    #print tema
     cantidad = request.POST['cantidad']
     print cantidad
     tiempo = request.POST['tiempo']
@@ -89,6 +96,8 @@ def respPregErrores(request, examenE_id):
     print examenE_id
     examen1 = get_object_or_404(ExamErrores, pk=examenE_id)
     tema = examen1.nombre_tema
+    print str(tema)
+    temaslist = unicodetolist(tema)
     randomm =[]
     query1 = Question.objects.filter(nombre_tema=tema)
     query2 = query1.count()
@@ -118,8 +127,8 @@ def respPregErrores(request, examenE_id):
 def examen_view(request):
     """
     Input: HttpRequest
-    Output: redirige a un html pasándole dos query
-    Esta función muestra las opciones para la configuración del examen.
+    Output: redirige a un html pasándole una query
+    Esta función muestra las opciones para la configuración de la materia del examen.
     """
     query = Question.objects.all()
     count = query.count()
@@ -129,10 +138,20 @@ def examen_view(request):
     else:
         return render(request, 'examenes/examen.html',
                   {'list_materias': Materia.objects.values_list(
-                            'nombre_materia', flat=True).distinct(),
-                   'list_temas': Tema.objects.values_list(
-                            'nombre_tema', flat=True).distinct()})
+                  'nombre_materia', flat=True).distinct()})
 
+def selecttema2(request):
+    """
+    Input : HttpRequest
+    Output : redirige a un html pasándole una query
+    Esta función muestra las opciones temas, cantidad de preguntas  y tiempo del
+    examen
+    """
+    materia = request.POST['materias']
+    list_temas= Tema.objects.values_list(
+                            'nombre_tema',flat=True).filter(temas__nombre_materia=materia)
+
+    return render(request, 'examenes/selecttema2.html', {'list_temas':list_temas}, materia)
 
 def examenencurso_view(request):
     """
@@ -143,15 +162,14 @@ def examenencurso_view(request):
     """
     if request.POST['cantidad'] == "":
         return render(request, 'examenes/datosIncorrectos.html')
-    materia = request.POST['materias']
-    tema = request.POST['temas']
+    tema = request.POST.getlist('tema')
     query = Question.objects.filter(nombre_tema=tema)
     count = query.count()
     print "count de cantidad de temas"
     print count
     if count == 0:
         return render(request, 'examenes/TemaSinPreguntas.html')
-    else: 
+    else:
         cantidad = request.POST['cantidad']
         tiempo = request.POST['tiempo']
         examen = Exam(nombre_materia = materia,nombre_tema = tema,

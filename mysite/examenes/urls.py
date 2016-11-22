@@ -11,6 +11,7 @@ urlpatterns = [
     url(r'^elegirExamen', views.elegirExamen, name='elegirExamen'),
     url(r'^examenencurso', views.examenencurso_view, name='examenencurso'),
     url(r'^examen', views.examen_view, name='examen'),
+    url(r'^selecttema2', views.selecttema2, name='selecttema2'),
     url(r'^encurso', views.examen_encurso, name='encurso'),
     url(r'^selcMateria', views.selcMateria, name='selcMateria'),
     url(r'^selcTemas', views.selcTemas, name='selcTemas'),
