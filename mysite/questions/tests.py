@@ -49,19 +49,19 @@ class QuestionTest(TestCase):
                                             text_preg='2 +2 ?',
                                             reportada=True)
 
-#    def test_question_up(self):
-#        """
-#          precondicion: simula ingresar pedido de redireccion.
-#         post :  compara si el resultado es la pagina con toda la estadisticas.
-#        """
-#        response = self.client.post(reverse('uploadquestion'), data={'namefile':'/questions/lxml.xml'})
-#        self.assertEqual(response.resolver_match.func, uploadquestion)
+    def test_question_up(self):
+        """
+        precondicion: simula ingresar pedido de redireccion.
+        post :  compara si el resultado es la pagina con toda la estadisticas.
+        """
+        response = self.client.post(reverse('uploadquestion'), data={'namefile':'/questions/lxml.xml',
+                                                                     'tipo': 'XML'})
+        self.assertEqual(response.resolver_match.func, uploadquestion)
 
-#    def test_report_questions(self):
-#        q = Question.objects.get(reportada=True)
-#        response = self.client.post(reverse('question'), q)
-#        self.assertEqual(response.resolver_match.func, reported)
-#
+    def test_report_questions(self):
+        response = self.client.post(reverse('reported'))
+        self.assertEqual(response.resolver_match.func, reported)
+
     def test_agregar_pregunta(self):
         response = self.client.post(reverse('agregarPreg'), data={'materia': 'Matematica', 'tema': 'sumar',
                                                                   'titulo': '4 + 10 ?', 'opcion': 2,

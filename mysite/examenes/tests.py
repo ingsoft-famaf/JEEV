@@ -64,9 +64,9 @@ class ExamTest(TestCase):
         examen = Exam.objects.get(nombre_materia='Matematicas')
         question1 = Question.objects.get(text_preg='2 + 2 ?')
         respuestas = Answer.objects.filter(es_correcta=True)
-        respuesta_0 = respuestas[0]
+        respuesta0 = respuestas[0]
         response = self.client.post(reverse('respuesta', args=[examen.id]),
-                                    data={'respuesta': respuesta_0.id})
+                                    data={'respuesta': respuesta0.id})
         self.assertEqual(response.resolver_match.func, respuesta)
 
     def test_reportar(self):

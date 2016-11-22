@@ -15,6 +15,8 @@ from lxml.etree import XMLSyntaxError
 from materias.views import modificacion_input
 from schema import Schema, And, Use, Optional
 from schema import SchemaError
+from django.http import HttpResponse
+import json
 
 
 def es_parecida(string1, string2):
@@ -502,42 +504,19 @@ def buscar_view(request):
     :Return: redirecciona a Http que corresponda.
     """
     if request.method == "POST":
-        mat = request.POST['materia']
-        materia = get_object_or_404(Materia, pk=mat)
-        temas = Tema.objects.filter(temas=materia)
-        return render(request, 'questions/buscarT.html', {'materia': materia, 'temas': temas})
+        materia = str(request.POST['materia'])
+        tema = str(request.POST['temas'])
+        preguntas = Question.objects.filter(nombre_materia=materia).filter(nombre_tema=tema)
+        return render(request, 'questions/listaPreg.html', {'preguntas': preguntas})
     return render(request, 'questions/buscar.html', {'materias': Materia.objects.all()})
 
 
 def temas(request):
-    from django.http import HttpResponse
-    import json
     mat = request.GET['materia']
-    print mat
-    materia = get_object_or_404(Materia, pk=mat)
+    materia = get_object_or_404(Materia, nombre_materia=mat)
     temas = Tema.objects.filter(temas=materia)
     temas = [tema.nombre_tema for tema in temas]
     return HttpResponse(json.dumps(temas), content_type="application/json")
-    #return render(request, {'temas': temas})
-
-
-def lista_view(request, materia_id):
-    """
-    Esta funcion da la lista de los temas sólos los de la materia preseleccionada.
-    :Param request: HttpRequest
-    :type: Http
-    :Return: redirecciona a Http
-    """
-    if request.method == "POST":
-        materia = get_object_or_404(Materia, pk=materia_id)
-        tema = request.POST.get('tema', False)
-        if tema is False:
-            return render(request, 'questions/temaVacio.html', {'materia': materia})
-        preguntas = Question.objects.filter(nombre_materia=materia).filter(nombre_tema=tema)
-        return render(request, 'questions/listaPreg.html', {'preguntas': preguntas})
-    materia = get_object_or_404(Materia, pk=materia_id)
-    temas = Tema.objects.filter(temas=materia)
-    return render(request, 'questions/buscarT.html', {'materia': materia, 'temas': temas})
 
 
 def modificar_view(request, question_id):
@@ -678,7 +657,7 @@ def update_view(request, question_id, answer_id):
         answer.text_resp = resp_nueva
         answer.save()
         return render(request, 'questions/detail.html',
-                      {'answers': Answer.objects.filter(respuesta=question),
+                      {'answers': answer,
                        'question': question})
     question = get_object_or_404(Question, pk=question_id)
     answer = get_object_or_404(Answer, pk=answer_id)
@@ -701,8 +680,8 @@ def save_view(request, question_id, answer_id):
     answer.text_resp = resp_nueva
     answer.save()
     return render(request, 'questions/detail.html',
-                {'answers': Answer.objects.filter(respuesta=question),
-                'question': question})
+                  {'answers': Answer.objects.filter(respuesta=question),
+                   'question': question})
 
 
 def sacardereported(request, question_id):

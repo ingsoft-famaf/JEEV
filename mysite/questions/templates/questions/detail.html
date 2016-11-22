@@ -17,10 +17,10 @@
         {% for answer in answers %}
             <li>{{ answer.text_resp }}
             {% if answer.es_correcta %}
-                <a href="{% url 'update' question.id answer.id%}" >Modificar</a>
+                <a href="{% url 'update' question.id answer.id %}" >Modificar</a>
                 <la style="color:green">Es la correcta </la></li>
             {% else %}
-                <a href="{% url 'update' question.id answer.id%}">Modificar</a>
+                <a href="{% url 'update' question.id answer.id %}">Modificar</a>
             {% endif %}
             </br></br>
         {% endfor %}
