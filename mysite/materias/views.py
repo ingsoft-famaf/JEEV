@@ -69,7 +69,7 @@ def cargart(request):
             if distance(str(query[0]).lower(), str(nuevotema).lower()) == 0:
                 repetida = True
             if repetida is False:
-                ntema = Tema(temas= mat[0], nombre_tema=nuevotema)
+                ntema = Tema(temas=mat[0], nombre_tema=nuevotema)
                 ntema.save()
                 return render(request, 'materias/secargo.html')
             else:

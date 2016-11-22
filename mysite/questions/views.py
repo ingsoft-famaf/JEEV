@@ -17,7 +17,6 @@ from schema import Schema, And, Use, Optional
 from schema import SchemaError
 
 
-
 def es_parecida(string1, string2):
     """
     Esta funcion devuelve la distancia de Levenshtein entre
@@ -33,6 +32,7 @@ def es_parecida(string1, string2):
     distancia = distance(string1_lower, string2_lower) >= 1 and distance(string1_lower, string2_lower) <= 10
     return distancia
 
+
 def guardarPreg(materia, tema, titulo):
     """
     Esta funcion guarda en la base de datos la pregunta
@@ -45,19 +45,18 @@ def guardarPreg(materia, tema, titulo):
     q.save()
     return q
 
-def guardarResp(question, resp, es_correcta, attrib):
+def guardarResp(question, resp, attrib):
     """
     Esta funcion guarda la respuesta
     :Param question: Object
     :Param resp: String
-    :Param es_correcta: Bool
     :Param attrib: String or None
     """
     if attrib is not None:
-        a = Answer(respuesta=question, text_resp=resp, es_correcta=es_correcta)
+        a = Answer(respuesta=question, text_resp=resp, es_correcta=True)
         a.save()
     else:
-        a = Answer(respuesta=question, text_resp=resp, es_correcta=es_correcta)
+        a = Answer(respuesta=question, text_resp=resp, es_correcta=False)
         a.save()
 
 def guardar_resp_dict(resp_dict, question):
@@ -289,7 +288,9 @@ def upload_question_yaml(request, url):
             else:
                 preguntas_repetidas.insert(index_iguales, pregunta)
                 index_iguales +=  1
-    return render(request, 'questions/secargo_yml.html', {'preguntas': preguntas_repetidas, 'preguntas_similares': preguntas_parecidas})
+    return render(request, 'questions/secargo_yml.html', {'preguntas': preguntas_repetidas,
+                                                          'preguntas_similares': preguntas_parecidas,
+                                                          'parecida': parecida, 'repetida': repetida})
 
 def question_view(request, url):
     """
@@ -309,46 +310,32 @@ def question_view(request, url):
     if respuestas_validas is False:
         return render(request, 'questions/resp_invalida.html')
     index = 0
+    index_parecidas = 0
     preguntas_repetidas = []
+    preguntas_parecidas = []
     for pregunta in root:
         materia =modificacion_input(pregunta.find('materia').text)
         tema = modificacion_input(pregunta.find('tema').text)
         texto = (pregunta.find('texto').text)
-        materia_exists = Materia.objects.filter(
-            nombre_materia=materia).exists()
-        if not materia_exists:
+        materia_existe = exist_materia(materia)
+        if not materia_existe:
             return render(request, 'questions/noExisteMat.html', {'materia': materia})
-        materias_con_tema = Materia.objects.filter(tema__nombre_tema=tema)
-        count_materias = materias_con_tema.count()
-        tema_exist = False
-        for i in range(count_materias):
-            bd_materia = str(materias_con_tema[i])
-            if bd_materia == materia:
-                tema_exist = True
-                break
-        if not tema_exist:
+        tema_existe = exist_tema(tema, materia)
+        if not tema_existe:
             return render(request, 'questions/noExisteTema.html', {'tema': tema})
         if type(texto) == unicode:
             return HttpResponse("La pregunta %s esta mal formada" % texto)
         query = Question.objects.filter(
             nombre_tema=tema).filter(nombre_materia=materia)
         count = query.count()
+        parecida = False
         if count == 0:
-            q = Question(nombre_tema=tema,
-                         nombre_materia=materia, text_preg=texto,
-                         reportada=False)
-            q.save()
+            qobject = guardarPreg(materia, tema, texto)
             for respuesta in pregunta.iter("respuesta"):
                 text_resp = respuesta.text
                 attrib = respuesta.get("estado")
                 if attrib is not None:
-                    a = Answer(respuesta=q, text_resp=text_resp,
-                               es_correcta=True)
-                    a.save()
-                else:
-                    a = Answer(respuesta=q, text_resp=text_resp,
-                               es_correcta=False)
-                    a.save()
+                    guardarResp(qobject, text_resp, attrib)
         else:
             for i in range(count):
                 repetida = False
@@ -356,26 +343,23 @@ def question_view(request, url):
                 if comparacion_preguntas(str(firstObj.text_preg), texto):
                     repetida = True
                     break
+                if es_parecida(str(firstObj.text_preg), texto):
+                    parecida = True
             if repetida is False:
-                q = Question(nombre_tema=tema,
-                             nombre_materia=materia, text_preg=texto,
-                             reportada=False)
-                q.save()
+                if parecida is True:
+                    preguntas_parecidas.insert(index_parecidas, texto)
+                    index_parecidas += 1
+                qobject = guardarPreg(materia, tema, texto)
                 for respuesta in pregunta.iter("respuesta"):
                     resp_text = respuesta.text
                     attrib = respuesta.get("estado")
-                    if attrib is not None:
-                        a = Answer(respuesta=q, text_resp=resp_text,
-                                   es_correcta=True)
-                        a.save()
-                    else:
-                        a = Answer(respuesta=q, text_resp=resp_text,
-                                   es_correcta=False)
-                        a.save()
+                    guardarResp(qobject, resp_text, attrib)
             else:
                 preguntas_repetidas.insert(index, texto)
                 index += 1
-    return render(request, 'questions/secargo.html', {'preguntas':preguntas_repetidas})
+    return render(request, 'questions/secargo.html', {'preguntas':preguntas_repetidas,
+                                                      'preguntas_similares': preguntas_parecidas,
+                                                      'repetida': repetida, 'parecida': parecida})
 
 
 def reported(request):

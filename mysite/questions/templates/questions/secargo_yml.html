@@ -11,15 +11,19 @@
 </head>
 <body>
 <center>
-    <h4>Las preguntas no repetidas fueron cargadas con exito.</h4>
-    <h4>Las preguntas que no se cargaron por estar repetidas son: </h4>
-    {% for pregunta in preguntas%}
-        {{pregunta}}<br><br>
-    {% endfor %}
-    <h4>Las preguntas que se cargaron pero podrian ser similares son: </h4>
-    {% for pregunta in preguntas_similares%}
-        {{pregunta}}<br><br>
-    {% endfor %}
+    <h4 style="color:green">Las preguntas fueron cargadas con exito.</h4>
+    {% if repetida %}
+        <h4 style="color:red">Las preguntas que no se cargaron por estar repetidas son: </h4>
+        {% for pregunta in preguntas%}
+            {{pregunta}}<br><br>
+        {% endfor %}
+    {% endif %}
+    {% if parecida %}
+        <h4 style="color:#D7DF01">Las preguntas que se cargaron pero podrian ser similares son: </h4>
+        {% for pregunta in preguntas_similares%}
+            {{pregunta}}<br><br>
+        {% endfor %}
+    {% endif %}
     <a href="/homepage/superuser/" >Volver</a>
 </center>
 </body>
