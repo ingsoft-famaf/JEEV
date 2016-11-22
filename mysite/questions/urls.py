@@ -21,4 +21,7 @@ urlpatterns = [
 
     url(r'^(?P<question_id>[0-9]+)/sacar', views.sacardereported,
         name='sacar'),
+
+    url(r'^question', views.question_view, name='question'),
+
 ]

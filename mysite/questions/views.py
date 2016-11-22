@@ -59,6 +59,7 @@ def guardarResp(question, resp, attrib):
         a = Answer(respuesta=question, text_resp=resp, es_correcta=False)
         a.save()
 
+
 def guardar_resp_dict(resp_dict, question):
     """
     Esta funcion guarda la respuesta
@@ -200,7 +201,8 @@ def validar_xml(url):
         root = ET.fromstring(url)
         return root
     except XMLSyntaxError:
-       return False
+        return False
+
 
 def uploadquestion(request):
     """
@@ -294,7 +296,7 @@ def upload_question_yaml(request, url):
 
 def question_view(request, url):
     """
-    Esta función se utiliza para realizar la creacion de preguntas con sus
+    Esta funcion se utiliza para realizar la creacion de preguntas con sus
     respectivas respuestas parsea un archivo xml, utilizando la libreria LXML.
     Una vez parseado, se comparan las preguntas existentes utilizando el
     algoritmo de Levenshtein en la base de datos con las que se quieren crear,
@@ -364,8 +366,8 @@ def question_view(request, url):
 
 def reported(request):
     """
-    Esta función redirecciona la vista a un html pasandole sólo las preguntas
-    que estén reportadas, el html motrará una lista de esas preguntas.
+    Esta funcion redirecciona la vista a un html pasandole solo las preguntas
+    que esten reportadas, el html motrara una lista de esas preguntas.
     """
     return render(request, 'questions/reported.html',
                   {'questions': Question.objects.filter(reportada=True)})
@@ -373,10 +375,10 @@ def reported(request):
 
 def detail_view(request, question_id):
     """
-    Esta función toma el id de la pregunta y la busca en la base de datos,
+    Esta funcion toma el id de la pregunta y la busca en la base de datos,
     sino se encuentra devuelve un error 404. Redirecciona la vista a un html
-    con todos respuestas de la pregunta seleccionada cada una con un botón
-    para modificarla y un botón general para eliminar la pregunta con sus
+    con todos respuestas de la pregunta seleccionada cada una con un boton
+    para modificarla y un boton general para eliminar la pregunta con sus
     respectivas respuestas completa.
     """
     question = get_object_or_404(Question, pk=question_id)
@@ -387,9 +389,9 @@ def detail_view(request, question_id):
 
 def delete_view(request, question_id):
     """
-    Esta función toma el id de la pregunta y la busca en la base de datos,
+    Esta funcion toma el id de la pregunta y la busca en la base de datos,
     sino se encuentra devuelve un error 404, elimana esa pregunta y
-    redirecciona la vista a un html que le informa al usuario que se eliminó
+    redirecciona la vista a un html que le informa al usuario que se elimino
     correctamenta.
     """
     question = get_object_or_404(Question, pk=question_id)
@@ -399,9 +401,9 @@ def delete_view(request, question_id):
 
 def update_view(request, question_id, answer_id):
     """
-    Esta función toma el id de la pregunta y el id de una respuesta y las busca
+    Esta funcion toma el id de la pregunta y el id de una respuesta y las busca
     en la base de datos, sino se encuentran devuelve un error 404. Redirecciona
-    la vista a un html en donde este muestra la respuesta que se seleccionó
+    la vista a un html en donde este muestra la respuesta que se selecciono
     para modificar y le inidca al usuario que ingrese la nueva respuesta.
     """
     question = get_object_or_404(Question, pk=question_id)
@@ -413,12 +415,12 @@ def update_view(request, question_id, answer_id):
 
 def save_view(request, question_id, answer_id):
     """
-    Esta función toma el id de la pregunta y el id de una respuesta y las busca
+    Esta funcion toma el id de la pregunta y el id de una respuesta y las busca
     en la base de datos, sino se encuentran devuelve un error 404. Toma la
-    nueva respuesta que ingresó el usuario, la coloca en el campo text_resp de
+    nueva respuesta que ingreso el usuario, la coloca en el campo text_resp de
     la respuesta y lo guarda. Redirecciona la vista al html en donde esta la
     pregunta con sus respectivas respuestas pero esta vez con la respuesta que
-    se modificó actualizada.
+    se modifico actualizada.
     """
     question = get_object_or_404(Question, pk=question_id)
     answer = get_object_or_404(Answer, pk=answer_id)
@@ -432,9 +434,9 @@ def save_view(request, question_id, answer_id):
 
 def sacardereported(request, question_id):
     """
-    Esta función toma el id de la pregunta y la busca en la base de datos,
+    Esta funcion toma el id de la pregunta y la busca en la base de datos,
     sino se encuentra devuelve un error 404. CAmbia el estado de reportada
-    a falso, sacándola así de la lista de las preguntas reportadas.
+    a falso, sacandola asi de la lista de las preguntas reportadas.
     Redirecciona la vista a la lista de las preguntas reportadas.
     """
     question = get_object_or_404(Question, pk=question_id)

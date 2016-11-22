@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from django.http import HttpResponse
 from django.shortcuts import render
 from models import Materia, Tema
@@ -22,7 +21,8 @@ def modificacion_input(string):
 def cargarm(request):
     """ :Param request: HttpRequest
         :type: Http
-        :return: redirecciona a Http segun corresponda el caso """
+        :return: redirecciona a Http segun corresponda el caso
+    """
     if request.method == "POST":
         nuevamat = request.POST['nueva_materia']
         if nuevamat == "" or nuevamat == " ":
@@ -50,18 +50,19 @@ def cargart(request):
     """
         :Param request: HttpRequest
         :type: Http
-        :return: redirecciona a Http segun corresponda el caso """
-    
+        :return: redirecciona a Http segun corresponda el caso
+    """
+
     if request.method == "POST":
         materia = request.POST['materias']
         nuevotema = request.POST['nuevo_tema']
         if nuevotema == "" or nuevotema == " ":
             return render(request, 'materias/temarepetido.html')
-        mat = Materia.objects.filter(nombre_materia = materia)
+        mat = Materia.objects.filter(nombre_materia=materia)
         query = Tema.objects.filter(nombre_tema__iexact=nuevotema)
         repetida = False
         count = query.count()
-        ntema = Tema(temas= mat[0], nombre_tema=nuevotema)
+        ntema = Tema(temas=mat[0], nombre_tema=nuevotema)
         if count == 0:
             ntema.save()
             return render(request, 'materias/secargo.html')
@@ -73,15 +74,16 @@ def cargart(request):
                 ntema.save()
                 return render(request, 'materias/secargo.html')
             else:
-               return render(request, 'materias/temarepetido.html')
-    return render(request, 'materias/cargartema.html',{'list_materias': Materia.objects.values_list(
-                        'nombre_materia', flat=True).distinct()})
+                return render(request, 'materias/temarepetido.html')
+    return render(request, 'materias/cargartema.html', {'list_materias': Materia.objects.values_list(
+                  'nombre_materia', flat=True).distinct()})
 
 
 def obtener_tema_materia(request):
     """:Param request: HttpRequest
     :type: Http
-    :return: redirecciona a Http segun corresponda """
+    :return: redirecciona a Http segun corresponda
+    """
     return render(request, 'materias/cargartema.html',
-              {'list_materias': Materia.objects.values_list(
-                                'nombre_materia', flat=True).distinct()})
+                  {'list_materias': Materia.objects.values_list(
+                   'nombre_materia', flat=True).distinct()})
