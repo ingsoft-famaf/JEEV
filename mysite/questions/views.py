@@ -86,7 +86,7 @@ def guardarPreg(materia, tema, titulo):
     return q
 
 
-def guardarResp(question, resp):
+def guardar_resp(question, resp):
     """
     Esta funcion guarda la respuesta de una pregunta.
     :Param question: objeto Question
@@ -138,7 +138,7 @@ def agregarPreg(request):
             opcion += repr(x)
             opciones.append(request.POST[opcion])
             opcion = 'opcion'
-            guardarResp(q, opciones[x])
+            guardar_resp(q, opciones[x])
             if opciones[x] == "":
                 q.delete()
                 return render(request, 'questions/PregVacio.html')
