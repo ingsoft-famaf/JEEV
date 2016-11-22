@@ -58,16 +58,10 @@ def selcTemas(request):
     materia = request.POST['materias']
     list_temas= Tema.objects.values_list(
                             'nombre_tema',flat=True).filter(temas__nombre_materia=materia)
-    print "print materia"
+    #print "print materia"
     print materia
     return render(request, 'examenes/selcTemas.html', {'list_temas':list_temas}, materia)
 
-def list2str(lista, tema):
-    for i in tema:
-        lista.append(str(i))
-    return lista
-#    for i in lista:
- #       print i
 
 def examen_encurso(request):
     """
@@ -76,25 +70,14 @@ def examen_encurso(request):
     if request.POST['cantidad'] == "":
         return render(request, 'examenes/datosIncorrectos.html')
     tema = request.POST.getlist('tema')
-    print "ESTOY ACA"
-    lista = []
-    list2str(lista,tema)
-    for i in lista:
-        print "en exmamen"
-        print i
+    print ("Temas despues de levantarlos %s" % tema)
     cantidad = request.POST['cantidad']
     print cantidad
     tiempo = request.POST['tiempo']
-    examenE = ExamErrores(nombre_tema = lista,cantidad_preg = cantidad, tiempo_preg = tiempo)
+    examenE = ExamErrores(nombre_tema = tema,cantidad_preg = cantidad, tiempo_preg = tiempo)
     examenE.save()
     return render(request, 'examenes/encurso.html' ,
                     {'examenE':examenE})
-
-def unicode2list(lista_nueva, unicodelist):
-    for i in unicodelist:
-        lista_nueva.append(str(i))
-    return lista_nueva
-
 
 def respPregErrores(request, examenE_id):
     """
@@ -105,24 +88,32 @@ def respPregErrores(request, examenE_id):
     """
     print examenE_id
     examen1 = get_object_or_404(ExamErrores, pk=examenE_id)
-    tema = []
-    tema = examen1.nombre_tema
-
-    print type(tema)
-    lista = []
-    print "en respPregErrores"
-    unicode2list(lista,tema)
+    tema = ["Matrices","Sumas"]
+    query_list = []
+    #tema = examen1.nombre_tema
+    materia = "Algebra"
+    print ("La materia es %s" % materia)
     randomm =[]
-    for i in lista:
-        print "dentro de lista"
-        print i
-        query1 = Question.objects.filter(nombre_tema=i)
-        query2 = query1.count()
-
+    count_temas = len(tema)
+    list_preguntas_count=[]
+    print ("El primer tema es %s" % str(tema[1]))
+    print count_temas
+    for i in range(count_temas):
+        print tema[i]
+        query = Question.objects.filter(nombre_tema=str(tema[i])).filter(nombre_materia=materia)
+        query_list.insert(i,query)
+    print query_list
+    largo2 = 0
+    for k in range(count_temas):   
+        largo1= query_list[k].count()
+        print largo1
+        if largo2 <= largo1:
+            largo2 = largo1
+    print ("el largo2 es %s" % largo2)
     #si pide mas preguntas de las que tenemos disminuimos la cantidad
     #para no generar conflictos de bordes
-    if examen1.cantidad_preg > query2:
-        examen1.cantidad_preg = query2
+    if examen1.cantidad_preg > largo2:
+        examen1.cantidad_preg = largo2
 
     print examen1.cantidad_preg
     if examen1.pregunta_actual == examen1.cantidad_preg:
