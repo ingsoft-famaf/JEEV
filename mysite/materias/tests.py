@@ -56,14 +56,8 @@ class TemaMethodTests(TestCase):
                                     data={'materias': 'Biologia',
                                           'nuevo_tema': 'genetica'})
         response = self.client.post(reverse('cargart'),
-<<<<<<< HEAD
-                                    data={
-                                        'materias': 'Biologia',
-                                        'nuevo_tema': 'genetica'})
-=======
                                     data={'materias': 'Biologia',
                                           'nuevo_tema': 'genetica'})
->>>>>>> Estadistica
         self.assertEqual(response.resolver_match.func, cargart)
 
     def test_se_cargo_tema_vacio(self):

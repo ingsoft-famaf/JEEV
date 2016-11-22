@@ -49,13 +49,12 @@ class ExamTest(TestCase):
         self.assertEqual(response.resolver_match.func, examenencurso_view)
 
     def test_realizar_examen(self):
-      """
+        """
         crea un examen con el atributo nombre de materia y compara que se 
         hayan creado bien las respuestas.
         precondicion: simulo subir nombre del examen a testear
-        postcondicion: devuelve un error o si el test haya pasado bien, sigue. 
-                      compara la funcion resppreg, donde muestra una preg
-                      con sus resp.
+        postcondicion: devuelve un error o si el test haya pasado bien, sigue.
+        compara la funcion resppreg, donde muestra una preg con sus resp.
         """
         examen = Exam.objects.get(nombre_materia='Lengua')
         response = self.client.get(reverse('resppreg', args=[examen.id]))
@@ -65,13 +64,13 @@ class ExamTest(TestCase):
         examen = Exam.objects.get(nombre_materia='Matematicas')
         question1 = Question.objects.get(text_preg='2 + 2 ?')
         respuestas = Answer.objects.filter(es_correcta=True)
-        respuesta = respuestas[0]
+        respuesta_0 = respuestas[0]
         response = self.client.post(reverse('respuesta', args=[examen.id]),
-                                    data={'respuesta': respuesta.id})
+                                    data={'respuesta': respuesta_0.id})
         self.assertEqual(response.resolver_match.func, respuesta)
 
     def test_reportar(self):
-      """
+        """
         crea un examen con el atributo nombre de materia, pregunta y simulo enviar datos,
         Compara que si las preguntas tengan respuestas.
         precondicion: simulo subir nombre del examen, una preg a testear

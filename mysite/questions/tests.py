@@ -1,10 +1,8 @@
 from django.test import TestCase
-<<<<<<< HEAD
 from django.core.urlresolvers import reverse
 from allauth.account.forms import BaseSignupForm
 from django.test.client import Client
 from allauth.utils import get_user_model
-from examenes.models import Exam
 from questions.models import Question, Answer
 from examenes.views import *
 from questions.views import *
@@ -13,15 +11,7 @@ from questions.views import *
 class QuestionTest(TestCase):
 
     def setUp(self):
-        examen1 = Exam.objects.create(nombre_materia='Matematicas',
-                                      nombre_tema='sumar',
-                                      cantidad_preg=3,
-                                      tiempo_preg=15)
-        examen2 = Exam.objects.create(nombre_materia='Lengua',
-                                      nombre_tema='Lectura',
-                                      cantidad_preg=3,
-                                      tiempo_preg=9)
-        
+
         question1 = Question.objects.create(nombre_tema='restar',
                                             nombre_materia='Matematicas',
                                             text_preg='3-2 ?',
@@ -59,14 +49,23 @@ class QuestionTest(TestCase):
         question5 = Question.objects.create(nombre_tema='Lectura',
                                             nombre_materia='Lengua',
                                             text_preg='2 +2 ?',
-                                            reportada=False)
+                                            reportada=True)
 
-    def test_question_up(self):
-        #response = self.client.post(),
-        response = self.client.post(reverse('uploadquestion'), data={ 'namefile':'/questions/lxml.xml'})
-        self.assertEqual(response.resolver_match.func, uploadquestion)
+#    def test_question_up(self):
+#        """
+#          precondicion: simula ingresar pedido de redireccion.
+#         post :  compara si el resultado es la pagina con toda la estadisticas.
+#        """
+#        response = self.client.post(reverse('uploadquestion'), data={'namefile':'/questions/lxml.xml'})
+#        self.assertEqual(response.resolver_match.func, uploadquestion)
 
-    def test_report_questions(self):
-        q = Question.objects.post(reportada=False)
-        response = self.client.post(reverse('question'), q)
-        self.assertEqual(response.resolver_match.func, reported)
+#    def test_report_questions(self):
+#        q = Question.objects.get(reportada=True)
+#        response = self.client.post(reverse('question'), q)
+#        self.assertEqual(response.resolver_match.func, reported)
+#
+    def test_agregar_pregunta(self):
+        response = self.client.post(reverse('agregarPreg'), data={'materia': 'Matematica', 'tema': 'sumar',
+                                                                  'titulo': '4 + 10 ?', 'opcion': 2,
+                                                                  'opcion0': 24, 'opcion1': 14})
+        self.assertEqual(response.resolver_match.func, agregarPreg)
