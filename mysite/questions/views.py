@@ -308,12 +308,12 @@ def lista_view(request, materia_id):
     Esta funcion da la lista de los temas sólos los de la materia preseleccionada.
     :Param request: HttpRequest
     :type: Http
-    :Return: redirecciona a Http 
+    :Return: redirecciona a Http
     """
     if request.method == "POST":
         materia = get_object_or_404(Materia, pk=materia_id)
         tema = request.POST.get('tema', False)
-        if tema == False:
+        if tema is False:
             return render(request, 'questions/temaVacio.html', {'materia': materia})
         preguntas = Question.objects.filter(nombre_materia=materia).filter(nombre_tema=tema)
         return render(request, 'questions/listaPreg.html', {'preguntas': preguntas})
@@ -326,8 +326,8 @@ def modificar_view(request, question_id):
     """
     Esta funcion da los detalles de una pregunta para modificar.
     :Param request: HttpRequest
-    :Param question_id: Integer 
-    :Return: redirecciona a Http 
+    :Param question_id: Integer
+    :Return: redirecciona a Http
     """
     pregunta = get_object_or_404(Question, pk=question_id)
     respuestas = Answer.objects.filter(respuesta=pregunta)
@@ -349,11 +349,11 @@ def modifiResp(request, question_id, answer_id):
         answer.text_resp = resp_nueva
         answer.save()
         return render(request, 'questions/modificar.html',
-                  {'respuestas': Answer.objects.filter(respuesta=question),
-                   'pregunta': question})
+                      {'respuestas': Answer.objects.filter(respuesta=question),
+                       'pregunta': question})
     question = get_object_or_404(Question, pk=question_id)
     answer = get_object_or_404(Answer, pk=answer_id)
-    return render(request, 'questions/modifiResp.html',{'answer': answer, 'question': question})
+    return render(request, 'questions/modifiResp.html', {'answer': answer, 'question': question})
 
 
 def eliminar_resp(request, question_id, answer_id):
