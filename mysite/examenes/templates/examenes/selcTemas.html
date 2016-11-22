@@ -12,7 +12,7 @@
         </header>
 
         <center>
-            <form  action="{% url 'encurso' materia %}" method= "post">
+            <form action="{% url 'encurso' materia%}" method= "post">
                 {% csrf_token %}
                 <p> Seleccione el tema </p>
                 {% for nombre_tema in list_temas %}

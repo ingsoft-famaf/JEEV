@@ -18,6 +18,12 @@ class Exam(models.Model):
     preguntas_correctas = models.IntegerField(default=0)
     preguntas_incorrectas = models.IntegerField(default=0)
 
+class PregResp(models.Model):
+    examen = models.ForeignKey('Exam', on_delete=models.CASCADE)
+    question = models.ForeignKey('questions.Question',
+                                #on_delete=models.PROTECT,
+                                blank=True, null=True)
+    
 class ExamErrores(models.Model):
     """
     Esta clase crea el modelo de examen, el examen va a tener como
@@ -32,8 +38,9 @@ class ExamErrores(models.Model):
     preguntas_correctas = models.IntegerField(default=0)
     preguntas_incorrectas = models.IntegerField(default=0)
 
-class PregResp(models.Model):
-    examen = models.ForeignKey('Exam', on_delete=models.CASCADE)
+class PregRespE(models.Model):
+    examen = models.ForeignKey('ExamErrores', on_delete=models.CASCADE)
     question = models.ForeignKey('questions.Question',
                                 #on_delete=models.PROTECT,
                                 blank=True, null=True)
+

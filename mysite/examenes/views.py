@@ -2,7 +2,7 @@
 from django.shortcuts import render, get_object_or_404
 
 from questions.models import Question, Answer
-from .models import Exam, PregResp, ExamErrores
+from .models import Exam, PregResp, ExamErrores, PregRespE
 import random
 from materias.models import Materia, Tema
 from django.http import HttpResponse
@@ -43,7 +43,6 @@ def selcMateria(request):
     else:
         query = Materia.objects.values_list(
                                 'nombre_materia', flat=True).distinct()
-        print query
         return render(request, 'examenes/selcMateria.html',
                   {'list_materias': Materia.objects.values_list(
                             'nombre_materia', flat=True).distinct()})
@@ -58,28 +57,22 @@ def selcTemas(request):
     materia = request.POST['materias']
     list_temas= Tema.objects.values_list(
                             'nombre_tema',flat=True).filter(temas__nombre_materia=materia)
-    examenE = ExamErrores(nombre_materia = materia)
-    examenE.save()
-    print materia
-    print "HOLA"
-    print examenE.nombre_materia
-    return render(request, 'examenes/selcTemas.html', {'list_temas':list_temas}, materia)
+    return render(request, 'examenes/selcTemas.html', {'list_temas':list_temas, 'materia':materia})
 
-def examen_encurso(request):
+def examen_encurso(request, materia):
     """
     Algoritmo basado en errores.
     """
+    print ("Print de materia:%s"% materia)
     if request.POST['cantidad'] == "":
         return render(request, 'examenes/datosIncorrectos.html')
-    materia = request.POST['materia']
-    print "EXAMEN EN CURSO"
-    print materia
     tema = request.POST.getlist('tema')
     print ("Temas despues de levantarlos %s" % tema)
     cantidad = request.POST['cantidad']
     print cantidad
     tiempo = request.POST['tiempo']
-    examenE = ExamErrores(nombre_tema = tema,cantidad_preg = cantidad, tiempo_preg = tiempo)
+    examenE = ExamErrores(nombre_materia=materia, nombre_tema=tema, 
+                cantidad_preg = cantidad, tiempo_preg = tiempo)
     examenE.save()
     return render(request, 'examenes/encurso.html' ,
                     {'examenE':examenE})
@@ -92,59 +85,55 @@ def respPregErrores(request, examenE_id):
     Esta función muestra una pregunta con sus respuestas para que el usuario
     haga la elección de un de ellas.
     """
-    examen1 = get_object_or_404(ExamErrores, pk=examenE_id)
+    examen = get_object_or_404(ExamErrores, pk=examenE_id)
     
-    query = examen1.nombre_materia
-    print "MATERIA1"
-    print query
-
-
-#    materia1 = test1.nombre_materia
-#    print materia1
-    print examenE_id
-    tema = ["Matrices","Sumas"]
+    query = examen.nombre_materia
+    print ("respPregErrores primera query: %s" % query)
+    tema1 = examen.nombre_tema
     query_list = []
-    #tema = examen1.nombre_tema
-    materia = "Algebra"
-    print ("La materia es %s" % materia)
 
+    print ("tema1 en el examen: %s"% tema1)
+    count_temas = 0
     randomm =[]
-    count_temas = len(tema)
+ #   count_temas = len(tema1)
+    count_temas = 2
     list_preguntas_count=[]
-    print ("El primer tema es %s" % str(tema[1]))
-    print count_temas
+    print ("count_temas es %s" % count_temas)
+
     for i in range(count_temas):
-        print tema[i]
-        query = Question.objects.filter(nombre_tema=str(tema[i])).filter(nombre_materia=materia)
-        query_list.insert(i,query)
-    print query_list
+        queryQ = Question.objects.filter(nombre_tema=str(tema1[i])).filter(nombre_materia=query)
+        query_list.insert(i,queryQ)
+        print ("print queryQ: %s"% queryQ)
+    print ("print query_list[0]: %s"% query_list[0])
+
     largo2 = 0
     for k in range(count_temas):   
         largo1= query_list[k].count()
         print largo1
-        if largo2 <= largo1:
-            largo2 = largo1
+        largo2 += largo1
     print ("el largo2 es %s" % largo2)
     #si pide mas preguntas de las que tenemos disminuimos la cantidad
     #para no generar conflictos de bordes
-    if examen1.cantidad_preg > largo2:
-        examen1.cantidad_preg = largo2
+    if examen.cantidad_preg > largo2:
+        examen.cantidad_preg = largo2
 
-    print examen1.cantidad_preg
-    if examen1.pregunta_actual == examen1.cantidad_preg:
+    print examen.cantidad_preg
+    print ("la pregunta_actual es %s" % examen.pregunta_actual) 
+    if examen.pregunta_actual == examen.cantidad_preg:
         return render(request, 'examenes/finalizo.html',
-                      {'examenE': examen1})
-    print examen1.cantidad_preg
+                      {'examenE': examen})
+    print examen.cantidad_preg
     #query con las respuestas ya respondidas
-    queryresp = PregResp.objects.filter(examenE = examen1)
+    queryresp = PregRespE.objects.filter(examen = examen)
+    print ("queryresp %s" % queryresp)
     #se filtran las ya respondidas
-    query3 = filter_query(query3,queryresp)
-    randomm = random.sample(query3, 1)
+    querys = filter_query(largo2,queryresp)
+    randomm = random.sample(querys, 1)
     pregunta = randomm[0]
-    PregResp.objects.create(examenE = examen1, question = pregunta)
+    PregRespE.objects.create(examenE = examen, question = pregunta)
 
     return render(request,'examenes/respPregErrores.html',
-                  {'pregunta': pregunta,'examenE':examen1})
+                  {'pregunta': pregunta,'examenE':examen})
 
 
 """ Algoritmo aleatorio"""
