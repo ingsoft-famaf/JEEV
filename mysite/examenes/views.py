@@ -7,6 +7,8 @@ import random
 from materias.models import Materia, Tema
 from django.http import HttpResponse
 import pdb
+from django.http import HttpResponse
+import json
 
 """aux functions"""
 #def question_random
@@ -132,26 +134,24 @@ def examen_view(request):
     """
     query = Question.objects.all()
     count = query.count()
-    print count
+
     if count == 0:
         return render(request, 'examenes/preguntasCero.html')
     else:
         return render(request, 'examenes/examen.html',
-                  {'list_materias': Materia.objects.values_list(
-                  'nombre_materia', flat=True).distinct()})
+                      {'list_materias': Materia.objects.values_list('nombre_materia',flat=True)})
 
-def selecttema2(request):
+def select_temas(request):
     """
     Input : HttpRequest
-    Output : redirige a un html pasándole una query
-    Esta función muestra las opciones temas, cantidad de preguntas  y tiempo del
-    examen
+    Output : redirige a un html
+    Esta función muestra los temas de una materia preseleccionada.
     """
-    materia = request.POST['materias']
-    list_temas= Tema.objects.values_list(
-                            'nombre_tema',flat=True).filter(temas__nombre_materia=materia)
-
-    return render(request, 'examenes/selecttema2.html', {'list_temas':list_temas}, materia)
+    mat = request.GET['materia']
+    materia = get_object_or_404(Materia, nombre_materia=mat)
+    temas = Tema.objects.filter(temas=materia)
+    temas = [tema.nombre_tema for tema in temas]
+    return HttpResponse(json.dumps(temas), content_type="application/json")
 
 def examenencurso_view(request):
     """
