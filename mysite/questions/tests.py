@@ -67,3 +67,6 @@ class QuestionTest(TestCase):
                                                                   'titulo': '4 + 10 ?', 'opcion': 2,
                                                                   'opcion0': 24, 'opcion1': 14})
         self.assertEqual(response.resolver_match.func, agregarPreg)
+
+    def test_agregar_pregunta_mal(self):
+      

@@ -81,7 +81,7 @@ def exist_tema(tema, materia):
     Esta funcion devuelve true o false dependidendo si el tema existe o no.
     :Param tema: String
     :Param materia: String
-    :Return: Booleano
+    :Return: Booleano   
     """
     materias_con_tema = Materia.objects.filter(tema__nombre_tema=tema)
     count_materias = materias_con_tema.count()
@@ -104,6 +104,7 @@ def guardarPreg(materia, tema, titulo):
     """
     q = Question(nombre_tema=tema, nombre_materia=materia, text_preg=titulo)
     q.save()
+    print "la pregunta es: ", q
     return q
 
 
@@ -114,6 +115,7 @@ def guardar_resp(question, resp):
     :Param resp: String
     """
     a = Answer(respuesta=question, text_resp=resp)
+    print "se guardo la pregunta: " , a
     a.save()
 
 
@@ -129,12 +131,15 @@ def agregarPreg(request):
         tema = request.POST['tema']
         titulo = request.POST['titulo']
         cant_opcion = request.POST['opcion']
+        print cant_opcion
         if not exist_materia(materia):
             return render(request, 'questions/MatnoEx.html', {'materia': materia})
         if not exist_tema(tema, materia):
             return render(request, 'questions/TemanoEx.html', {'tema': tema})
         if titulo == "":
             return render(request, 'questions/PregVacio.html')
+        if cant_opcion == "":
+            return render(request, 'questions/add_sinopc.html')
         parecida = False
         query = Question.objects.filter(nombre_tema=tema).filter(nombre_materia=materia)
         count = query.count()
@@ -155,14 +160,18 @@ def agregarPreg(request):
                 return render(request, 'questions/repetida.html', {'titulo': titulo})
         opcion = 'opcion'
         opciones = []
+        print "aqui mal ",cant_opcion
         for x in xrange(0, int(cant_opcion)):
-            opcion += repr(x)
-            opciones.append(request.POST[opcion])
-            opcion = 'opcion'
-            guardar_resp(q, opciones[x])
-            if opciones[x] == "":
-                q.delete()
-                return render(request, 'questions/PregVacio.html')
+            try:
+                opcion += repr(x)
+                opciones.append(request.POST[opcion])
+                opcion = 'opcion'
+                guardar_resp(q, opciones[x])
+                if opciones[x] == "":
+                    q.delete()
+                    return render(request, 'questions/PregVacio.html')
+            except:
+                return render(request, 'questions/add_sinopc.html')
         return render(request, 'questions/seguarda.html', {'q': q, 'opciones': opciones, 'parecida': parecida})
     return render(request, 'questions/agregarPreg.html')
 
@@ -176,8 +185,11 @@ def guardarCorrecta(request, question_id):
     :Return: redirecciona a Http indicando que se agregó con éxito
     """
     opcion = request.POST['opcion']
+    print opcion
     q = get_object_or_404(Question, pk=question_id)
+    print "toma  objeto o 404  ", q
     a = Answer.objects.get(respuesta=q, text_resp=opcion)
+    print "respuestas ", a
     a.es_correcta = True
     a.save()
     return render(request, 'questions/seagrego.html')
