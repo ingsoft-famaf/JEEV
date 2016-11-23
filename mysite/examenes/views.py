@@ -2,7 +2,7 @@
 from django.shortcuts import render, get_object_or_404
 
 from questions.models import Question, Answer
-from .models import Exam, PregResp, ExamErrores, PregRespE
+from .models import Exam, PregResp, ExamErrores, PregRespE, TemaE
 import random
 from materias.models import Materia, Tema
 from django.http import HttpResponse
@@ -16,6 +16,11 @@ def filter_query (realquery, querytofilt):
             if q.question.id == q2.id :
                 realquery = realquery.exclude(id = q2.id)
     return realquery
+
+def guardar_Tema(ExamErrores,tema):
+    modelTema=TemaE(tema_fk=ExamErrores,nombre_tema=tema)
+    modelTema.save()
+
 """End aux functions"""
 
 def elegirExamen(request):
@@ -63,17 +68,35 @@ def examen_encurso(request, materia):
     """
     Algoritmo basado en errores.
     """
+ #  pdb.set_trace()
     print ("Print de materia:%s"% materia)
     if request.POST['cantidad'] == "":
         return render(request, 'examenes/datosIncorrectos.html')
-    tema = request.POST.getlist('tema')
-    print ("Temas despues de levantarlos %s" % tema)
     cantidad = request.POST['cantidad']
     print cantidad
     tiempo = request.POST['tiempo']
-    examenE = ExamErrores(nombre_materia=materia, nombre_tema=tema, 
+    examenE = ExamErrores(nombre_materia=materia, 
                 cantidad_preg = cantidad, tiempo_preg = tiempo)
     examenE.save()
+    examen = examenE.id
+    tema = request.POST.getlist('tema')
+    print ("print type tema%s"%type(tema))
+    print ("Temas despues de levantarlos %s" % tema)
+    print type(tema)
+    ble = str(tema[0])
+    print examenE
+    print type(ble)
+    temas = TemaE(tema_fk=examen, nombre_tema=ble)
+    for i in tema:
+        bla = str(i)
+        temas.save()
+        print ("print type i%s" %type(i))
+        print ("print i %s" %i)
+
+
+    print ("TEXTO %s" % texto)
+    print type(texto)
+    print type(examenE.nombre_tema)
     return render(request, 'examenes/encurso.html' ,
                     {'examenE':examenE})
 
@@ -90,13 +113,19 @@ def respPregErrores(request, examenE_id):
     query = examen.nombre_materia
     print ("respPregErrores primera query: %s" % query)
     tema1 = examen.nombre_tema
+    test = []
+    test = [x.encode('UTF8') for x in tema1]
+    print "prueba test"
+    print type(test)
+    print test
     query_list = []
-
+    nueva_lista = []
+    
     print ("tema1 en el examen: %s"% tema1)
-    count_temas = 0
+ #   count_temas = 0
     randomm =[]
- #   count_temas = len(tema1)
-    count_temas = 2
+    count_temas = len(tema1)
+  #  count_temas = 2
     list_preguntas_count=[]
     print ("count_temas es %s" % count_temas)
 
@@ -114,6 +143,7 @@ def respPregErrores(request, examenE_id):
     print ("el largo2 es %s" % largo2)
     #si pide mas preguntas de las que tenemos disminuimos la cantidad
     #para no generar conflictos de bordes
+    print ("print examen.cantidad_preg: %s"% examen.cantidad_preg)
     if examen.cantidad_preg > largo2:
         examen.cantidad_preg = largo2
 
