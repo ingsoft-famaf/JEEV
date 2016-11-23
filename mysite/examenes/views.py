@@ -78,25 +78,22 @@ def examen_encurso(request, materia):
     examenE = ExamErrores(nombre_materia=materia, 
                 cantidad_preg = cantidad, tiempo_preg = tiempo)
     examenE.save()
-    examen = examenE.id
     tema = request.POST.getlist('tema')
+    cant_temas = len(tema)
+    print ("print len tema%s" %cant_temas)
     print ("print type tema%s"%type(tema))
     print ("Temas despues de levantarlos %s" % tema)
     print type(tema)
-    ble = str(tema[0])
-    print examenE
-    print type(ble)
-    temas = TemaE(tema_fk=examen, nombre_tema=ble)
-    for i in tema:
-        bla = str(i)
+ 
+    for i in range(cant_temas):
+        bla = str(tema[i])
+        temas = TemaE(tema_fk=examenE, nombre_tema=bla)
         temas.save()
         print ("print type i%s" %type(i))
         print ("print i %s" %i)
-
-
-    print ("TEXTO %s" % texto)
-    print type(texto)
-    print type(examenE.nombre_tema)
+    
+    print ("print temas de examen %s "% TemaE.objects.filter(tema_fk=examenE))
+    print type(TemaE.nombre_tema)
     return render(request, 'examenes/encurso.html' ,
                     {'examenE':examenE})
 

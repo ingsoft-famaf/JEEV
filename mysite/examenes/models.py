@@ -39,10 +39,13 @@ class ExamErrores(models.Model):
     preguntas_correctas = models.IntegerField(default=0)
     preguntas_incorrectas = models.IntegerField(default=0)
 
-class TemaE(object):
+class TemaE(models.Model):
     tema_fk = models.ForeignKey('ExamErrores', on_delete=models.CASCADE)
     nombre_tema = models.CharField(max_length=100)
-    
+
+    def __str__(self):
+        return self.nombre_tema
+        
 
 
 class PregRespE(models.Model):
