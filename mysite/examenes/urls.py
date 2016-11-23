@@ -9,5 +9,6 @@ urlpatterns = [
     url(r'^(?P<examen_id>[0-9]+)/respuesta', views.respuesta, name='respuesta'),
     url(r'^(?P<examen_id>[0-9]+)/resppreg', views.resppreg, name='resppreg'),
     url(r'^examenencurso', views.examenencurso_view, name='examenencurso'),
+    url(r'^select_temas', views.select_temas, name='select_temas'),
     url(r'^examen', views.examen_view, name='examen'),
 ]

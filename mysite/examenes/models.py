@@ -13,7 +13,7 @@ class Exam(models.Model):
         :type models : Model
         return : none
     """
-    nombre_tema = models.CharField(max_length=100)
+    #nombre_tema = models.CharField(max_length=100)
     nombre_materia = models.CharField(max_length=100)
     tiempo_preg = models.IntegerField(default=0)
     cantidad_preg = models.IntegerField(default=0)
@@ -22,6 +22,13 @@ class Exam(models.Model):
     preguntas_incorrectas = models.IntegerField(default=0)
     porcentaje = models.IntegerField(default=0)
 
+
+class TemaE(models.Model):
+    tema_fk = models.ForeignKey('Exam', on_delete=models.CASCADE)
+    nombre_tema = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.nombre_tema  
 
 
 class PregResp(models.Model):
