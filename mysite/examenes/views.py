@@ -274,15 +274,15 @@ def resppreg(request, examen_id):
     query = []
     cantidad_temas = temas.count()
     if examen.pregunta_actual == examen.cantidad_preg:
-    nota = examen.preguntas_correctas
-    nota1 = examen.cantidad_preg
-    if nota1 == 0:
-        examen.porcentaje = 0
-        examen.save()
-    else:
-        examen.porcentaje = ((nota * 100) / nota1)
-        examen.save()
-    return render(request, 'examenes/finalizo.html', {'examen': examen})
+        nota = examen.preguntas_correctas
+        nota1 = examen.cantidad_preg
+        if nota1 == 0:
+            examen.porcentaje = 0
+            examen.save()
+        else:
+            examen.porcentaje = ((nota * 100) / nota1)
+            examen.save()
+        return render(request, 'examenes/finalizo.html', {'examen': examen})
     if cantidad_temas == 1:
         result = Question.objects.filter(nombre_tema=temas[0]).filter(nombre_materia=materia).filter(reportada=False)
         queryresp = PregResp.objects.filter(examen=examen)
