@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.shortcuts import render, get_object_or_404
 from questions.models import Question, Answer
-from .models import Exam, PregResp, ExamErrores, PregRespE, TemaE
+from .models import Exam, PregResp, TemaE
 import random
 from materias.models import Materia, Tema
 from django.http import HttpResponse
@@ -94,7 +94,7 @@ def examen_encurso(request, materia):
         return render(request, 'examenes/datosIncorrectos.html')
     cantidad = request.POST['cantidad']
     tiempo = request.POST['tiempo']
-    examenE = ExamErrores(nombre_materia=materia, cantidad_preg=cantidad, tiempo_preg=tiempo)
+    examenE = Exam(nombre_materia=materia, cantidad_preg=cantidad, tiempo_preg=tiempo)
     examenE.save()
     tema = request.POST.getlist('tema')
     cant_temas = len(tema)
@@ -113,7 +113,7 @@ def respPregErrores(request, examenE_id, temaActual):
     haga la elección de un de ellas.
     """
     temaActual = int(temaActual)
-    examen = get_object_or_404(ExamErrores, pk=examenE_id)
+    examen = get_object_or_404(Exam, pk=examenE_id)
     materia = examen.nombre_materia
     temas = TemaE.objects.filter(tema_fk=examen)
     randomm = []
@@ -129,7 +129,7 @@ def respPregErrores(request, examenE_id, temaActual):
         preguntas = Question.objects.filter(nombre_tema=nTema).filter(nombre_materia=nombreMateria).filter(reportada=False)
     else:
         preguntas = Question.objects.filter(nombre_tema=temas[temaActual]).filter(nombre_materia=materia).filter(reportada=False)
-    queryresp = PregRespE.objects.filter(examen=examen)
+    queryresp = PregResp.objects.filter(examen=examen)
     query = filter_query(preguntas, queryresp)
     cant_query = query.count()
     if cant_query == 0:
@@ -149,7 +149,7 @@ def respPregErrores(request, examenE_id, temaActual):
         query = filter_query(preguntas, queryresp)
     randomm = random.sample(query, 1)
     pregunta = randomm[0]
-    PregRespE.objects.create(examen=examen, question=pregunta)
+    PregResp.objects.create(examen=examen, question=pregunta)
     return render(request, 'examenes/respPregErrores.html',
                   {'pregunta': pregunta, 'examenE': examen, 'temaActual': temaActual})
 
@@ -165,7 +165,7 @@ def respuestaE(request, examenE_id, temaActual):
 
     if request.method == 'POST':
         respuesta_id = request.POST['respuesta']
-        examen = get_object_or_404(ExamErrores, pk=examenE_id)
+        examen = get_object_or_404(Exam, pk=examenE_id)
         examen.pregunta_actual += 1
         examen.save()
         cantidad_temas = TemaE.objects.filter(tema_fk=examen).count()
@@ -183,7 +183,7 @@ def respuestaE(request, examenE_id, temaActual):
             temaActual = 0
         return render(request, 'examenes/respuestaE.html',
                       {'respuesta': respuesta, 'examenE': examen, 'temaActual': temaActual})
-    examen = get_object_or_404(ExamErrores, pk=examenE_id)
+    examen = get_object_or_404(Exam, pk=examenE_id)
     examen.pregunta_actual += 1
     examen.preguntas_incorrectas += 1
     examen.save()

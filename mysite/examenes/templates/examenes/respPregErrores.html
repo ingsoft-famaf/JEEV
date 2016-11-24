@@ -15,12 +15,13 @@
         {
             toHour=0;
             toMinute=0;
-            toSecond={{examenE.tiempo_preg}}+1;
+            toSecond={{examenE.tiempo_preg}}1;
         } else {
             toHour = 0
             toMinute = {{examenE.tiempo_preg}}/60
             toSecond = 0
         }
+
         //cuenta atras
         function countDown()
         {
@@ -64,26 +65,22 @@
     </head>
 
     <body onload="countDown();">
-        <header>
-            <h1>Choice Master</h1>
-        </header>
-        <center>
+         <center>
         <form name="form">
             <h4>Tiempo restante: </h4>
             <input type="text" size="5" class="form_input" name="hour" disabled>:
             <input type="text" size="5" class="form_input" name="minute" disabled>:
             <input type="text" size="5" class="form_input" name="second" disabled>
         </form>
-            <form action="{% url 'respuestaE' examenE.id temaActual%}" method="post">
-                {% csrf_token %}
-                <h3>{{pregunta}}</h3>
-                {% for respuesta in pregunta.answer_set.all %}
-                    <br><input type="radio" name="respuesta" value="{{respuesta.id}}">{{respuesta.text_resp}}
-                {% endfor %}
-                <br><input type = "submit" value= "Responder">
-            </form>
-            <br><a href="{% url 'reportar' examenE.id pregunta.id %}">Reportar</a>
-            <meta http-equiv="refresh" content="{{examenE.tiempo_preg}};url={% url 'respuestaE' examenE.id temaActual %}" />
-        </center>
-    </body>
-</html>
+             <form action="{% url 'respuestaE' examenE.id temaActual%}" method="post">
+                 {% csrf_token %}
+                 <h3>{{pregunta}}</h3>
+                 {% for respuesta in pregunta.answer_set.all %}
+                     <br><input type="radio" name="respuesta" value="{{respuesta.id}}">{{respuesta.text_resp}}
+                 {% endfor %}
+                 <br><input type = "submit" value= "Responder">
+             </form>
+             <br><a href="{% url 'reportar' examenE.id pregunta.id %}">Reportar</a>
+             <meta http-equiv="refresh" content="{{examenE.tiempo_preg}};url={% url 'respuestaE' examenE.id temaActual %}" />
+         </center>
+     </body>

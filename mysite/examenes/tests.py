@@ -29,10 +29,8 @@ class ExamTest(TestCase):
                                             text_preg='harry potter es colorado?', reportada=False)
         question7 = Question.objects.create(nombre_tema='Lectura', nombre_materia='Lengua',
                                             text_preg='2 +2 ?', reportada=False)
-        examen1 = Exam.objects.create(nombre_materia='Matematicas', nombre_tema='sumar',
-                                      cantidad_preg=3, tiempo_preg=15)
-        examen2 = Exam.objects.create(nombre_materia='Lengua', nombre_tema='Lectura',
-                                      cantidad_preg=3, tiempo_preg=9)
+        examen1 = Exam.objects.create(nombre_materia='Matematicas', cantidad_preg=3, tiempo_preg=15)
+        examen2 = Exam.objects.create(nombre_materia='Lengua', cantidad_preg=3, tiempo_preg=9)
 
     def test_set_up_exam(self):
         """crea y simila subir datos de un examen, para comparar con la funcion examenencurso_view.
@@ -47,27 +45,6 @@ class ExamTest(TestCase):
                                         'cantidad': 1,
                                         'tiempo': 10})
         self.assertEqual(response.resolver_match.func, examenencurso_view)
-
-    def test_realizar_examen(self):
-        """
-        crea un examen con el atributo nombre de materia y compara que se
-        hayan creado bien las respuestas.
-        precondicion: simulo subir nombre del examen a testear
-        postcondicion: devuelve un error o si el test haya pasado bien, sigue.
-        compara la funcion resppreg, donde muestra una preg con sus resp.
-        """
-        examen = Exam.objects.get(nombre_materia='Lengua')
-        response = self.client.get(reverse('resppreg', args=[examen.id]))
-        self.assertEqual(response.resolver_match.func, resppreg)
-
-    def test_respuesta(self):
-        examen = Exam.objects.get(nombre_materia='Matematicas')
-        question1 = Question.objects.get(text_preg='2 + 2 ?')
-        respuestas = Answer.objects.filter(es_correcta=True)
-        respuesta0 = respuestas[0]
-        response = self.client.post(reverse('respuesta', args=[examen.id]),
-                                    data={'respuesta': respuesta0.id})
-        self.assertEqual(response.resolver_match.func, respuesta)
 
     def test_reportar(self):
         """
