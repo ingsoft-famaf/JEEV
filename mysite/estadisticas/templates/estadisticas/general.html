@@ -1,7 +1,21 @@
-{% extends 'examenes/base.html' %}
+<!DOCTYPE html>
 {% load static %}
-{% block content %}
+
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <script  type="text/javascript" src="http://cdn.jsdelivr.net/jquery.flot/0.8.3/jquery.flot.min.js"></script>
+        <link rel="stylesheet" href="{% static 'css/estilos.css' %}">
+
+        <title>Examen </title>
+    </head>
 <body>
+    <header>
+        <h1>Choice Master</h1>
+    </header>
     <center>
         <h4>Estadisticas generales de {{materia}}: </h4>
         <h5>Promedio: {{promedio}}</h5>
@@ -9,12 +23,13 @@
         <h5>Cantidad de preguntas respondidas: {{cant_preguntas.cantidad_preg__sum}}</h5>
         <h5>Cantidad de preguntas correctas: {{preg_correctas.preguntas_correctas__sum}}</h5>
         <h5>Cantidad de preguntas incorrectas: {{preg_incorrectas.preguntas_incorrectas__sum}}</h5>
-        <h5>Grafico: <a href="{% url 'grafico' materia %}">Ver grafico</a> </h5>
+        <h5>Grafico: </h5>
+            {{ chart.as_html }}
         <h4>Listado de exámenes realizados: </h4>
         {% for examen in lista_examenes %}
-            <br><a href="{% url 'estadis_examen' examen.id %}">Examen: {{examen.id}}</a>
+            <br><a href="{% url 'estadis_examen' examen.id %}">Examen</a>
         {% endfor %}
         <br><a href="{%url 'estadisticas' %}">Volver</a>
     </center>
 </body>
-{% endblock content%}
+</html>

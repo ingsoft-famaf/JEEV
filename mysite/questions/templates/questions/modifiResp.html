@@ -13,14 +13,17 @@
 <center>
     <h2>Respuesta de la pregunta</h2>
     <h3>"{{question.text_preg}}"</h3>
-    <h4>Modificar la respuesta: </h4> 
-    <form action="{% url 'save' question.id answer.id %}" method="post">
+    <h4>Modificar la respuesta: </h4>
+    <form action="" method="post">
         {% csrf_token %}
-        <input type="text" name="new_answer" value="{{answer.text_resp}}" size="30">
-        <br><br><input type="submit" value="Guardar">
+        <input type="text" name="nueva_resp" value="{{answer.text_resp}}" size="30">
+        {% if answer.es_correcta %}
+            <h4 style="color:green">Esta respuesta es la correcta</h4>
+        {% endif %}
+        <br><input type="submit" value="Guardar">
     </form>
     </br></br>
-    <a href="{% url 'detail' question.id %}">Volver</a>
+    <a href="{% url 'modificar' question.id %}">Volver</a>
 </center>
 </body>
 </html>

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+{%load static%}
+<html>
+<head>
+<lnk rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+<link rel="stylesheet" href="{% static 'css/estilos.css' %}">
+<header>
+    <h1>ADMIN</h1>
+</header>
+</head>
+<body>
+<center>
+    <h3 style="color:green">La pregunta ha sido modificada correctamente</h3>
+    <h4>Materia: {{pregunta.nombre_materia}}</h4>
+    <h4>Tema: {{pregunta.nombre_tema}}</h4>
+    <h4>Título de la pregunta: {{pregunta.text_preg}}</h4>
+    <h4>Respuestas: </h4>
+    {% for respuesta in respuestas %}
+        {% if respuesta.es_correcta %}
+            <li style="color:green; font-weight:700">{{respuesta.text_resp}}</li>
+        {% else %}
+            <li>{{respuesta.text_resp}}</li>
+        {% endif %}
+    {% endfor %}
+    <br><a href="/hompage/superuser/" >Volver</a>
+</center>
+</body>
+</html>

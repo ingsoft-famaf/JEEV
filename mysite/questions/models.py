@@ -2,6 +2,7 @@ from __future__ import unicode_literals
 from django.db import models
 from django.utils.encoding import python_2_unicode_compatible
 
+
 class Question(models.Model):
     """
     Esta clase crea el modelo de las preguntas, las preguntas van a tener como
@@ -28,4 +29,3 @@ class Answer(models.Model):
     respuesta = models.ForeignKey('Question', on_delete=models.CASCADE)
     text_resp = models.CharField(max_length=500)
     es_correcta = models.BooleanField(default=False)
-

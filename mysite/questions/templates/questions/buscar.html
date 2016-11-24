@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+{%load static%}
+<html>
+<head>
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="{% static 'css/estilos.css' %}">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>  
+    <script type="text/javascript">
+    $(document).ready(function() {
+        $("#materia").on("change", function(){
+            var materia = $("#materia").val();
+            $.ajax({
+                type: "GET",
+                url: '/questions/temas',
+                data: {'materia' : materia},
+                success: function(data) {
+                    var $temas = $('#temas');
+                    $temas.empty();
+                    for (var i = 0; i < data.length; i++) {
+                        $temas.append('<option' + ' value=' + data[i] + '>' + data[i] + '</option>');
+                    }
+                }
+            });
+        });
+    });
+    </script>
+</head>
+<body>
+    <header>
+        <h1>ADMIN</h1>
+    </header>
+<center>
+    <form action="" method="post">
+        {% csrf_token %}
+        <h3>Seleccione una materia:</h3>
+        <select id="materia" name="materia">
+        <option disabled selected value> -- seleccione una materia -- </option>
+        {% for materia in materias %}
+            <br><option name="materia" value="{{materia.nombre_materia}}">{{materia.nombre_materia}}</option>
+        {% endfor %}
+        </select>
+        <br><br>
+        <select id="temas" name="temas">
+            <option disabled selected value> -- seleccione un tema -- </option>
+        </select>
+        <br><br><input type="submit" value="Buscar">
+   </form>
+</center>
+</body>
+</html>

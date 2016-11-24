@@ -1,0 +1,88 @@
+<data>
+	<pregunta>
+        <materia>Algebra</materia>
+	    <tema>Matrices</tema>
+	    <texto>Esta matriz es inversible?</texto>
+	    <respuesta>Si</respuesta>
+	    <respuesta>No</respuesta>
+	</pregunta>
+
+	<pregunta>
+		<materia>Algebra</materia>
+	    <tema>Matrices</tema>
+	    <texto>Esta suma es correcta?</texto>
+	    <respuesta>Si</respuesta>
+	    <respuesta>No</respuesta>
+	    <respuesta estado ="correcta">Tal vez</respuesta>
+	</pregunta>
+
+	<pregunta>
+		<materia>Artes</materia>
+	    	<tema>Cubismo</tema>
+	            <texto>lindo cubito no?</texto>
+	            <respuesta>B</respuesta>
+                <respuesta estado ="correcta">C</respuesta>
+	</pregunta>
+
+	<pregunta>
+		<materia>Lengua</materia>
+	    	<tema>Oraciones</tema>
+	            <texto>Que es el sujeto y predicado?</texto>
+	            <respuesta>A</respuesta>
+                <respuesta estado ="correcta">C</respuesta>
+	</pregunta>
+
+	
+	<pregunta>
+		<materia>Lengua</materia>
+	    	<tema>Oraciones</tema>
+	            <texto>Que es el sujeto?</texto>
+	            <respuesta>C</respuesta>
+                <respuesta estado ="correcta">Tal vez</respuesta>
+	</pregunta>
+
+	<pregunta>
+		<materia>Lengua</materia>
+	    	<tema>Oraciones</tema>
+	            <texto>Que es el predicado?</texto>
+	            <respuesta>C</respuesta>
+                <respuesta estado ="correcta">B</respuesta>
+	</pregunta>
+
+	<pregunta>
+		<materia>Ciencias</materia>
+	    	<tema>Mamiferos</tema>
+	            <texto>Cuantas patas tiene los perros?</texto>
+	            <respuesta>C</respuesta>
+                <respuesta estado ="correcta">B</respuesta>
+	</pregunta>
+
+	<pregunta>
+		<materia>Ciencias</materia>
+	    	<tema>Mamiferos</tema>
+	            <texto>Cuantas patas tiene los feos?</texto>
+	            <respuesta>C</respuesta>
+	            <respuesta estado="correcta">B</respuesta>
+
+	</pregunta>
+
+    <pregunta>
+		<materia>Algebra</materia>
+	    <tema>Sumas</tema>
+	    <texto>2+2</texto>
+	    <respuesta>3</respuesta>
+	    <respuesta>5</respuesta>
+	    <respuesta estado ="correcta">4</respuesta>
+	</pregunta>
+
+    <pregunta>
+		    <materia>Algebra</materia>
+	        <tema>Sumas</tema>
+	        <texto>2+3</texto>
+	        <respuesta>3</respuesta>
+	        <respuesta>5</respuesta>
+	        <respuesta estado ="correcta">4</respuesta>
+	    </pregunta>
+
+
+</data>

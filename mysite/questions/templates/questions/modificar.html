@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+{%load static%}
+<html>
+<head>
+    <lnk rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="{% static 'css/estilos.css' %}">
+    <script type='text/javascript'>
+        function addFields(){
+            var number = document.getElementById("opcion").value;
+            // Container <div> where dynamic content will be placed
+            var container = document.getElementById("container");
+            // Clear previous contents of the container
+            while (container.hasChildNodes()) {
+                container.removeChild(container.lastChild);
+            }
+            for (i=0;i<number;i++){
+                // Append a node with a random text
+                container.appendChild(document.createTextNode("Opcion nueva: "));
+                // Create an <input> element, set its type and name attributes
+                var input = document.createElement("input");
+                input.type = "text";
+                input.name = "opcion" + i;
+                container.appendChild(input);
+                // Append a line break 
+                container.appendChild(document.createElement("br"));
+            }
+        }
+    </script>
+    <header>
+        <h1>ADMIN</h1>
+    </header>
+</head>
+<body>
+<center>
+    <h3>Editar pregunta</h3>
+    <form action="{% url 'guardar_modif' pregunta.id %}" method="post">
+    {% csrf_token %}
+    <br>Materia: <input type="text" name="materia" value="{{pregunta.nombre_materia}}">
+    <br><br>Tema: <input type="text" name="tema" value="{{pregunta.nombre_tema}}">
+    <br><br>Título de la pregunta: <input type="text" name="textPreg" value="{{pregunta.text_preg}}" style="width:50%">
+    <ol>
+        <h4>Respuestas:</h4>
+        {% for respuesta in respuestas %}
+            {% if respuesta.es_correcta %}
+                <li style="color:green; font-weight:700">{{respuesta.text_resp}}
+                &emsp;<a href="{% url 'modifiResp' pregunta.id respuesta.id %}" >Modificar</a></li>
+            {% else %}
+                <li>{{respuesta.text_resp}}
+                &emsp;<a href="{% url 'modifiResp' pregunta.id respuesta.id %}" >Modificar</a>
+                &emsp;<a href="{% url 'eliminar_resp' pregunta.id respuesta.id %}" >Eliminar</a></li>
+            {% endif %}
+            </br></br>
+        {% endfor %}
+        Cantidad de opciones nuevas:
+            <input type="number" id="opcion" name="opcion" value="" min=1>
+            <a href="#" id="filldetails" onclick="addFields()">+ opcion</a>
+            <br><br><div id="container"></div>
+        <br><br>
+        *Referencia: La opción color verde es la respuesta correcta.<br>
+    </ol>
+    <input type="submit" value="Gurdar">
+    &emsp;<a href="/hompage/superuser/" >Volver</a>
+    </form>
+</center>
+</body>
+</html>

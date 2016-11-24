@@ -11,9 +11,11 @@
 </head>
 <body>
 <center>
-    <h4>La pregunta ha sido eliminada correctamente</h4>
-
-    <a href="/superuser/">Volver</a>
+    <h3>Seleccione la pregunta que desea modificar:</h3>
+    {% for pregunta in preguntas %}
+        <br><li><a href="{% url 'modificar' pregunta.id %}">{{pregunta.text_preg}}</li>
+    {% endfor %}
+   </form>
 </center>
 </body>
-</html>
+</html
