@@ -105,7 +105,7 @@ def resppreg(request, examen_id):
     :return: redirige a un html pasándole dos query
     """
     examen = get_object_or_404(Exam, pk=examen_id)
-    temas = TemaE.objects.filter(tema_fk=examen)   
+    temas = TemaE.objects.filter(tema_fk=examen)
     materia = str(examen.nombre_materia)
     randomm = []
     query_vacia = []

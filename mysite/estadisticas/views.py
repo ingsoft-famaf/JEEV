@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404
-from examenes.models import Exam
+from examenes.models import Exam, TemaE
 from materias.models import Materia
 from django.db.models import Avg, Sum, FloatField
 from graphos.sources.model import ModelDataSource
@@ -58,5 +58,6 @@ def estadis_examen(request, examen_id):
       :param estadis_exam: pedido de html , el id del examen realizado.
       :return: html"""
     examen = get_object_or_404(Exam, pk=examen_id)
+    temas = TemaE.objects.filter(tema_fk=examen)
     return render(request, 'estadisticas/estadisExamen.html',
-                  {'examen': examen})
+                  {'examen': examen, 'temas': temas})
