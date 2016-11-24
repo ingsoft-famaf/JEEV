@@ -81,7 +81,7 @@ def exist_tema(tema, materia):
     Esta funcion devuelve true o false dependidendo si el tema existe o no.
     :Param tema: String
     :Param materia: String
-    :Return: Booleano   
+    :Return: Booleano
     """
     materias_con_tema = Materia.objects.filter(tema__nombre_tema=tema)
     count_materias = materias_con_tema.count()
@@ -115,7 +115,7 @@ def guardar_resp(question, resp):
     :Param resp: String
     """
     a = Answer(respuesta=question, text_resp=resp)
-    print "se guardo la pregunta: " , a
+    print "se guardo la pregunta: ", a
     a.save()
 
 
@@ -160,7 +160,7 @@ def agregarPreg(request):
                 return render(request, 'questions/repetida.html', {'titulo': titulo})
         opcion = 'opcion'
         opciones = []
-        print "aqui mal ",cant_opcion
+        print "aqui mal ", cant_opcion
         for x in xrange(0, int(cant_opcion)):
             try:
                 opcion += repr(x)
@@ -213,7 +213,7 @@ def guardarResp(question, resp, attrib):
 def guardar_resp_dict(resp_dict, question):
     """
     Esta funcion guarda la respuesta
-    :Param resp_dict: Dict 
+    :Param resp_dict: Dict
     :Param question: Object
     """
     resp = resp_dict.get('correcta')
@@ -234,7 +234,7 @@ def exist_materia(materia):
     :Return: Bool
     """
     return Materia.objects.filter(nombre_materia=materia).exists()
- 
+
 
 def exist_tema(tema, materia):
     """
@@ -275,7 +275,8 @@ def validar_respuestas_yml(objeto):
             else:
                 valido = False
     return valido
-                
+
+
 def validar_respuestas(root):
     """
     Esta funcion devuelve si las respuestas del archivo
@@ -290,8 +291,9 @@ def validar_respuestas(root):
                     attrib = respuesta.get("estado")
                     if attrib is not None:
                         tiene_estado += 1
-        if tiene_estado <1 or tiene_estado >1:
+        if tiene_estado < 1 or tiene_estado > 1:
             return False
+
 
 def validar_yaml(yaml_object):
     """
@@ -300,46 +302,30 @@ def validar_yaml(yaml_object):
     :Param string1: objeto yaml
     :Return: Bool
     """
-    schema = Schema([{'Materia':str,
-                  'Respuesta':Use(str,int),
-                  'Pregunta':str,
-                  'Tema':str}])
-    # try:
-    #     yml_validacion = 
-    #     print yml_validacion
-    #     es_valida = True
-    # except:
-    #     es_valida = False
-    #     print "except"
-    #     return es_valida 
+    schema = Schema([{'Materia': str, 'Respuesta': Use(str, int), 'Pregunta': str, 'Tema': str}])
     lista_bloque = []
     index = 0
     try:
         for bloque in yaml.load_all(yaml_object):
-            lista_bloque.insert(0,bloque)
-            index +=1
+            lista_bloque.insert(0, bloque)
+            index += 1
     except:
         return False
     else:
         return True
-    # try:
-    #     validated = schema.validate(lista_bloque)
-    #     es_valida = True
-    # except:
-    #     es_valida = False
-    # return es_valida
+
 
 def validar_xml(url):
     """
     Esta funcion devuelve si el archivo
     tiene la forma correcta
-    :Param url: string 
+    :Param url: string
     :Return: Bool
     """
     XSD_file = 'static/XSD/file.xsd'
     try:
-        schema = etree.XMLSchema(file = XSD_file)
-        parser = objectify.makeparser(schema = schema)
+        schema = etree.XMLSchema(file=XSD_file)
+        parser = objectify.makeparser(schema=schema)
         boolean = objectify.fromstring(url, parser)
         root = ET.fromstring(url)
         return root
@@ -351,7 +337,7 @@ def uploadquestion(request):
     """
     Esta funcion crea un string del archivo y lo parsea
     segun el tipo de archivo
-    :Param request: request 
+    :Param request: request
     :Return: Bool
     """
     if request.method == 'POST':
@@ -362,12 +348,13 @@ def uploadquestion(request):
             for chunk in f.chunks():
                 url = str() + chunk
             if tipo == "YAML":
-                return upload_question_yaml(request,url)  
+                return upload_question_yaml(request, url)
             else:
                 return question_view(request, url)
     else:
         form = UploadFileForm()
     return render(request, 'questions/uploadquestion.html', {'form': form})
+
 
 def upload_question_yaml(request, url):
     """
@@ -403,8 +390,7 @@ def upload_question_yaml(request, url):
         tema_existe = exist_tema(tema, materia)
         if not tema_existe:
             return render(request, 'questions/noExisteTema.html', {'tema': tema})
-        query = Question.objects.filter(
-            nombre_tema=tema).filter(nombre_materia=materia)
+        query = Question.objects.filter(nombre_tema=tema).filter(nombre_materia=materia)
         count = query.count()
         count_respuestas = len(respuestas_lista)
         parecida = False
@@ -429,13 +415,14 @@ def upload_question_yaml(request, url):
                 q_saved = guardarPreg(materia, tema, pregunta)
                 for i in range(count_respuestas):
                     resp_dict = respuestas_lista[i]
-                    guardar_resp_dict(resp_dict,q_saved)
+                    guardar_resp_dict(resp_dict, q_saved)
             else:
                 preguntas_repetidas.insert(index_iguales, pregunta)
-                index_iguales +=  1
+                index_iguales += 1
     return render(request, 'questions/secargo_yml.html', {'preguntas': preguntas_repetidas,
                                                           'preguntas_similares': preguntas_parecidas,
                                                           'parecida': parecida, 'repetida': repetida})
+
 
 def question_view(request, url):
     """
@@ -459,7 +446,7 @@ def question_view(request, url):
     preguntas_repetidas = []
     preguntas_parecidas = []
     for pregunta in root:
-        materia =modificacion_input(pregunta.find('materia').text)
+        materia = modificacion_input(pregunta.find('materia').text)
         tema = modificacion_input(pregunta.find('tema').text)
         texto = (pregunta.find('texto').text)
         materia_existe = exist_materia(materia)
@@ -502,7 +489,7 @@ def question_view(request, url):
             else:
                 preguntas_repetidas.insert(index, texto)
                 index += 1
-    return render(request, 'questions/secargo.html', {'preguntas':preguntas_repetidas,
+    return render(request, 'questions/secargo.html', {'preguntas': preguntas_repetidas,
                                                       'preguntas_similares': preguntas_parecidas,
                                                       'repetida': repetida, 'parecida': parecida})
 
@@ -706,5 +693,4 @@ def sacardereported(request, question_id):
     question = get_object_or_404(Question, pk=question_id)
     question.reportada = False
     question.save()
-    return render(request, 'questions/reported.html',
-                {'questions': Question.objects.filter(reportada=True)})
+    return render(request, 'questions/reported.html', {'questions': Question.objects.filter(reportada=True)})

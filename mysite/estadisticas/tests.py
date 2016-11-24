@@ -20,10 +20,10 @@ class EstadisticasTest(TestCase):
                                       tiempo_preg=10, preguntas_correctas=2, preguntas_incorrectas=3)
 
     def test_lista_materias(self):
-        """el usuario se redirecciona a estadisticas para observar las estadisticas de 
-          su historial.
-          precondicion: simula ingresar pedido de redireccion.
-          post :  compara si el resultado es la pagina con toda la estadisticas.
+        """el usuario se redirecciona a estadisticas para observar las
+            estadisticas de su historial.
+            precondicion: simula ingresar pedido de redireccion.
+            post : compara si el resultado es la pagina con toda la estadisticas.
         """
         response = self.client.get(reverse('estadisticas'))
         self.assertEqual(response.resolver_match.func, estadistica_view)

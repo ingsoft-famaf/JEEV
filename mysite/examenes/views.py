@@ -16,6 +16,7 @@ def filter_query(realquery, querytofilt):
                 realquery = realquery.exclude(id=q2.id)
     return realquery
 
+
 def filter_pregunta(result, queryresp):
     lista = []
     for q in queryresp:
@@ -28,7 +29,7 @@ def filter_pregunta(result, queryresp):
 
 
 def guardar_tema(Exam, tema):
-    modelTema=TemaE(tema_fk=Exam, nombre_tema=tema)
+    modelTema = TemaE(tema_fk=Exam, nombre_tema=tema)
     modelTema.save()
 
 
@@ -55,6 +56,8 @@ def elegirExamen(request):
 
 
 """ Algoritmo basado en errores"""
+
+
 def selcMateria(request):
     """
     Input: HttpRequest
@@ -68,11 +71,9 @@ def selcMateria(request):
     if count == 0:
         return render(request, 'examenes/preguntasCero.html')
     else:
-        query = Materia.objects.values_list(
-                                'nombre_materia', flat=True).distinct()
+        query = Materia.objects.values_list('nombre_materia', flat=True).distinct()
         return render(request, 'examenes/selcMateria.html',
-                  {'list_materias': Materia.objects.values_list(
-                            'nombre_materia', flat=True).distinct()})
+                      {'list_materias': Materia.objects.values_list('nombre_materia', flat=True).distinct()})
 
 
 def selcTemas(request):
@@ -83,9 +84,8 @@ def selcTemas(request):
     para el algoritmo basado en errores.
     """
     materia = request.POST['materias']
-    list_temas= Tema.objects.values_list(
-                            'nombre_tema',flat=True).filter(temas__nombre_materia=materia)
-    return render(request, 'examenes/selcTemas.html', {'list_temas':list_temas, 'materia':materia})
+    list_temas = Tema.objects.values_list('nombre_tema', flat=True).filter(temas__nombre_materia=materia)
+    return render(request, 'examenes/selcTemas.html', {'list_temas': list_temas, 'materia': materia})
 
 
 def examen_encurso(request, materia):
@@ -94,8 +94,7 @@ def examen_encurso(request, materia):
         return render(request, 'examenes/datosIncorrectos.html')
     cantidad = request.POST['cantidad']
     tiempo = request.POST['tiempo']
-    examenE = ExamErrores(nombre_materia=materia, 
-                cantidad_preg = cantidad, tiempo_preg = tiempo)
+    examenE = ExamErrores(nombre_materia=materia, cantidad_preg=cantidad, tiempo_preg=tiempo)
     examenE.save()
     tema = request.POST.getlist('tema')
     cant_temas = len(tema)
@@ -103,8 +102,7 @@ def examen_encurso(request, materia):
         nombreTema = str(tema[i])
         temas = guardar_Tema(examenE, nombreTema)
     temaActual = 0
-    return render(request, 'examenes/encurso.html' ,
-                    {'examenE':examenE, 'temaActual':temaActual})
+    return render(request, 'examenes/encurso.html', {'examenE': examenE, 'temaActual': temaActual})
 
 
 def respPregErrores(request, examenE_id, temaActual):
@@ -118,7 +116,7 @@ def respPregErrores(request, examenE_id, temaActual):
     examen = get_object_or_404(ExamErrores, pk=examenE_id)
     materia = examen.nombre_materia
     temas = TemaE.objects.filter(tema_fk=examen)
-    randomm =[]
+    randomm = []
     cantidad_temas = temas.count()
     if examen.pregunta_actual == examen.cantidad_preg:
         nota = examen.preguntas_correctas
@@ -130,7 +128,7 @@ def respPregErrores(request, examenE_id, temaActual):
         nTema = temas[0]
         preguntas = Question.objects.filter(nombre_tema=nTema).filter(nombre_materia=nombreMateria).filter(reportada=False)
     else:
-        preguntas= Question.objects.filter(nombre_tema=temas[temaActual]).filter(nombre_materia=materia).filter(reportada=False)
+        preguntas = Question.objects.filter(nombre_tema=temas[temaActual]).filter(nombre_materia=materia).filter(reportada=False)
     queryresp = PregRespE.objects.filter(examen=examen)
     query = filter_query(preguntas, queryresp)
     cant_query = query.count()
@@ -138,22 +136,22 @@ def respPregErrores(request, examenE_id, temaActual):
         if temaActual == (cantidad_temas - 1):
             temaActual = 0
             for i in range(cantidad_temas):
-                preguntas= Question.objects.filter(nombre_tema=temas[temaActual]).filter(nombre_materia=materia).filter(reportada=False)
+                preguntas = Question.objects.filter(nombre_tema=temas[temaActual]).filter(nombre_materia=materia).filter(reportada=False)
                 query = filter_query(preguntas, queryresp)
-                query_count= query.count()
+                query_count = query.count()
                 if query_count == 0:
-                    temaActual +=1 
+                    temaActual += 1
                 else:
                     break
         else:
-            temaActual+= 1
-        preguntas= Question.objects.filter(nombre_tema=temas[temaActual]).filter(nombre_materia=materia).filter(reportada=False)
+            temaActual += 1
+        preguntas = Question.objects.filter(nombre_tema=temas[temaActual]).filter(nombre_materia=materia).filter(reportada=False)
         query = filter_query(preguntas, queryresp)
     randomm = random.sample(query, 1)
     pregunta = randomm[0]
     PregRespE.objects.create(examen=examen, question=pregunta)
     return render(request, 'examenes/respPregErrores.html',
-                  {'pregunta': pregunta, 'examenE': examen, 'temaActual':temaActual})
+                  {'pregunta': pregunta, 'examenE': examen, 'temaActual': temaActual})
 
 
 def respuestaE(request, examenE_id, temaActual):
@@ -168,28 +166,28 @@ def respuestaE(request, examenE_id, temaActual):
     if request.method == 'POST':
         respuesta_id = request.POST['respuesta']
         examen = get_object_or_404(ExamErrores, pk=examenE_id)
-        examen.pregunta_actual +=1
+        examen.pregunta_actual += 1
         examen.save()
-        cantidad_temas= TemaE.objects.filter(tema_fk=examen).count()
+        cantidad_temas = TemaE.objects.filter(tema_fk=examen).count()
         respuesta = get_object_or_404(Answer, pk=respuesta_id)
-        cant_correctas=examen.preguntas_correctas
+        cant_correctas = examen.preguntas_correctas
         if respuesta.es_correcta:
-            examen.preguntas_correctas +=1
+            examen.preguntas_correctas += 1
             temaActual = int(temaActual)
-            temaActual +=1
-        else :
+            temaActual += 1
+        else:
             randomm = []
-            examen.preguntas_incorrectas +=1
+            examen.preguntas_incorrectas += 1
         examen.save()
-        if temaActual > (cantidad_temas - 1) and cant_correctas < examen.preguntas_correctas :
+        if temaActual > (cantidad_temas - 1) and cant_correctas < examen.preguntas_correctas:
             temaActual = 0
         return render(request, 'examenes/respuestaE.html',
-                      {'respuesta':respuesta, 'examenE':examen, 'temaActual':temaActual})
+                      {'respuesta': respuesta, 'examenE': examen, 'temaActual': temaActual})
     examen = get_object_or_404(ExamErrores, pk=examenE_id)
-    examen.pregunta_actual +=1
-    examen.preguntas_incorrectas +=1
+    examen.pregunta_actual += 1
+    examen.preguntas_incorrectas += 1
     examen.save()
-    return render(request, 'examenes/respuestaE.html', {'examenE':examen, 'temaActual':temaActual})
+    return render(request, 'examenes/respuestaE.html', {'examenE': examen, 'temaActual': temaActual})
 
 
 def examen_view(request):
@@ -206,10 +204,9 @@ def examen_view(request):
         return render(request, 'examenes/preguntasCero.html')
     else:
         return render(request, 'examenes/examen.html',
-                  {'list_materias': Materia.objects.values_list(
-                            'nombre_materia', flat=True).distinct(),
-                   'list_temas': Tema.objects.values_list(
-                            'nombre_tema', flat=True).distinct()})
+                      {'list_materias': Materia.objects.values_list('nombre_materia',
+                       flat=True).distinct(),
+                       'list_temas': Tema.objects.values_list('nombre_tema', flat=True).distinct()})
 
 
 def examenencurso_view(request):

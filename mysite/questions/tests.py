@@ -54,7 +54,7 @@ class QuestionTest(TestCase):
         precondicion: simula ingresar pedido de redireccion.
         post :  compara si el resultado es la pagina con toda la estadisticas.
         """
-        response = self.client.post(reverse('uploadquestion'), data={'namefile':'/questions/lxml.xml',
+        response = self.client.post(reverse('uploadquestion'), data={'namefile': '/questions/lxml.xml',
                                                                      'tipo': 'XML'})
         self.assertEqual(response.resolver_match.func, uploadquestion)
 
@@ -67,6 +67,3 @@ class QuestionTest(TestCase):
                                                                   'titulo': '4 + 10 ?', 'opcion': 2,
                                                                   'opcion0': 24, 'opcion1': 14})
         self.assertEqual(response.resolver_match.func, agregarPreg)
-
-    def test_agregar_pregunta_mal(self):
-      

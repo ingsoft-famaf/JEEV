@@ -27,7 +27,7 @@ class TemaE(models.Model):
     nombre_tema = models.CharField(max_length=100)
 
     def __str__(self):
-        return self.nombre_tema  
+        return self.nombre_tema
 
 
 class PregResp(models.Model):
@@ -42,7 +42,7 @@ class PregResp(models.Model):
     examen = models.ForeignKey('Exam', on_delete=models.CASCADE)
     question = models.ForeignKey('questions.Question', blank=True, null=True)
 
-    
+
 class ExamErrores(models.Model):
     """
     Esta clase crea el modelo de examen, el examen va a tener como
@@ -63,10 +63,8 @@ class TemaE(models.Model):
 
     def __str__(self):
         return self.nombre_tema
-        
+
 
 class PregRespE(models.Model):
     examen = models.ForeignKey('ExamErrores', on_delete=models.CASCADE)
-    question = models.ForeignKey('questions.Question',
-                                #on_delete=models.PROTECT,
-                                blank=True, null=True)
+    question = models.ForeignKey('questions.Question', blank=True, null=True)

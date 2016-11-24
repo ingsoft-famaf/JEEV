@@ -15,7 +15,7 @@ class MateriaMethodTests(TestCase):
     def test_se_cargo_materia_correctamente(self):
         """
         pre: carga datos y envia un formulario a la funcion cargrm
-        post: 
+        post:
         """
         response = self.client.post(reverse('cargarm'), data={'nueva_materia': 'Quimica'})
         self.assertEqual(response.resolver_match.func, cargarm)

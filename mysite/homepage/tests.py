@@ -7,7 +7,6 @@ from homepage.views import *
 class HomeTests(TestCase):
 
     def test_redirijido_al_home(self):
-    	""""""
         response = self.client.get(reverse('homepage'))
         self.assertEquals(response.resolver_match.func, homepage)
 

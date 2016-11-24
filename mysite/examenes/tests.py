@@ -37,7 +37,7 @@ class ExamTest(TestCase):
     def test_set_up_exam(self):
         """crea y simila subir datos de un examen, para comparar con la funcion examenencurso_view.
         precondicion: simulo subir datos del examen a testear
-        postcondicion: devuelve un error o si el test haya pasado bien, sigue. 
+        postcondicion: devuelve un error o si el test haya pasado bien, sigue.
                       compara la funcion examenencurso pasando como datos lo creado.
         """
         response = self.client.post(reverse('examenencurso'),
@@ -50,7 +50,7 @@ class ExamTest(TestCase):
 
     def test_realizar_examen(self):
         """
-        crea un examen con el atributo nombre de materia y compara que se 
+        crea un examen con el atributo nombre de materia y compara que se
         hayan creado bien las respuestas.
         precondicion: simulo subir nombre del examen a testear
         postcondicion: devuelve un error o si el test haya pasado bien, sigue.
@@ -74,9 +74,9 @@ class ExamTest(TestCase):
         crea un examen con el atributo nombre de materia, pregunta y simulo enviar datos,
         Compara que si las preguntas tengan respuestas.
         precondicion: simulo subir nombre del examen, una preg a testear
-        postcondicion: devuelve un error o si el test haya pasado bien, sigue. 
-                      compara la funcion resppreg, donde muestra una preg
-                      con sus resp.
+        postcondicion: devuelve un error o si el test haya pasado bien, sigue.
+        compara la funcion resppreg, donde muestra una preg
+        con sus resp.
         """
         examen = Exam.objects.get(nombre_materia='Matematicas')
         pregunta = Question.objects.get(text_preg='2 + 2 ?')

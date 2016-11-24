@@ -17,8 +17,15 @@
         </header>
         <center>
             <h2>Se cargo el examen</h2><br>
-            <h3>comenzara en 2 segundos</h3>
-            <meta http-equiv="refresh" content="2;url={% url 'respPregErrores' examenE.id temaActual%}" />-
+            {%if tema_v %}
+                <h3>Warning: no exsiten preguntas de los temas: </h3>
+                {% for tema in temas_v%}
+                    {{tema}}<br>
+                {% endfor%}
+
+            {% endif %}
+            <h3>El examen comenzara en 2 segundos</h3>
+            <meta http-equiv="refresh" content="2;url={% url 'respPregErrores' examenE.id temaActual%}" />
         </center>
         <footer>JEEV</footer>
     </body>
