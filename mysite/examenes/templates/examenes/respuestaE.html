@@ -7,10 +7,10 @@
     {% else %}
         {% if respuesta.es_correcta %}
             <center><h3>Tu respuesta es Correcta</h3></center>
-            <meta http-equiv="refresh" content="2;url={% url 'respPregErrores' examenE.id temaActual%}" />-
+            <meta http-equiv="refresh" content="2;url={% url 'respPregErrores' examenE.id temaActual%}"/>
         {% else %}
             <center><h3>Respuesta Incorrecta</h3></center>
-            <meta http-equiv="refresh" content="2;url={% url 'respPregErrores' examenE.id temaActual %}" />-
+            <meta http-equiv="refresh" content="2;url={% url 'respPregErrores' examenE.id temaActual%}"/>
         {% endif %}
     {% endif %}
 {% endblock content%}
