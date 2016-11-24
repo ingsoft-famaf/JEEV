@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+{%load static%}
+<html>
+    <head>
+        <lnk rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+        <link rel="stylesheet" href="{% static 'css/estilos.css' %}">
+    </head>
+    <body>
+        <header>
+            <h1>Configuracion de examenes</h1>
+        </header>
+
+        <center>
+            <form method= "post" action="{% url 'selcTemas' %}">
+            {% csrf_token %}
+            <p> Seleccione la materia </p>
+            <select name="materias">
+            {% for nombre_materia in list_materias %}
+            <option value="{{ nombre_materia }}" name="materia">{{ nombre_materia }}</option>
+            {% endfor %}
+            <input type = "submit" value= "Seleccionar esta configuracion">
+            </form>
+            <br><a href="/accounts/profile/">Volver</a>
+        </center>
+        <footer><h3>JEEV</h3></footer>
+    </body>
+</html>

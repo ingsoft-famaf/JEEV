@@ -1,0 +1,37 @@
+
+<!DOCTYPE html>
+{%load static%}
+<!DOCTYPE html>
+{%load static%}
+<html>
+    <head>
+        <lnk rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+        <link rel="stylesheet" href="{% static 'css/estilos.css' %}">
+    </head>
+    <body>
+        <header>
+            <h1>Configuracion de examenes</h1>
+        </header>
+
+        <center>
+            <form method= "post" action="{% url 'encurso' %}">
+            {% csrf_token %}
+            <p> Seleccione el tema </p>
+            <select name="temas">
+            {% for nombre_tema in list_temas %}
+            <option value="{{ nombre_tema }}" name="tema">{{ nombre_tema }}</option>
+            {% endfor %}
+            </select>
+            <p> Seleccione cantidad de preguntas</p>
+            <input name="cantidad" type="number" value="" />
+            <p> Tiempo deseado entre preguntas (en segundos)</p>
+            <input name="tiempo" type="number" value="" />
+            </br></br>
+            <input type = "submit" value= "Seleccionar esta configuracion">
+            </form>
+            <br><a href="/accounts/profile/">Volver</a>
+        </center>
+        <footer><h3>JEEV</h3></footer>
+    </body>
+</html>

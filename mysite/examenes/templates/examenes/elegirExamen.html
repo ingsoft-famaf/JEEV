@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+{% load static %}
+<html>
+    <head>
+        <lnk rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+        <link rel="stylesheet" href="{% static 'css/estilos.css' %}">
+    </head>
+    <body>
+        <header>
+            <h1>Selección de algoritmo para realizar examen</h1>
+        </header>
+        <center>
+            <br><a href="/examenes/examen/">Algoritmo aleatorio</a>
+            <br><a href="/examenes/selcMateria/">Algoritmo basado en errores</a>
+            <br><a href="/accounts/profile/">Volver</a>
+        </center>
+        <footer><h3>JEEV</h3></footer>
+    </body>
+</html>
