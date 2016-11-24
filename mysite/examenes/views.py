@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
 from django.shortcuts import render, get_object_or_404
 from questions.models import Question, Answer
-from .models import Exam, PregResp, TemaE
-from materias.models import Materia, Tema
-import questions.models
+from .models import Exam, PregResp, ExamErrores, PregRespE, TemaE
 import random
+from materias.models import Materia, Tema
 from django.http import HttpResponse
 import json
 from itertools import chain
@@ -17,18 +16,16 @@ def filter_query(realquery, querytofilt):
                 realquery = realquery.exclude(id=q2.id)
     return realquery
 
-
 def filter_pregunta(result, queryresp):
     lista = []
     for q in queryresp:
         contador = 0
         for r in result:
-            print ("esto es q dentro del for %s" % q.question.text_preg)
             if q.question.id == r.id:
                 lista = result.pop(contador)
-                print ("esto es el eliminado %s" % lista)
             contador += 1
     return result
+
 
 def guardar_tema(Exam, tema):
     modelTema=TemaE(tema_fk=Exam, nombre_tema=tema)
@@ -48,6 +45,153 @@ def select_temas(request):
     return HttpResponse(json.dumps(temas), content_type="application/json")
 
 
+def elegirExamen(request):
+    """
+    Input: HttpRequest
+    Output: redirige a un html pasándole dos query
+    Esta función muestra las opciones de algoritmos para el examen.
+    """
+    return render(request, 'examenes/elegirExamen.html')
+
+
+""" Algoritmo basado en errores"""
+def selcMateria(request):
+    """
+    Input: HttpRequest
+    Output: redirige a un html pasándole dos query
+    Esta función muestra las opciones de materias para la configuración del examen
+    para el algoritmo basado en errores.
+    """
+    query = Question.objects.all()
+    count = query.count()
+    print count
+    if count == 0:
+        return render(request, 'examenes/preguntasCero.html')
+    else:
+        query = Materia.objects.values_list(
+                                'nombre_materia', flat=True).distinct()
+        return render(request, 'examenes/selcMateria.html',
+                  {'list_materias': Materia.objects.values_list(
+                            'nombre_materia', flat=True).distinct()})
+
+
+def selcTemas(request):
+    """
+    Input: HttpRequest
+    Output: redirige a un html pasándole dos query
+    Esta función muestra las opciones de temas para la configuración del examen
+    para el algoritmo basado en errores.
+    """
+    materia = request.POST['materias']
+    list_temas= Tema.objects.values_list(
+                            'nombre_tema',flat=True).filter(temas__nombre_materia=materia)
+    return render(request, 'examenes/selcTemas.html', {'list_temas':list_temas, 'materia':materia})
+
+
+def examen_encurso(request, materia):
+
+    if request.POST['cantidad'] == "":
+        return render(request, 'examenes/datosIncorrectos.html')
+    cantidad = request.POST['cantidad']
+    tiempo = request.POST['tiempo']
+    examenE = ExamErrores(nombre_materia=materia, 
+                cantidad_preg = cantidad, tiempo_preg = tiempo)
+    examenE.save()
+    tema = request.POST.getlist('tema')
+    cant_temas = len(tema)
+    for i in range(cant_temas):
+        nombreTema = str(tema[i])
+        temas = guardar_Tema(examenE, nombreTema)
+    temaActual = 0
+    return render(request, 'examenes/encurso.html' ,
+                    {'examenE':examenE, 'temaActual':temaActual})
+
+
+def respPregErrores(request, examenE_id, temaActual):
+    """
+    Input: HttpRequest y id del examen
+    Output: redirige a un html pasándole dos query
+    Esta función muestra una pregunta con sus respuestas para que el usuario
+    haga la elección de un de ellas.
+    """
+    temaActual = int(temaActual)
+    examen = get_object_or_404(ExamErrores, pk=examenE_id)
+    materia = examen.nombre_materia
+    temas = TemaE.objects.filter(tema_fk=examen)
+    randomm =[]
+    cantidad_temas = temas.count()
+    if examen.pregunta_actual == examen.cantidad_preg:
+        nota = examen.preguntas_correctas
+        nota1 = examen.cantidad_preg
+        examen.porcentaje = ((nota * 100) / nota1)
+        examen.save()
+        return render(request, 'examenes/finalizo.html', {'examen': examen})
+    if cantidad_temas == 1:
+        nTema = temas[0]
+        preguntas = Question.objects.filter(nombre_tema=nTema).filter(nombre_materia=nombreMateria).filter(reportada=False)
+    else:
+        preguntas= Question.objects.filter(nombre_tema=temas[temaActual]).filter(nombre_materia=materia).filter(reportada=False)
+    queryresp = PregRespE.objects.filter(examen=examen)
+    query = filter_query(preguntas, queryresp)
+    cant_query = query.count()
+    if cant_query == 0:
+        if temaActual == (cantidad_temas - 1):
+            temaActual = 0
+            for i in range(cantidad_temas):
+                preguntas= Question.objects.filter(nombre_tema=temas[temaActual]).filter(nombre_materia=materia).filter(reportada=False)
+                query = filter_query(preguntas, queryresp)
+                query_count= query.count()
+                if query_count == 0:
+                    temaActual +=1 
+                else:
+                    break
+        else:
+            temaActual+= 1
+        preguntas= Question.objects.filter(nombre_tema=temas[temaActual]).filter(nombre_materia=materia).filter(reportada=False)
+        query = filter_query(preguntas, queryresp)
+    randomm = random.sample(query, 1)
+    pregunta = randomm[0]
+    PregRespE.objects.create(examen=examen, question=pregunta)
+    return render(request, 'examenes/respPregErrores.html',
+                  {'pregunta': pregunta, 'examenE': examen, 'temaActual':temaActual})
+
+
+def respuestaE(request, examenE_id, temaActual):
+    """
+    Input: HttpRequest y id del examen
+    Output: redirige a un html pasándole una query
+    Esta función recoge la respuesta seleccionada y le indica al usuario si
+    es correcta o no. Si no responde en el tiempo predeterminado le indica que
+    la respuesta es incorrecta.
+    """
+
+    if request.method == 'POST':
+        respuesta_id = request.POST['respuesta']
+        examen = get_object_or_404(ExamErrores, pk=examenE_id)
+        examen.pregunta_actual +=1
+        examen.save()
+        cantidad_temas= TemaE.objects.filter(tema_fk=examen).count()
+        respuesta = get_object_or_404(Answer, pk=respuesta_id)
+        cant_correctas=examen.preguntas_correctas
+        if respuesta.es_correcta:
+            examen.preguntas_correctas +=1
+            temaActual = int(temaActual)
+            temaActual +=1
+        else :
+            randomm = []
+            examen.preguntas_incorrectas +=1
+        examen.save()
+        if temaActual > (cantidad_temas - 1) and cant_correctas < examen.preguntas_correctas :
+            temaActual = 0
+        return render(request, 'examenes/respuestaE.html',
+                      {'respuesta':respuesta, 'examenE':examen, 'temaActual':temaActual})
+    examen = get_object_or_404(ExamErrores, pk=examenE_id)
+    examen.pregunta_actual +=1
+    examen.preguntas_incorrectas +=1
+    examen.save()
+    return render(request, 'examenes/respuestaE.html', {'examenE':examen, 'temaActual':temaActual})
+
+
 def examen_view(request):
     """
         Esta funcion muestra las opciones para la configuracion del examen.
@@ -55,9 +199,17 @@ def examen_view(request):
         :type: Http
         :return: redirige a un html pasandole dos query
     """
-    return render(request, 'examenes/examen.html',
-                  {'list_materias': Question.objects.values_list('nombre_materia', flat=True).distinct(),
-                   'list_temas': Question.objects.values_list('nombre_tema', flat=True).distinct()})
+    query = Question.objects.all()
+    count = query.count()
+    print count
+    if count == 0:
+        return render(request, 'examenes/preguntasCero.html')
+    else:
+        return render(request, 'examenes/examen.html',
+                  {'list_materias': Materia.objects.values_list(
+                            'nombre_materia', flat=True).distinct(),
+                   'list_temas': Tema.objects.values_list(
+                            'nombre_tema', flat=True).distinct()})
 
 
 def examenencurso_view(request):
@@ -71,8 +223,6 @@ def examenencurso_view(request):
         return render(request, 'examenes/vacio.html')
     materia = request.POST['materias']
     tema = request.POST.getlist('tema')
-    #import pdb
-    #pdb.set_trace()
     cant_temas = len(tema)
     cantidad = request.POST['cantidad']
     tiempo = request.POST['tiempo']
@@ -84,7 +234,6 @@ def examenencurso_view(request):
         if query.count() == 0:
             tema_vacio = True
             temas_vacios.append(tema[x])
-            #pasar a examenen curso y botones en html
         cantidad_preg_bd += query.count()
     if int(cantidad) > cantidad_preg_bd:
         return render(request, 'examenes/validarCant.html', {'cantidad': cantidad_preg_bd})
@@ -128,13 +277,8 @@ def resppreg(request, examen_id):
             query.append(Question.objects.filter(nombre_tema=temas[x]).filter(nombre_materia=materia).filter(reportada=False))
             result = list(chain(query_vacia, query[x]))
             query_vacia = result
-
-        #print ("lista de chain %s" % result)
         queryresp = PregResp.objects.filter(examen=examen)
-        #print result
-        #print pregunta
         query = filter_pregunta(result, queryresp)
-        print query
         randomm = random.sample(query, 1)
         pregunta = randomm[0]
     PregResp.objects.create(examen=examen, question=pregunta)

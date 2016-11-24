@@ -6,20 +6,15 @@
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-
         <link rel="stylesheet" href="{% static 'css/estilos.css' %}">
-
-        <title>Examen</title>
     </head>
     <body>
         <header>
-            <h4>Examen</h4>
         </header>
         <center>
-            <h2>Se cargo el examen</h2><br>
-            <h3>comenzara en 2 segundos</h3>
-            <meta http-equiv="refresh" content="2;url={% url 'resppreg' examen.id %}" />-
+            <h2>Este tema no tiene preguntas por el momento, por favor seleccione otro tema.</h2>
+            <br><a href="/examenes/examen/">Volver</a>
         </center>
-        <footer>JEEV</footer>
+        <footer><h3>JEEV</h3></footer>
     </body>
 </html>
