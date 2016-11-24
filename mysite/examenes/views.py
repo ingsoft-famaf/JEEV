@@ -94,17 +94,27 @@ def examen_encurso(request, materia):
         return render(request, 'examenes/datosIncorrectos.html')
     cantidad = request.POST['cantidad']
     tiempo = request.POST['tiempo']
-    examenE = Exam(nombre_materia=materia, 
-                cantidad_preg = cantidad, tiempo_preg = tiempo)
-    examenE.save()
     tema = request.POST.getlist('tema')
+    tema_vacio = False
+    temas_vacios = []
+    cantidad_preg_bd = 0
     cant_temas = len(tema)
+    for x in xrange(cant_temas):
+        query = Question.objects.filter(nombre_materia=materia).filter(nombre_tema=tema[x])
+        if query.count() == 0:
+            tema_vacio = True
+            temas_vacios.append(tema[x])
+        cantidad_preg_bd += query.count()
+    if int(cantidad) > cantidad_preg_bd:
+        return render(request, 'examenes/validarCant.html', {'cantidad': cantidad_preg_bd})
+    examenE = Exam(nombre_materia=materia, cantidad_preg=cantidad, tiempo_preg=tiempo)
+    examenE.save()
     for i in range(cant_temas):
         nombreTema = str(tema[i])
         temas = guardar_tema(examenE, nombreTema)
     temaActual = 0
     return render(request, 'examenes/encurso.html' ,
-                    {'examenE':examenE, 'temaActual':temaActual})
+                    {'examenE':examenE, 'temaActual':temaActual, 'tema_v': tema_vacio, 'temas_v':temas_vacios})
 
 
 def respPregErrores(request, examenE_id, temaActual):
@@ -123,8 +133,12 @@ def respPregErrores(request, examenE_id, temaActual):
     if examen.pregunta_actual == examen.cantidad_preg:
         nota = examen.preguntas_correctas
         nota1 = examen.cantidad_preg
-        examen.porcentaje = ((nota * 100) / nota1)
-        examen.save()
+        if nota1 == 0:
+            examen.porcentaje = 0
+            examen.save()
+        else:
+            examen.porcentaje = ((nota * 100) / nota1)
+            examen.save()
         return render(request, 'examenes/finalizo.html', {'examen': examen})
     if cantidad_temas == 1:
         nTema = temas[0]
@@ -242,7 +256,7 @@ def examenencurso_view(request):
     for i in range(cant_temas):
         nombre_tema = str(tema[i])
         guardar_tema(examen, nombre_tema)
-    return render(request, 'examenes/examenencurso.html', {'examen': examen})
+    return render(request, 'examenes/examenencurso.html', {'examen': examen, 'tema_v': tema_vacio, 'temas_v': temas_vacios})
 
 
 def resppreg(request, examen_id):
